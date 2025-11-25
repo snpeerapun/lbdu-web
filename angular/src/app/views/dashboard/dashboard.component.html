@@ -1,0 +1,334 @@
+<div class="container-fluid">
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">กำลังโหลดข้อมูล...</p>
+  </div>
+
+  <div *ngIf="!loading && !error" class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="row ">
+      <div class="col-12">
+        <h2 class="mb-0">แผงควบคุม</h2>
+        <p class="text-muted">ภาพรวมงบประมาณและการเงินของคุณ</p>
+      </div>
+    </div>
+
+    <!-- Stats Cards Row -->
+    <div class="row">
+      <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-9">
+                <div class="d-flex align-items-center">
+                  <h3 class="mb-0">฿34,000</h3>
+                </div>
+                <h6 class="text-muted font-weight-normal mt-2">งบประมาณคงเหลือ</h6>
+              </div>
+              <div class="col-3">
+                <div class="icon icon-box-success">
+                  <i class="bi bi-currency-exchange"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-9">
+                <div class="d-flex align-items-center">
+                  <h3 class="mb-0">฿12,500</h3>
+                </div>
+                <h6 class="text-muted font-weight-normal mt-2">รายจ่ายเดือนนี้</h6>
+              </div>
+              <div class="col-3">
+                <div class="icon icon-box-danger">
+                  <i class="bi bi-arrow-down-circle"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-9">
+                <div class="d-flex align-items-center">
+                  <h3 class="mb-0">฿45,000</h3>
+                </div>
+                <h6 class="text-muted font-weight-normal mt-2">รายรับเดือนนี้</h6>
+              </div>
+              <div class="col-3">
+                <div class="icon icon-box-success">
+                  <i class="bi bi-arrow-up-circle"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-9">
+                <div class="d-flex align-items-center">
+                  <h3 class="mb-0">75%</h3>
+                </div>
+                <h6 class="text-muted font-weight-normal mt-2">อัตราการใช้งบ</h6>
+              </div>
+              <div class="col-3">
+                <div class="icon icon-box-warning">
+                  <i class="bi bi-pie-chart"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="row">
+      <!-- Budget Utilization Chart -->
+      <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="card-title mb-0">งบประมาณที่ใช้ไป</h4>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-secondary" (click)="exportChart('budgetUtilization')" title="ส่งออก">
+                  <i class="bi bi-download"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" (click)="toggleFullscreen($event)" title="เต็มหน้าจอ">
+                  <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+              </div>
+            </div>
+            <div *ngIf="chartLoading.budgetUtilization" class="text-center py-5">
+              <div class="spinner-border text-primary spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <div 
+              *ngIf="!chartLoading.budgetUtilization" 
+              echarts 
+              [options]="budgetUtilizationOptions" 
+              [merge]="updateOptions"
+              class="chart-container"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Income vs Expenses Chart -->
+      <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="card-title mb-0">รายรับ vs รายจ่าย</h4>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-secondary" (click)="exportChart('incomeVsExpenses')" title="ส่งออก">
+                  <i class="bi bi-download"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" (click)="toggleFullscreen($event)" title="เต็มหน้าจอ">
+                  <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+              </div>
+            </div>
+            <div *ngIf="chartLoading.incomeVsExpenses" class="text-center py-5">
+              <div class="spinner-border text-primary spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <div 
+              *ngIf="!chartLoading.incomeVsExpenses" 
+              echarts 
+              [options]="incomeVsExpensesOptions" 
+              [merge]="updateOptions"
+              class="chart-container"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="row">
+      <!-- Cash Flow Trend Chart -->
+      <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="card-title mb-0">แนวโน้มกระแสเงินสด</h4>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-secondary" (click)="exportChart('cashFlowTrend')" title="ส่งออก">
+                  <i class="bi bi-download"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" (click)="toggleFullscreen($event)" title="เต็มหน้าจอ">
+                  <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+              </div>
+            </div>
+            <div *ngIf="chartLoading.cashFlowTrend" class="text-center py-5">
+              <div class="spinner-border text-primary spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <div 
+              *ngIf="!chartLoading.cashFlowTrend" 
+              echarts 
+              [options]="cashFlowTrendOptions" 
+              [merge]="updateOptions"
+              class="chart-container"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Expense Breakdown Chart -->
+      <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="card-title mb-0">การใช้จ่ายตามหมวดหมู่</h4>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-secondary" (click)="exportChart('expenseBreakdown')" title="ส่งออก">
+                  <i class="bi bi-download"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" (click)="toggleFullscreen($event)" title="เต็มหน้าจอ">
+                  <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+              </div>
+            </div>
+            <div *ngIf="chartLoading.expenseBreakdown" class="text-center py-5">
+              <div class="spinner-border text-primary spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <div 
+              *ngIf="!chartLoading.expenseBreakdown" 
+              echarts 
+              [options]="expenseBreakdownOptions" 
+              [merge]="updateOptions"
+              class="chart-container"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row 3 -->
+    <div class="row">
+      <!-- Budget Variance Chart -->
+      <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="card-title mb-0">ความแตกต่างของงบจริง vs งบประมาณ</h4>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-secondary" (click)="exportChart('budgetVariance')" title="ส่งออก">
+                  <i class="bi bi-download"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" (click)="toggleFullscreen($event)" title="เต็มหน้าจอ">
+                  <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+              </div>
+            </div>
+            <div *ngIf="chartLoading.budgetVariance" class="text-center py-5">
+              <div class="spinner-border text-primary spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <div 
+              *ngIf="!chartLoading.budgetVariance" 
+              echarts 
+              [options]="budgetVarianceOptions" 
+              [merge]="updateOptions"
+              class="chart-container"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top Spending Categories Chart -->
+      <div class="col-lg-6 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="card-title mb-0">หมวดหมู่ที่ใช้เงินมากที่สุด</h4>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-secondary" (click)="exportChart('topSpendingCategories')" title="ส่งออก">
+                  <i class="bi bi-download"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" (click)="toggleFullscreen($event)" title="เต็มหน้าจอ">
+                  <i class="bi bi-arrows-fullscreen"></i>
+                </button>
+              </div>
+            </div>
+            <div *ngIf="chartLoading.topSpendingCategories" class="text-center py-5">
+              <div class="spinner-border text-primary spinner-border-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            <div 
+              *ngIf="!chartLoading.topSpendingCategories" 
+              echarts 
+              [options]="topSpendingCategoriesOptions" 
+              [merge]="updateOptions"
+              class="chart-container"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Expenses Table -->
+    <div class="row">
+      <div class="col-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title mb-4">ค่าใช้จ่ายที่กำลังจะถึงกำหนด</h4>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>รายการ</th>
+                    <th>หมวดหมู่</th>
+                    <th>จำนวนเงิน</th>
+                    <th>กำหนดชำระ</th>
+                    <th>สถานะ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let payment of upcomingPayments">
+                    <td>{{ payment.name }}</td>
+                    <td>{{ payment.category }}</td>
+                    <td>{{ payment.amount | number:'1.2-2' }} บาท</td>
+                    <td>{{ formatDate(payment.dueDate) }}</td>
+                    <td>
+                      <span [class]="getStatusClass(getDaysRemaining(payment.dueDate))">
+                        {{ getStatusText(getDaysRemaining(payment.dueDate)) }}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr *ngIf="upcomingPayments.length === 0">
+                    <td colspan="5" class="text-center py-3">ไม่มีรายการที่กำลังจะถึงกำหนด</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

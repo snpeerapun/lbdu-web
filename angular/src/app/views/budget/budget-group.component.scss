@@ -1,0 +1,91 @@
+.card {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.card-header {
+  background: linear-gradient(to right, #0a7c76, #064e4a);
+  color: white;
+  border-radius: 8px 8px 0 0;
+  padding: 1rem;
+}
+
+.group-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  height: 100%;
+  
+  .group-header {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .group-body {
+    padding: 1rem;
+  }
+}
+
+.list-group-item {
+  border: none;
+  padding: 0.5rem 0;
+  
+  &:not(:last-child) {
+    border-bottom: 1px solid #dee2e6;
+  }
+}
+
+.btn {
+  &.btn-primary {
+    background-color: #0a7c76;
+    border-color: #0a7c76;
+    
+    &:hover {
+      background-color: #064e4a;
+      border-color: #064e4a;
+    }
+  }
+  
+  &.btn-outline-primary {
+    color: #0a7c76;
+    border-color: #0a7c76;
+    
+    &:hover {
+      background-color: #0a7c76;
+      border-color: #0a7c76;
+      color: white;
+    }
+  }
+  
+  &.btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+    color: white;
+    
+    &:hover {
+      background-color: #138496;
+      border-color: #117a8b;
+    }
+  }
+  
+  &.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    
+    &:hover {
+      background-color: #c82333;
+      border-color: #bd2130;
+    }
+  }
+  
+  &.btn-link {
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+  }
+}

@@ -1,0 +1,219 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - LBDU Fund Platform</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" />
+
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="header-container">
+            <a href="@Url.Action("Index", "Home")" class="logo">
+                <div class="logo-icon">LB</div>
+                <div class="logo-text">
+                    <h1>LBDU</h1>
+                    <span>Fund Platform</span>
+                </div>
+            </a>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li>
+                        <a href="@Url.Action("Index", "Home")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+                            <i class="fas fa-home"></i>
+                            หน้าแรก
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index", "Fund")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Fund" ? "active" : "")">
+                            <i class="fas fa-chart-line"></i>
+                            กองทุนทั้งหมด
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-graduation-cap"></i>
+                            เรียนรู้
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index", "Article")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Article" ? "active" : "")">
+                            <i class="fas fa-newspaper"></i>
+                            ข่าวสาร
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-phone"></i>
+                            ติดต่อเรา
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <button class="register-btn" onclick="location.href='@Url.Action("Register", "Account")'">
+                    สมัครสมาชิก
+                </button>
+                <button class="login-btn" onclick="location.href='@Url.Action("Login", "Account")'">
+                    <i class="fas fa-user"></i>
+                    เข้าสู่ระบบ
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <!-- About Section -->
+                <div class="footer-about">
+                    <h3>LBDU Fund Platform</h3>
+                    <p>
+                        แพลตฟอร์มกองทุนรวมออนไลน์ที่ให้คุณเข้าถึงกองทุนจากทุกบริษัทจัดการในที่เดียว
+                        เปรียบเทียบ วิเคราะห์ และลงทุนได้อย่างสะดวกรวดเร็ว
+                    </p>
+                    <div class="footer-social">
+                        <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-btn"><i class="fab fa-line"></i></a>
+                        <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Fund Categories -->
+                <div class="footer-section">
+                    <h4>กองทุน</h4>
+                    <ul class="footer-links">
+                        <li>
+                            <a href="@Url.Action("Index", "Fund", new { category = "หุ้น" })">
+                                <i class="fas fa-chevron-right"></i> กองทุนหุ้น
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Fund", new { category = "ผสม" })">
+                                <i class="fas fa-chevron-right"></i> กองทุนผสม
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Fund", new { category = "ตราสารหนี้" })">
+                                <i class="fas fa-chevron-right"></i> กองทุนตราสารหนี้
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Fund", new { category = "อสังหา" })">
+                                <i class="fas fa-chevron-right"></i> กองทุนอสังหาฯ
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- About Us -->
+                <div class="footer-section">
+                    <h4>เกี่ยวกับเรา</h4>
+                    <ul class="footer-links">
+                        <li>
+                            <a href="@Url.Action("About", "Home")">
+                                <i class="fas fa-chevron-right"></i> เกี่ยวกับ LBDU
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("HowTo", "Home")">
+                                <i class="fas fa-chevron-right"></i> วิธีการใช้งาน
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("FAQ", "Home")">
+                                <i class="fas fa-chevron-right"></i> คำถามที่พบบ่อย
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Privacy", "Home")">
+                                <i class="fas fa-chevron-right"></i> นโยบายความเป็นส่วนตัว
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div class="footer-section">
+                    <h4>ติดต่อเรา</h4>
+                    <ul class="footer-links">
+                        <li>
+                            <a href="tel:02-xxx-xxxx">
+                                <i class="fas fa-phone"></i> 02-xxx-xxxx
+                            </a>
+                        </li>
+                        <li>
+                            <a href="mailto:info@lbdu.com">
+                                <i class="fas fa-envelope"></i> info@lbdu.com
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fas fa-map-marker-alt"></i> กรุงเทพฯ ประเทศไทย
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fas fa-clock"></i> จ-ศ 8:30-17:30 น.
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom -->
+            <div class="footer-bottom">
+                <p>
+                    &copy; @DateTime.Now.Year LBDU Fund Platform. All rights reserved. |
+                    พัฒนาโดย LBDU Technology
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/js/site.js"></script>
+
+    <script>
+        // Header scroll effect
+        const header = document.getElementById('header');
+        if (header) {
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        }
+
+        // Smooth scroll to top
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

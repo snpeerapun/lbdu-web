@@ -1,0 +1,16 @@
+<div class="otp-container">
+  <input 
+    *ngFor="let digit of otpDigits; let i = index"
+    #otpInput
+    type="text" 
+    maxlength="1" 
+    class="otp-input"
+    [value]="otpDigits[i]" 
+    (input)="onDigitInput(i, $event)"
+    (keydown)="onKeyDown(i, $event)"
+    (paste)="i === 0 ? onPaste($event) : null"
+    inputmode="numeric"
+    pattern="[0-9]*"
+    autocomplete="off"
+  >
+</div>

@@ -1,0 +1,82 @@
+ <div class="login-container d-flex justify-content-center align-items-center">
+ 
+    <div class="form-container shadow-sm ">
+      <h2>{{ 'login.title' | translate }}</h2>
+      <p class="subtitle">{{ 'login.subtitle' | translate }}</p>
+      
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <div class="input-group">
+            <input type="username" 
+                  formControlName="username" 
+                  [placeholder]="'login.form.username.placeholder' | translate"
+                  [class.is-invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+            <i class="fas fa-envelope input-icon"></i>
+            <div class="invalid-feedback" *ngIf="loginForm.get('username')?.errors?.['required'] && loginForm.get('username')?.touched">
+              {{ 'login.validation.required' | translate }}
+            </div>
+            <div class="invalid-feedback" *ngIf="loginForm.get('username')?.errors?.['username'] && loginForm.get('username')?.touched">
+              {{ 'login.validation.username' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-group">
+            <input [type]="showPassword ? 'text' : 'password'"
+                  formControlName="password" 
+                  [placeholder]="'login.form.password.placeholder' | translate"
+                  [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            <i class="fas fa-lock input-icon"></i>
+            <button type="button" 
+                    class="toggle-password"
+                    (click)="togglePasswordVisibility()"
+                    [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+              <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+            </button>
+            <div class="invalid-feedback" *ngIf="loginForm.get('password')?.errors?.['required'] && loginForm.get('password')?.touched">
+              {{ 'login.validation.required' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <div class="checkbox-container">
+            <input type="checkbox" formControlName="rememberMe" id="rememberMe">
+            <label for="rememberMe">
+              <span class="checkmark"></span>
+              <span>{{ 'login.form.rememberMe' | translate }}</span>
+            </label>
+          </div>
+          <a routerLink="/forgot-password" class="forgot-link">
+            {{ 'login.button.forgotPassword' | translate }}
+          </a>
+        </div>
+
+        <button type="submit" class="btn-auth" [disabled]="loginForm.invalid || isLoading" [class.loading]="isLoading">
+          {{ 'login.button.login' | translate }}
+        </button>
+      <!--
+        <div class="divider">
+          <span>{{ 'login.or' | translate }}</span>
+        </div>
+
+        <div class="social-buttons">
+          <button type="button" class="btn-social" (click)="loginWithGoogle()" [disabled]="isLoading">
+            <img src="assets/images/google.svg" alt="" aria-hidden="true">
+            <span>{{ 'login.button.google' | translate }}</span>
+          </button>
+          <button type="button" class="btn-social" (click)="loginWithFacebook()" [disabled]="isLoading">
+            <img src="assets/images/facebook.svg" alt="" aria-hidden="true">
+            <span>{{ 'login.button.facebook' | translate }}</span>
+          </button>
+        </div>
+
+        <div class="register-link">
+          {{ 'login.noAccount' | translate }} <a routerLink="/register">{{ 'login.button.register' | translate }}</a>
+        </div>
+        -->
+      </form>
+    </div>
+ 
+</div>

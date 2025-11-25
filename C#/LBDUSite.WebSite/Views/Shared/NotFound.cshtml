@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "ไม่พบหน้าที่ต้องการ";
+}
+
+<div style="min-height: 60vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 60px 30px;">
+    <div>
+        <h1 style="font-size: 6rem; font-weight: 700; color: var(--primary); margin: 0;">404</h1>
+        <h2 style="font-size: 2rem; font-weight: 600; color: var(--gray-900); margin: 20px 0;">ไม่พบหน้าที่ต้องการ</h2>
+        <p style="font-size: 1.125rem; color: var(--gray-600); margin-bottom: 30px;">
+            @(ViewBag.Message ?? "ขออภัย ไม่พบหน้าที่คุณกำลังมองหา")
+        </p>
+        <a href="@Url.Action("Index", "Home")" class="view-all-btn" style="display: inline-flex;">
+            <i class="fas fa-home"></i>
+            กลับหน้าแรก
+        </a>
+    </div>
+</div>
+tylesheet)

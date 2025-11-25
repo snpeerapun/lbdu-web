@@ -1,0 +1,115 @@
+<div class="ng-table">
+  <div class="table-filter row" *ngIf="allowFilter">
+    <div class="col-lg-4">
+      <input
+        class="form-control"
+        type="text"
+        [(ngModel)]="filterTextValue"
+        (keyup.enter)="filter()"
+        placeholder="Filter"
+      />
+    </div>
+    <div class="col-lg-4">
+      <button type="button" class="btn btn-secondary me-2" (click)="refresh()"><i class="fa fa-search" aria-hidden="true"></i> Search</button>
+    
+      <span class="ms-auto" *ngIf="allowExport">
+        <button type="button" class="btn btn-success" (click)="export()">
+          <i class="fa fa-download" aria-hidden="true"></i> Export
+        </button>
+      </span>
+     
+    </div>
+  </div>  
+
+  <div>
+    <table class="table table-striped table-sticky-header">
+      <thead>
+        <tr>
+          <ng-container *ngIf="allowCheckbox">
+            <th class="center">
+              <label>
+                <input type="checkbox" 
+                  [checked]="isAllChecked()" 
+                  (change)="onCheckAllChange($any($event.target).checked)" />
+              </label>
+            </th>
+          </ng-container>
+          <ng-container *ngFor="let column of columns; let i = index">
+            <ng-container *ngIf="column.sort !== false; else noSort">
+              <th (click)="onSort(column)" [ngStyle]="{'width': column.width, 'text-align': column.align || 'left'}">
+                {{ column.title }}
+                <i class="fa" [ngClass]="sortIcon(column)"></i>
+              </th>
+            </ng-container>
+            <ng-template #noSort>
+              <th [ngStyle]="{'width': column.width, 'text-align': column.align || 'left'}">
+                {{ column.title }}
+              </th>
+            </ng-template>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody *ngIf="data().length > 0">
+        <tr *ngFor="let row of data()" (click)="onSelectRow(row)">
+          <ng-container *ngIf="allowCheckbox">
+            <td class="center">
+              <input type="checkbox" 
+                [checked]="isRowChecked(row)" 
+                (change)="onItemCheckChange(row, $any($event.target).checked)" />
+            </td>
+          </ng-container>
+          <ng-container *ngFor="let column of columns">
+            <ng-container *ngIf="!column.template; else customTemplate">
+              <td [ngStyle]="{'text-align': column.align || 'left'}">
+                {{ column.name ? formatValue(row[column.name], column.format) : '' }}
+              </td>
+            </ng-container>
+            <ng-template #customTemplate>
+              <td [ngStyle]="{'text-align': column.align || 'left'}">
+                <ng-container *ngTemplateOutlet="getTemplate(column.template); context: getTemplateContext(row)"></ng-container>
+              </td>
+            </ng-template>
+          </ng-container>
+        </tr>
+      </tbody>
+      <tbody *ngIf="data().length === 0">
+        <tr>
+          <td [attr.colspan]="columns.length + (allowCheckbox ? 1 : 0)" class="center">No data available.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="navigation  d-flex justify-content-between">
+    <div class="info-result" *ngIf="data().length > 0">
+      <span>
+        Showing {{ startIndex() }} to {{ endIndex() }} of {{ totalItems() | number }} entries
+      </span>
+    </div>
+    <ul class="pagination " *ngIf="data().length > 0 && allowPaging">
+      <li class="page-item" [ngClass]="{disabled: currentPage() === 1}">
+        <a class="page-link" (click)="onFirstPage()" aria-label="First">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <li class="page-item" [ngClass]="{disabled: currentPage() === 1}">
+        <a class="page-link" (click)="onPrevPage()" aria-label="Previous">
+          <span aria-hidden="true">&lsaquo;</span>
+        </a>
+      </li>
+      <li *ngFor="let page of getPages()" class="page-item" [ngClass]="{active: currentPage() === page}">
+        <a class="page-link" (click)="onPage(page)">{{ page }}</a>
+      </li>
+      <li class="page-item" [ngClass]="{disabled: currentPage() === totalPages()}">
+        <a class="page-link" (click)="onNextPage()" aria-label="Next">
+          <span aria-hidden="true">&rsaquo;</span>
+        </a>
+      </li>
+      <li class="page-item" [ngClass]="{disabled: currentPage() === totalPages()}">
+        <a class="page-link" (click)="onLastPage()" aria-label="Last">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

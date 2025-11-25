@@ -1,0 +1,138 @@
+﻿@model LBDUSite.ViewModels.HomePageViewModel
+@{
+    ViewBag.Title = "หน้าแรก";
+}
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1>
+                แพลตฟอร์มกองทุนรวม<br>
+                <span class="highlight">ครบวงจร</span>
+            </h1>
+            <p>
+                เปรียบเทียบและเลือกกองทุนจากทุกบริษัทจัดการในที่เดียว
+                ลงทุนง่าย จ่ายคืนง่าย ด้วยเทคโนโลยีที่ทันสมัย
+            </p>
+
+            <!-- Search Box -->
+            @using (Html.BeginForm("Index", "Fund", FormMethod.Get, new { @class = "hero-search" }))
+            {
+                <input type="text" name="search" placeholder="ค้นหาชื่อกองทุน หรือ รหัสกองทุน..." />
+                <select name="category">
+                    <option value="">ทุกประเภท</option>
+                    <option value="หุ้น">กองทุนหุ้น</option>
+                    <option value="ผสม">กองทุนผสม</option>
+                    <option value="ตราสารหนี้">กองทุนตราสารหนี้</option>
+                </select>
+                <button type="submit">
+                    <i class="fas fa-search"></i>
+                    ค้นหา
+                </button>
+            }
+
+            <!-- Stats -->
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-value">@Model.Stats.TotalFunds+</div>
+                    <div class="stat-label">กองทุนรวม</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">@Model.Stats.TotalAMC+</div>
+                    <div class="stat-label">บริษัทจัดการ</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">@(Model.Stats.TotalInvestors / 1000)K+</div>
+                    <div class="stat-label">นักลงทุน</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">@Model.Stats.TotalVolume</div>
+                    <div class="stat-label">มูลค่าซื้อขาย</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Categories -->
+<section class="section">
+    <div class="section-container">
+        <div class="section-header">
+            <h2 class="section-title">เลือกตามประเภทกองทุน</h2>
+        </div>
+
+        <div class="categories">
+            @foreach (var category in Model.Categories)
+            {
+                <a href="@Url.Action("Index", "Fund", new { category = category.CategoryName })" class="category-card">
+                    <div class="category-icon">
+                        <i class="fas @category.IconClass"></i>
+                    </div>
+                    <div class="category-name">@category.CategoryName</div>
+                    <div class="category-count">@category.FundCount+ กองทุน</div>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Featured Funds -->
+<section class="section" style="background: var(--white); padding-top: 60px;">
+    <div class="section-container">
+        <div class="section-header">
+            <h2 class="section-title">กองทุนแนะนำ</h2>
+            <a href="@Url.Action("Index", "Fund")" class="view-all-btn">
+                ดูทั้งหมด <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="fund-grid">
+            @foreach (var fund in Model.FeaturedFunds)
+            {
+                @Html.Partial("_FundCard", fund)
+            }
+        </div>
+    </div>
+</section>
+
+<!-- News Section -->
+<section class="news-section">
+    <div class="section-container">
+        <div class="section-header">
+            <h2 class="section-title">ข่าวสารและบทความ</h2>
+            <a href="@Url.Action("Index", "Article")" class="view-all-btn">
+                ดูทั้งหมด <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="news-grid">
+            @foreach (var news in Model.RecentNews)
+            {
+                <div class="news-card" onclick="location.href='@Url.Action("Detail", "Article", new { slug = news.Slug })'">
+                    <div class="news-image">
+                        @if (!string.IsNullOrEmpty(news.FeaturedImageUrl))
+                        {
+                            <img src="@news.FeaturedImageUrl" alt="@news.Title" />
+                        }
+                        else
+                        {
+                            <i class="fas fa-newspaper"></i>
+                        }
+                    </div>
+                    <div class="news-content">
+                        <div class="news-meta">
+                            <span><i class="far fa-calendar"></i> @news.PublishedDateDisplay</span>
+                            <span><i class="far fa-clock"></i> @news.ReadingTime นาที</span>
+                        </div>
+                        <h3 class="news-title">@news.Title</h3>
+                        <p class="news-excerpt">@news.Excerpt</p>
+                        <a href="@Url.Action("Detail", "Article", new { slug = news.Slug })" class="news-link">
+                            อ่านต่อ <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

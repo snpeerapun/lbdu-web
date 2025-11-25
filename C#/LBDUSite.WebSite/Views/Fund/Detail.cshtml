@@ -1,0 +1,430 @@
+﻿@model LBDUSite.ViewModels.FundDetailViewModel
+@{
+    ViewBag.Title = Model.FundName;
+}
+ 
+<!-- Breadcrumb -->
+<nav class="breadcrumb">
+    <div class="breadcrumb-container">
+        <ul class="breadcrumb-list">
+            <li><a href="@Url.Action("Index", "Home")"><i class="fas fa-home"></i> หน้าแรก</a></li>
+            <li class="breadcrumb-separator"><i class="fas fa-chevron-right"></i></li>
+            <li><a href="@Url.Action("Index", "Fund")">กองทุนทั้งหมด</a></li>
+            <li class="breadcrumb-separator"><i class="fas fa-chevron-right"></i></li>
+            <li class="active">@Model.FundCode</li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Fund Detail Hero -->
+<section class="fund-detail-hero">
+    <div class="fund-detail-container">
+        <div class="fund-detail-header">
+            <div class="fund-detail-info">
+                <div class="fund-detail-meta">
+                    <div class="fund-detail-company">
+                        <div class="company-logo">@Model.AMCLogo</div>
+                        @Model.AMCShortName
+                    </div>
+                    <span class="fund-detail-code">@Model.FundCode</span>
+                    <span class="fund-type @Model.FundType">@Model.FundTypeDisplay</span>
+                </div>
+                <h1>@Model.FundName</h1>
+                <p>@Model.PolicyDesc</p>
+            </div>
+
+            <div class="fund-detail-actions">
+                <button class="btn btn-primary" onclick="alert('ฟีเจอร์ซื้อกองทุนกำลังพัฒนา')">
+                    <i class="fas fa-shopping-cart"></i>
+                    ซื้อกองทุน
+                </button>
+                <button class="btn btn-outline" onclick="toggleFavorite(@Model.FundId)">
+                    <i class="far fa-heart"></i>
+                    บันทึก
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fund Detail Content -->
+<section class="fund-detail-content">
+    <div class="detail-grid">
+        <!-- Main Content -->
+        <div class="detail-main">
+            <!-- Performance Card -->
+            <div class="detail-card">
+                <h3 class="detail-card-title">
+                    <i class="fas fa-chart-line"></i>
+                    ผลการดำเนินงาน
+                </h3>
+
+                <div class="performance-grid">
+                    <div class="performance-item">
+                        <div class="performance-label">NAV ล่าสุด</div>
+                        <div class="performance-value">@Model.CurrentNAV.ToString("N4")</div>
+                        <div style="font-size: 0.75rem; color: var(--gray-500); margin-top: 5px;">
+                            @Model.NAVDate.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("th-TH"))
+                        </div>
+                    </div>
+                    <div class="performance-item">
+                        <div class="performance-label">ผลตอบแทน YTD</div>
+                        <div class="performance-value @(Model.YTDReturn >= 0 ? "positive" : "negative")">
+                            @if (Model.YTDReturn.HasValue)
+                            {
+                                @((Model.YTDReturn >= 0 ? "+" : "") + Model.YTDReturn.Value.ToString("N2") + "%")
+                            }
+                            else
+                            {
+                                @:N/A
+                            }
+                        </div>
+                    </div>
+                    <div class="performance-item">
+                        <div class="performance-label">ผลตอบแทน 1 ปี</div>
+                        <div class="performance-value @(Model.OneYearReturn >= 0 ? "positive" : "negative")">
+                            @if (Model.OneYearReturn.HasValue)
+                            {
+                                @((Model.OneYearReturn >= 0 ? "+" : "") + Model.OneYearReturn.Value.ToString("N2") + "%")
+                            }
+                            else
+                            {
+                                @:N/A
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-controls">
+                    <button class="chart-btn active" onclick="updateChart('1M')">1 เดือน</button>
+                    <button class="chart-btn" onclick="updateChart('3M')">3 เดือน</button>
+                    <button class="chart-btn" onclick="updateChart('6M')">6 เดือน</button>
+                    <button class="chart-btn" onclick="updateChart('1Y')">1 ปี</button>
+                    <button class="chart-btn" onclick="updateChart('3Y')">3 ปี</button>
+                    <button class="chart-btn" onclick="updateChart('5Y')">5 ปี</button>
+                </div>
+
+                <div class="chart-wrapper">
+                    <canvas id="navChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Fund Information Card -->
+            <div class="detail-card">
+                <h3 class="detail-card-title">
+                    <i class="fas fa-info-circle"></i>
+                    ข้อมูลกองทุน
+                </h3>
+
+                <div class="info-table">
+                    <div class="info-row">
+                        <span class="info-label">ชื่อย่อ</span>
+                        <span class="info-value">@Model.FundCode</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">ประเภทกองทุน</span>
+                        <span class="info-value">@Model.FundTypeDisplay</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">บริษัทจัดการ</span>
+                        <span class="info-value">@Model.AMCName</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">ระดับความเสี่ยง</span>
+                        <span class="info-value">@Model.RiskLevel (@Model.RiskLevelDesc)</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">นโยบายการจ่ายเงินปันผล</span>
+                        <span class="info-value">@Model.DividendPolicy</span>
+                    </div>
+                    @if (Model.MinimumSubIPO.HasValue)
+                    {
+                        <div class="info-row">
+                            <span class="info-label">มูลค่าขั้นต่ำในการซื้อครั้งแรก</span>
+                            <span class="info-value">@Model.MinimumSubIPO.Value.ToString("N0") บาท</span>
+                        </div>
+                    }
+                    @if (Model.MinimumSub.HasValue)
+                    {
+                        <div class="info-row">
+                            <span class="info-label">มูลค่าขั้นต่ำในการซื้อครั้งถัดไป</span>
+                            <span class="info-value">@Model.MinimumSub.Value.ToString("N0") บาท</span>
+                        </div>
+                    }
+                    @if (Model.MinimumRedempt.HasValue)
+                    {
+                        <div class="info-row">
+                            <span class="info-label">มูลค่าขั้นต่ำในการขายคืน</span>
+                            <span class="info-value">@Model.MinimumRedempt.Value.ToString("N0") บาท</span>
+                        </div>
+                    }
+                    <div class="info-row">
+                        <span class="info-label">ค่าธรรมเนียมการจัดการ</span>
+                        <span class="info-value">@Model.ManagementFee</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">ค่าธรรมเนียมการขาย</span>
+                        <span class="info-value">@Model.FrontEndFee</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">ค่าธรรมเนียมการรับซื้อคืน</span>
+                        <span class="info-value">@Model.BackEndFee</span>
+                    </div>
+                    @if (Model.RegisDate.HasValue)
+                    {
+                        <div class="info-row">
+                            <span class="info-label">วันที่จดทะเบียนกองทุน</span>
+                            <span class="info-value">@Model.RegisDate.Value.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("th-TH"))</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.SettlementPeriod))
+                    {
+                        <div class="info-row">
+                            <span class="info-label">ระยะเวลาการชำระเงิน</span>
+                            <span class="info-value">@Model.SettlementPeriod</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="detail-sidebar">
+            <!-- Quick Actions -->
+            <div class="detail-card quick-actions">
+                <h3 class="detail-card-title">
+                    <i class="fas fa-bolt"></i>
+                    ดำเนินการ
+                </h3>
+                <button class="btn btn-primary" onclick="alert('ฟีเจอร์ซื้อกองทุนกำลังพัฒนา')">
+                    <i class="fas fa-shopping-cart"></i>
+                    ซื้อกองทุน
+                </button>
+                <button class="btn btn-secondary" onclick="alert('ฟีเจอร์สับเปลี่ยนกองทุนกำลังพัฒนา')">
+                    <i class="fas fa-exchange-alt"></i>
+                    สับเปลี่ยนกองทุน
+                </button>
+                <button class="btn btn-danger" onclick="alert('ฟีเจอร์ขายคืนกองทุนกำลังพัฒนา')">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    ขายคืนกองทุน
+                </button>
+            </div>
+
+            <!-- Fund Manager -->
+            <div class="detail-card fund-manager-card">
+                <h3 class="detail-card-title">
+                    <i class="fas fa-user-tie"></i>
+                    ผู้จัดการกองทุน
+                </h3>
+                <div class="manager-avatar">@Model.FundManager.Initials</div>
+                <div class="manager-name">@Model.FundManager.Name</div>
+                <div class="manager-experience">@Model.FundManager.Experience</div>
+            </div>
+
+            <!-- Documents -->
+            @if (Model.Documents != null && Model.Documents.Any())
+            {
+                <div class="detail-card">
+                    <h3 class="detail-card-title">
+                        <i class="fas fa-file-pdf"></i>
+                        เอกสารที่เกี่ยวข้อง
+                    </h3>
+                    <div class="document-list">
+                        @foreach (var doc in Model.Documents)
+                        {
+                            <a href="@doc.Url" target="_blank" class="document-item">
+                                <i class="fas @doc.IconClass"></i>
+                                <span class="document-title">@doc.Title</span>
+                                <i class="fas fa-download"></i>
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Related Funds -->
+@if (Model.RelatedFunds != null && Model.RelatedFunds.Any())
+{
+    <section class="related-section">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">กองทุนที่เกี่ยวข้อง</h2>
+                <a href="@Url.Action("Index", "Fund", new { category = Model.FundType })" class="view-all-btn">
+                    ดูทั้งหมด <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="fund-grid">
+                @foreach (var fund in Model.RelatedFunds)
+                {
+                    @Html.Partial("_FundCard", fund)
+                }
+            </div>
+        </div>
+    </section>
+}
+
+<!-- Related News -->
+@if (Model.RelatedNews != null && Model.RelatedNews.Any())
+{
+    <section class="news-section">
+        <div class="section-container">
+            <div class="section-header">
+                <h2 class="section-title">ข่าวสารที่เกี่ยวข้อง</h2>
+            </div>
+
+            <div class="news-grid">
+                @foreach (var news in Model.RelatedNews)
+                {
+                    <div class="news-card" onclick="location.href='@Url.Action("Detail", "Article", new { slug = news.Slug })'">
+                        <div class="news-image">
+                            @if (!string.IsNullOrEmpty(news.FeaturedImageUrl))
+                            {
+                                <img src="@news.FeaturedImageUrl" alt="@news.Title" style="width:100%; height:100%; object-fit:cover;">
+                            }
+                            else
+                            {
+                                <i class="fas fa-newspaper"></i>
+                            }
+                        </div>
+                        <div class="news-content">
+                            <div class="news-meta">
+                                <span><i class="far fa-calendar"></i> @news.PublishedDateDisplay</span>
+                                <span><i class="far fa-clock"></i> @news.ReadingTime นาที</span>
+                            </div>
+                            <h3 class="news-title">@news.Title</h3>
+                            <p class="news-excerpt">@news.Excerpt</p>
+                            <a href="@Url.Action("Detail", "Article", new { slug = news.Slug })" class="news-link">
+                                อ่านต่อ <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+
+@section Scripts {
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <script>
+        // Chart Data from server
+        var chartData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.NAVChartData));
+        var navChart = null;
+
+        // Initialize Chart
+        function initChart(data) {
+            var ctx = document.getElementById('navChart');
+            if (!ctx) return;
+
+            if (navChart) {
+                navChart.destroy();
+            }
+
+            var labels = data.map(d => new Date(d.Date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }));
+            var values = data.map(d => d.Value);
+
+            navChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'NAV',
+                        data: values,
+                        borderColor: '#1CA59B',
+                        backgroundColor: 'rgba(28, 165, 155, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#1CA59B',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: {
+                                size: 14,
+                                family: 'Noto Sans Thai'
+                            },
+                            bodyFont: {
+                                size: 13,
+                                family: 'Noto Sans Thai'
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    return 'NAV: ' + context.parsed.y.toFixed(4);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toFixed(2);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update Chart Period
+        function updateChart(period) {
+            // Update active button
+            document.querySelectorAll('.chart-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // In production, fetch new data from server
+            // For now, just reinitialize with existing data
+            initChart(chartData);
+        }
+
+        // Toggle Favorite
+        function toggleFavorite(fundId) {
+            // In production, make AJAX call to server
+            alert('ฟีเจอร์บันทึกกองทุนโปรดกำลังพัฒนา');
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (chartData && chartData.length > 0) {
+                initChart(chartData);
+            } else {
+                // Show message if no chart data
+                var chartWrapper = document.querySelector('.chart-wrapper');
+                if (chartWrapper) {
+                    chartWrapper.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--gray-500);"><i class="fas fa-chart-line" style="font-size: 3rem; margin-right: 15px;"></i><span>ไม่มีข้อมูลกราฟ NAV</span></div>';
+                }
+            }
+        });
+    </script>
+}

@@ -1,0 +1,656 @@
+/*!
+ * Bootstrap Datetimepicker CSS - แก้ไขปัญหาการแสดงผลครั้งสุดท้าย
+ * เวอร์ชัน Bootstrap 5.3.0
+ * ใช้โครงสร้าง HTML ที่แท้จริงของ Bootstrap Datetimepicker
+ */
+
+/* ===== Base Widget Styles ===== */
+.bootstrap-datetimepicker-widget {
+  list-style: none;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  border-radius: 0.375rem;
+  border: 1px solid rgba(0, 0, 0, 0.175);
+  background-color: var(--bs-body-bg, #fff);
+  color: var(--bs-body-color, #212529);
+}
+
+.bootstrap-datetimepicker-widget.dropdown-menu {
+  display: block;
+  margin: 2px 0;
+  padding: 0.5rem;
+  width: 19em;
+  position: absolute;
+  z-index: 1080;
+}
+
+@media (min-width: 768px) {
+  .bootstrap-datetimepicker-widget.dropdown-menu.timepicker-sbs {
+    width: 38em;
+  }
+}
+
+/* ===== Dropdown Arrow Styles ===== */
+.bootstrap-datetimepicker-widget.dropdown-menu:before,
+.bootstrap-datetimepicker-widget.dropdown-menu:after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+}
+
+.bootstrap-datetimepicker-widget.dropdown-menu.bottom:before {
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid #ccc;
+  border-bottom-color: rgba(0, 0, 0, 0.2);
+  top: -7px;
+  left: 7px;
+}
+
+.bootstrap-datetimepicker-widget.dropdown-menu.bottom:after {
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid var(--bs-body-bg, white);
+  top: -6px;
+  left: 8px;
+}
+
+.bootstrap-datetimepicker-widget.dropdown-menu.top:before {
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 7px solid #ccc;
+  border-top-color: rgba(0, 0, 0, 0.2);
+  bottom: -7px;
+  left: 6px;
+}
+
+.bootstrap-datetimepicker-widget.dropdown-menu.top:after {
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid var(--bs-body-bg, white);
+  bottom: -6px;
+  left: 7px;
+}
+
+.bootstrap-datetimepicker-widget.dropdown-menu.float-end:before {
+  left: auto;
+  right: 6px;
+}
+
+.bootstrap-datetimepicker-widget.dropdown-menu.float-end:after {
+  left: auto;
+  right: 7px;
+}
+
+/* ===== Basic Element Styles ===== */
+.bootstrap-datetimepicker-widget .list-unstyled {
+  margin: 0;
+}
+
+.bootstrap-datetimepicker-widget a[data-action] {
+  padding: 6px 0;
+}
+
+.bootstrap-datetimepicker-widget a[data-action]:active {
+  box-shadow: none;
+}
+
+.bootstrap-datetimepicker-widget button[data-action] {
+  padding: 6px;
+}
+
+/* ===== Screen Reader Text (Accessibility) ===== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.bootstrap-datetimepicker-widget .btn[data-action="incrementHours"]::after,
+.bootstrap-datetimepicker-widget .btn[data-action="incrementMinutes"]::after,
+.bootstrap-datetimepicker-widget .btn[data-action="decrementHours"]::after,
+.bootstrap-datetimepicker-widget .btn[data-action="decrementMinutes"]::after,
+.bootstrap-datetimepicker-widget .btn[data-action="showHours"]::after,
+.bootstrap-datetimepicker-widget .btn[data-action="showMinutes"]::after,
+.bootstrap-datetimepicker-widget .btn[data-action="togglePeriod"]::after,
+.bootstrap-datetimepicker-widget .btn[data-action="clear"]::after,
+.bootstrap-datetimepicker-widget .btn[data-action="today"]::after,
+.bootstrap-datetimepicker-widget .picker-switch::after,
+.bootstrap-datetimepicker-widget table th.prev::after,
+.bootstrap-datetimepicker-widget table th.next::after {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  border: 0 !important;
+}
+
+.bootstrap-datetimepicker-widget .btn[data-action="incrementHours"]::after {
+  content: "Increment Hours";
+}
+
+.bootstrap-datetimepicker-widget .btn[data-action="incrementMinutes"]::after {
+  content: "Increment Minutes";
+}
+
+.bootstrap-datetimepicker-widget .btn[data-action="decrementHours"]::after {
+  content: "Decrement Hours";
+}
+
+.bootstrap-datetimepicker-widget .btn[data-action="decrementMinutes"]::after {
+  content: "Decrement Minutes";
+}
+
+.bootstrap-datetimepicker-widget .btn[data-action="showHours"]::after {
+  content: "Show Hours";
+}
+
+.bootstrap-datetimepicker-widget .btn[data-action="showMinutes"]::after {
+  content: "Show Minutes";
+}
+
+.bootstrap-datetimepicker-widget .btn[data-action="togglePeriod"]::after {
+  content: "Toggle Period";
+}
+
+.bootstrap-datetimepicker-widget .btn[data-action="clear"]::after {
+  content: "Clear the picker";
+}
+
+.bootstrap-datetimepicker-widget .btn[data-action="today"]::after {
+  content: "Set the date to today";
+}
+
+.bootstrap-datetimepicker-widget table th.prev::after {
+  content: "Previous Month";
+}
+
+.bootstrap-datetimepicker-widget table th.next::after {
+  content: "Next Month";
+}
+
+/* ===== Picker Switch Styles ===== */
+.bootstrap-datetimepicker-widget .picker-switch {
+  text-align: center;
+}
+
+.bootstrap-datetimepicker-widget .picker-switch::after {
+  content: "Toggle Date and Time Screens";
+}
+
+.bootstrap-datetimepicker-widget .picker-switch td {
+  padding: 0;
+  margin: 0;
+  height: auto;
+  width: auto;
+  line-height: inherit;
+}
+
+.bootstrap-datetimepicker-widget .picker-switch td span {
+  line-height: 2.5;
+  height: 2.5em;
+  width: 100%;
+}
+
+/* ===== Table Base Styles ===== */
+.bootstrap-datetimepicker-widget table {
+  width: 100%;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.bootstrap-datetimepicker-widget table td,
+.bootstrap-datetimepicker-widget table th {
+  text-align: center;
+  border-radius: 0.25rem;
+  padding: 0.5em;
+  vertical-align: middle;
+  border: none;
+}
+
+/* ===== Table Header Styles และ Navigation Icons ===== */
+.bootstrap-datetimepicker-widget table th {
+  height: 20px;
+  line-height: 20px;
+  width: 20px;
+  font-weight: 500;
+  position: relative;
+}
+
+.bootstrap-datetimepicker-widget table th.picker-switch {
+  width: 145px;
+}
+
+.bootstrap-datetimepicker-widget table th.disabled,
+.bootstrap-datetimepicker-widget table th.disabled:hover {
+  background: none;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+.bootstrap-datetimepicker-widget table thead tr:first-child th {
+  cursor: pointer;
+}
+
+.bootstrap-datetimepicker-widget table thead tr:first-child th:hover {
+  background: var(--bs-gray-100, #f8f9fa);
+  border-radius: 0.25rem;
+}
+
+/* ===== Navigation Icons (Previous/Next Month) ===== */
+
+/* ปุ่ม Previous Month */
+.bootstrap-datetimepicker-widget table th.prev {
+  font-family: 'Font Awesome 5 Free', 'Font Awesome 6 Free', 'Glyphicons Halflings', sans-serif;
+  font-weight: 900;
+}
+
+.bootstrap-datetimepicker-widget table th.prev:before {
+  content: "\f053"; /* Font Awesome chevron-left */
+  /* หรือใช้ */
+  /* content: "\e079"; */ /* Bootstrap Icons chevron-left */
+  /* หรือใช้ */
+  /* content: "‹"; */ /* HTML entity */
+}
+
+/* ปุ่ม Next Month */
+.bootstrap-datetimepicker-widget table th.next {
+  font-family: 'Font Awesome 5 Free', 'Font Awesome 6 Free', 'Glyphicons Halflings', sans-serif;
+  font-weight: 900;
+}
+
+.bootstrap-datetimepicker-widget table th.next:before {
+  content: "\f054"; /* Font Awesome chevron-right */
+  /* หรือใช้ */
+  /* content: "\e080"; */ /* Bootstrap Icons chevron-right */
+  /* หรือใช้ */
+  /* content: "›"; */ /* HTML entity */
+}
+
+/* สำหรับกรณีที่ไม่มี Font Awesome - ใช้ Unicode arrows */
+.bootstrap-datetimepicker-widget.no-fontawesome table th.prev:before {
+  content: "❮"; /* Left-pointing triangle */
+  /* หรือใช้ */
+  /* content: "◀"; */ /* Black left-pointing triangle */
+  /* หรือใช้ */
+  /* content: "‹"; */ /* Single left angle quotation mark */
+}
+
+.bootstrap-datetimepicker-widget.no-fontawesome table th.next:before {
+  content: "❯"; /* Right-pointing triangle */
+  /* หรือใช้ */
+  /* content: "▶"; */ /* Black right-pointing triangle */
+  /* หรือใช้ */
+  /* content: "›"; */ /* Single right angle quotation mark */
+}
+
+/* สำหรับ Bootstrap Icons (ถ้าใช้ Bootstrap Icons แทน Font Awesome) */
+.bootstrap-datetimepicker-widget.bootstrap-icons table th.prev:before {
+  content: ""; /* ใช้ค่าว่างเพื่อให้ใช้ class แทน */
+}
+
+.bootstrap-datetimepicker-widget.bootstrap-icons table th.next:before {
+  content: ""; /* ใช้ค่าว่างเพื่อให้ใช้ class แทน */
+}
+
+.bootstrap-datetimepicker-widget.bootstrap-icons table th.prev {
+  font-family: 'bootstrap-icons';
+}
+
+.bootstrap-datetimepicker-widget.bootstrap-icons table th.next {
+  font-family: 'bootstrap-icons';
+}
+
+/* สไตล์ทั่วไปสำหรับ navigation icons */
+.bootstrap-datetimepicker-widget table th.prev,
+.bootstrap-datetimepicker-widget table th.next {
+  font-size: 14px;
+  padding: 8px;
+  transition: all 0.15s ease-in-out;
+  border-radius: 0.25rem;
+}
+
+.bootstrap-datetimepicker-widget table th.prev:hover,
+.bootstrap-datetimepicker-widget table th.next:hover {
+  background-color: var(--bs-gray-100, #f8f9fa);
+  transform: scale(1.1);
+}
+
+/* ซ่อน screen reader text ของ navigation */
+.bootstrap-datetimepicker-widget table th.prev::after,
+.bootstrap-datetimepicker-widget table th.next::after {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  border: 0 !important;
+}
+
+/* ===== Table Cell Styles ===== */
+.bootstrap-datetimepicker-widget table td {
+  height: 54px;
+  line-height: 54px;
+  width: 54px;
+}
+
+.bootstrap-datetimepicker-widget table td.cw {
+  font-size: .8em;
+  height: 20px;
+  line-height: 20px;
+  color: #6c757d;
+}
+
+.bootstrap-datetimepicker-widget table td.day {
+  height: 20px;
+  line-height: 20px;
+  width: 20px;
+}
+
+.bootstrap-datetimepicker-widget table td.day:hover,
+.bootstrap-datetimepicker-widget table td.hour:hover,
+.bootstrap-datetimepicker-widget table td.minute:hover,
+.bootstrap-datetimepicker-widget table td.second:hover {
+  background: var(--bs-gray-100, #f8f9fa);
+  cursor: pointer;
+  border-radius: 0.25rem;
+}
+
+.bootstrap-datetimepicker-widget table td.old,
+.bootstrap-datetimepicker-widget table td.new {
+  color: #6c757d;
+}
+
+.bootstrap-datetimepicker-widget table td.today {
+  position: relative;
+}
+
+.bootstrap-datetimepicker-widget table td.today:before {
+  content: '';
+  display: inline-block;
+  border: solid transparent;
+  border-width: 0 0 7px 7px;
+  border-bottom-color: var(--bs-primary, #0d6efd);
+  border-top-color: rgba(0, 0, 0, 0.2);
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+}
+
+.bootstrap-datetimepicker-widget table td.active,
+.bootstrap-datetimepicker-widget table td.active:hover {
+  background-color: var(--bs-primary, #0d6efd);
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.bootstrap-datetimepicker-widget table td.active.today:before {
+  border-bottom-color: #fff;
+}
+
+.bootstrap-datetimepicker-widget table td.disabled,
+.bootstrap-datetimepicker-widget table td.disabled:hover {
+  background: none;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* ===== DEFAULT SPAN STYLES (เดิม) ===== */
+.bootstrap-datetimepicker-widget table td span {
+  display: inline-block;
+  width: 54px;
+  height: 54px;
+  line-height: 54px;
+  margin: 2px 1.5px;
+  cursor: pointer;
+  border-radius: 0.25rem;
+}
+
+.bootstrap-datetimepicker-widget table td span:hover {
+  background: var(--bs-gray-100, #f8f9fa);
+}
+
+.bootstrap-datetimepicker-widget table td span.active {
+  background-color: var(--bs-primary, #0d6efd);
+  color: #fff;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.bootstrap-datetimepicker-widget table td span.old {
+  color: #6c757d;
+}
+
+.bootstrap-datetimepicker-widget table td span.disabled,
+.bootstrap-datetimepicker-widget table td span.disabled:hover {
+  background: none;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* ===== Month View - แก้ไขอย่างเฉพาะเจาะจง ===== */
+
+/* รีเซ็ต CSS เฉพาะ month view - ลบ flex settings */
+.bootstrap-datetimepicker-widget .datepicker-months tbody tr td {
+  display: table-cell !important;
+  flex-wrap: unset !important;
+  justify-content: unset !important;
+  align-content: unset !important;
+  min-height: unset !important;
+  padding: 0 !important;
+}
+
+/* Month spans - กลับไปใช้โครงสร้างเดิมแต่แก้ไขขนาด */
+.bootstrap-datetimepicker-widget .datepicker-months table td span {
+  display: inline-block !important;
+  width: 56px !important;
+  height: 56px !important;
+  line-height: 56px !important;
+  margin: 1px !important;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  text-align: center;
+  font-size: 0.875rem;
+  transition: all 0.15s ease-in-out;
+  border: 1px solid transparent;
+  background-color: transparent;
+  float: left;
+}
+
+/* สร้าง layout 3x4 โดยใช้ float และ width percentage */
+.bootstrap-datetimepicker-widget .datepicker-months table td span {
+  width: 31% !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  margin: 1% !important;
+  float: left;
+}
+
+/* Clear float หลังจาก 12 เดือน */
+.bootstrap-datetimepicker-widget .datepicker-months table td:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Month span hover และ active states */
+.bootstrap-datetimepicker-widget .datepicker-months table td span:hover {
+  background-color: var(--bs-gray-100, #f8f9fa) !important;
+  border-color: var(--bs-gray-300, #dee2e6);
+}
+
+.bootstrap-datetimepicker-widget .datepicker-months table td span.active {
+  background-color: var(--bs-primary, #0d6efd) !important;
+  color: #fff !important;
+  border-color: var(--bs-primary, #0d6efd);
+}
+
+.bootstrap-datetimepicker-widget .datepicker-months table td span.disabled {
+  background-color: transparent !important;
+  color: #6c757d !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.bootstrap-datetimepicker-widget .datepicker-months table td span.disabled:hover {
+  background-color: transparent !important;
+  border-color: transparent;
+}
+
+/* Year and Decade views ใช้ style เดียวกัน */
+.bootstrap-datetimepicker-widget .datepicker-years table td span,
+.bootstrap-datetimepicker-widget .datepicker-decades table td span {
+  width: 31% !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  margin: 1% !important;
+  float: left;
+  display: inline-block !important;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  transition: all 0.15s ease-in-out;
+  border: 1px solid transparent;
+  background-color: transparent;
+}
+
+.bootstrap-datetimepicker-widget .datepicker-years table td:after,
+.bootstrap-datetimepicker-widget .datepicker-decades table td:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.bootstrap-datetimepicker-widget .datepicker-years table td span:hover,
+.bootstrap-datetimepicker-widget .datepicker-decades table td span:hover {
+  background-color: var(--bs-gray-100, #f8f9fa) !important;
+  border-color: var(--bs-gray-300, #dee2e6);
+}
+
+.bootstrap-datetimepicker-widget .datepicker-years table td span.active,
+.bootstrap-datetimepicker-widget .datepicker-decades table td span.active {
+  background-color: var(--bs-primary, #0d6efd) !important;
+  color: #fff !important;
+  border-color: var(--bs-primary, #0d6efd);
+}
+
+/* ===== Timepicker Styles ===== */
+.bootstrap-datetimepicker-widget .timepicker-hour,
+.bootstrap-datetimepicker-widget .timepicker-minute,
+.bootstrap-datetimepicker-widget .timepicker-second {
+  width: 54px;
+  font-weight: bold;
+  font-size: 1.2em;
+  margin: 0;
+  cursor: pointer;
+}
+
+.bootstrap-datetimepicker-widget.usetwentyfour td.hour {
+  height: 27px;
+  line-height: 27px;
+}
+
+.bootstrap-datetimepicker-widget .timepicker-picker span,
+.bootstrap-datetimepicker-widget .timepicker-hours span,
+.bootstrap-datetimepicker-widget .timepicker-minutes span {
+  border-radius: 0.25rem;
+}
+
+.bootstrap-datetimepicker-widget .timepicker-picker .btn {
+  box-shadow: none;
+  background-color: transparent;
+  border: 1px solid transparent;
+}
+
+.bootstrap-datetimepicker-widget .timepicker-picker .btn:hover {
+  background-color: var(--bs-light, #f8f9fa);
+}
+
+/* ===== Input Group Styles ===== */
+.input-group.date .input-group-text {
+  cursor: pointer;
+}
+
+.input-group.date .form-control {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.input-group.date .input-group-text {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* ===== Form Floating Compatibility ===== */
+.form-floating .bootstrap-datetimepicker-widget {
+  top: auto !important;
+}
+
+/* ===== Bootstrap 5 Table Support ===== */
+.bootstrap-datetimepicker-widget table.table-sm td,
+.bootstrap-datetimepicker-widget table.table-sm th {
+  padding: 0.3rem;
+}
+
+/* ===== Dark Mode Support ===== */
+@media (prefers-color-scheme: dark) {
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget {
+    background-color: var(--bs-dark, #212529);
+    color: var(--bs-light, #f8f9fa);
+    border-color: var(--bs-gray-600, #6c757d);
+  }
+  
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget table td.active,
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget table td span.active,
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget .datepicker-months table td span.active,
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget .datepicker-years table td span.active,
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget .datepicker-decades table td span.active {
+    background-color: var(--bs-primary, #0d6efd) !important;
+    color: #fff !important;
+  }
+  
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget table thead tr:first-child th:hover,
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget table td.day:hover,
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget table td.hour:hover,
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget table td.minute:hover,
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget table td.second:hover,
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget table td span:hover,
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget .datepicker-months table td span:hover,
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget .datepicker-years table td span:hover,
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget .datepicker-decades table td span:hover {
+    background-color: var(--bs-gray-700, #495057) !important;
+  }
+  
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget.dropdown-menu.bottom:after {
+    border-bottom-color: var(--bs-dark, #212529);
+  }
+  
+  [data-bs-theme="dark"] .bootstrap-datetimepicker-widget.dropdown-menu.top:after {
+    border-top-color: var(--bs-dark, #212529);
+  }
+}
+
+/* ===== Responsive Improvements ===== */
+@media (max-width: 576px) {
+  .bootstrap-datetimepicker-widget.dropdown-menu {
+    width: 16em;
+  }
+  
+  .bootstrap-datetimepicker-widget .datepicker-months table td span,
+  .bootstrap-datetimepicker-widget .datepicker-years table td span,
+  .bootstrap-datetimepicker-widget .datepicker-decades table td span {
+    font-size: 0.75rem;
+    height: 36px !important;
+    line-height: 36px !important;
+  }
+}

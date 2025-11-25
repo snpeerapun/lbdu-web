@@ -1,0 +1,256 @@
+[
+  
+  {
+    "label": "Dealing",
+    "key": "dealing",
+    "url": "#",
+    "icon": "fas fa-exchange-alt",
+    "items": [
+      {
+        "label": "Account Opening",
+        "key": "dealing_account_opening",
+        "url": "/dealing/account-opening",
+        "icon": "fas fa-user-plus"
+      },
+      {
+        "label": "Subscription",
+        "key": "dealing_subscription",
+        "url": "/dealing/subscription",
+        "icon": "fas fa-cart-plus"
+      },
+      {
+        "label": "Redemption",
+        "key": "dealing_redemption",
+        "url": "/dealing/redemption",
+        "icon": "fas fa-hand-holding-usd"
+      },
+      {
+        "label": "Switching",
+        "key": "dealing_switching",
+        "url": "/dealing/switching",
+        "icon": "fas fa-random"
+      },
+      {
+        "label": "Amendment",
+        "key": "dealing_amendment",
+        "url": "/dealing/amendment",
+        "icon": "fas fa-user-edit"
+      }
+    ]
+  },
+  {
+    "label": "Enquiry",
+    "key": "enquiry",
+    "url": "#",
+    "icon": "fas fa-search",
+    "items": [
+      {
+        "label": "Customer Enquiry",
+        "key": "enquiry_customer",
+        "url": "/enquiry/customer",
+        "icon": "fas fa-user-search"
+      },
+      {
+        "label": "Order Maintenance",
+        "key": "enquiry_orders",
+        "url": "/enquiry/orders",
+        "icon": "fas fa-clipboard-list"
+      },
+      {
+        "label": "Unrealized Gain / Loss",
+        "key": "enquiry_unrealized",
+        "url": "/enquiry/unrealized-gain-loss",
+        "icon": "fas fa-chart-line"
+      },
+      {
+        "label": "Realized Gain / Loss",
+        "key": "enquiry_realized",
+        "url": "/enquiry/realized-gain-loss",
+        "icon": "fas fa-receipt"
+      },
+      {
+        "label": "Portfolio Investor",
+        "key": "enquiry_portfolio",
+        "url": "/enquiry/portfolio",
+        "icon": "fas fa-briefcase"
+      },
+      {
+        "label": "Back Date",
+        "key": "enquiry_backdate",
+        "url": "/enquiry/backdate",
+        "icon": "fas fa-history"
+      },
+      {
+        "label": "Audit Log",
+        "key": "enquiry_audit_log",
+        "url": "/enquiry/audit-log",
+        "icon": "fas fa-clipboard-check"
+      }
+    ]
+  },
+  
+  {
+    "label": "Contacts",
+    "key": "investor",
+    "url": "#",
+    "icon": "fas fa-user",
+    "items": [
+      {
+        "label": "Customer",
+        "key": "customer",
+        "url": "/investor/customer",
+        "icon": "fas fa-file-import"
+      },
+
+      {
+        "label": "Account",
+        "key": "account",
+        "url": "/investor/account",
+        "icon": "fas fa-user-plus"
+      },
+     
+      {
+        "label": "Investor Consultant",
+        "key": "account",
+        "url": "/investor/consultant",
+        "icon": "fas fa-user-tie"
+      }
+    ]
+  },
+  {
+    "label": "Daily EOD",
+    "key": "daily_eod",
+    "url": "#",
+    "icon": "fas fa-exchange-alt",
+    "items": [
+      {
+        "label": "Reconcile Daily Transaction",
+        "key": "daily_eod_daily_transactions",
+        "url": "/daily-eod/reconcile-daily-transaction",
+        "icon": "fas fa-exchange-alt"
+      },
+      {
+        "label": "Reconcile Holding Balance",
+        "key": "daily_eod_holding_balance",
+        "url": "/daily-eod/reconcile-holding-balance",
+        "icon": "fas fa-exchange-alt"
+      }
+    ]
+  },
+  {
+    "label": "Master Files",
+    "key": "master",
+    "url": "#",
+    "icon": "fas fa-folder-open",
+    "items": [
+    {
+        "label": "AMC",
+        "key": "master_amc",
+        "url": "/master/amc",
+        "icon": "fas fa-building"
+      },
+       {
+        "label": "Funds",
+        "key": "master_funds",
+        "url": "/master/fund",
+        "icon": "fas fa-piggy-bank"
+      },
+      {
+        "label": "IC Groups",
+        "key": "master_ic_group",
+        "url": "/master/ic-group",
+        "icon": "fas fa-users-cog"
+      },
+      {
+        "label": "Fee Schemes",
+        "key": "master_fee_scheme",
+        "url": "/master/fee-scheme",
+        "icon": "fas fa-file-invoice-dollar"
+      },
+      {
+        "label": "Banks",
+        "key": "master_banks",
+        "url": "/master/bank",
+        "icon": "fas fa-university"
+      },
+      {
+        "label": "Branches",
+        "key": "master_branches",
+        "url": "/master/bank-branch",
+        "icon": "fas fa-code-branch"
+      }
+    ]
+  },
+  {
+    "label": "Settings",
+    "key": "settings",
+    "url": "#",
+    "icon": "fas fa-shield-alt",
+    "items": [
+    
+      {
+        "label": "Roles",
+        "key": "security_roles",
+        "url": "/security/roles",
+        "icon": "fas fa-user-shield"
+      },
+         {
+        "label": "Departments",
+        "key": "settings_department",
+        "url": "/settings/department",
+        "icon": "fas fa-building"
+      },
+      {
+        "label": "Users",
+        "key": "settings_users",
+        "url": "/settings/users",
+        "icon": "fas fa-user"
+      },
+      {
+        "label": "Groups",
+        "key": "settings_groups",
+        "url": "/settings/groups",
+        "icon": "fas fa-layer-group"
+      } 
+   
+    ]
+  },
+  {
+    "label": "Reports",
+    "key": "reports",
+    "url": "#",
+    "icon": "fas fa-chart-bar",
+    "items": [
+      {
+        "label": "Selling Agent Report",
+        "key": "reports_selling_agent",
+        "url": "/reports/selling-agent",
+        "icon": "fas fa-file-alt"
+      },
+      {
+        "label": "Commission Report",
+        "key": "reports_commission",
+        "url": "/reports/commission",
+        "icon": "fas fa-coins"
+      },
+      {
+        "label": "Portfolio Report",
+        "key": "reports_portfolio",
+        "url": "/reports/portfolio",
+        "icon": "fas fa-briefcase"
+      },
+      {
+        "label": "Gain / Loss Report",
+        "key": "reports_gain_loss",
+        "url": "/reports/gain-loss",
+        "icon": "fas fa-chart-area"
+      },
+      {
+        "label": "Orders Report",
+        "key": "reports_orders",
+        "url": "/reports/orders",
+        "icon": "fas fa-file-invoice-dollar"
+      }
+    ]
+  }
+]

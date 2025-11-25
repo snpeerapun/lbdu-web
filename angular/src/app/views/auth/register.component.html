@@ -1,0 +1,102 @@
+<div class="login-container d-flex justify-content-center align-items-center">
+ 
+    <div class="form-container">
+      <h2>{{ 'register.title' | translate }}</h2>
+      <p class="subtitle">{{ 'register.subtitle' | translate }}</p>
+      
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <div class="input-group">
+            <input type="text" 
+                  formControlName="fullName" 
+                  [placeholder]="'register.form.fullName.placeholder' | translate"
+                  [class.is-invalid]="registerForm.get('fullName')?.invalid && registerForm.get('fullName')?.touched">
+            <i class="fas fa-user input-icon"></i>
+            <div class="invalid-feedback" *ngIf="registerForm.get('fullName')?.errors?.['required'] && registerForm.get('fullName')?.touched">
+              {{ 'register.validation.required' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-group">
+            <input type="email" 
+                  formControlName="email" 
+                  [placeholder]="'register.form.email.placeholder' | translate"
+                  [class.is-invalid]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+            <i class="fas fa-envelope input-icon"></i>
+            <div class="invalid-feedback" *ngIf="registerForm.get('email')?.errors?.['required'] && registerForm.get('email')?.touched">
+              {{ 'register.validation.required' | translate }}
+            </div>
+            <div class="invalid-feedback" *ngIf="registerForm.get('email')?.errors?.['email'] && registerForm.get('email')?.touched">
+              {{ 'register.validation.email' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-group">
+            <input [type]="showPassword ? 'text' : 'password'"
+                  formControlName="password" 
+                  [placeholder]="'register.form.password.placeholder' | translate"
+                  [class.is-invalid]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+            <i class="fas fa-lock input-icon"></i>
+            <button type="button" 
+                    class="toggle-password"
+                    (click)="togglePasswordVisibility()"
+                    [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+              <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+            </button>
+            <div class="invalid-feedback" *ngIf="registerForm.get('password')?.errors?.['required'] && registerForm.get('password')?.touched">
+              {{ 'register.validation.required' | translate }}
+            </div>
+            <div class="invalid-feedback" *ngIf="registerForm.get('password')?.errors?.['minlength'] && registerForm.get('password')?.touched">
+              {{ 'register.validation.password.minLength' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-group">
+            <input [type]="showConfirmPassword ? 'text' : 'password'"
+                  formControlName="confirmPassword" 
+                  [placeholder]="'register.form.confirmPassword.placeholder' | translate"
+                  [class.is-invalid]="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched">
+            <i class="fas fa-lock input-icon"></i>
+            <button type="button" 
+                    class="toggle-password"
+                    (click)="toggleConfirmPasswordVisibility()"
+                    [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'">
+              <i class="fas" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
+            </button>
+            <div class="invalid-feedback" *ngIf="registerForm.get('confirmPassword')?.errors?.['required'] && registerForm.get('confirmPassword')?.touched">
+              {{ 'register.validation.required' | translate }}
+            </div>
+            <div class="invalid-feedback" *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch'] && registerForm.get('confirmPassword')?.touched">
+              {{ 'register.validation.passwordMismatch' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <div class="checkbox-container">
+            <input type="checkbox" formControlName="acceptTerms" id="acceptTerms">
+            <label for="acceptTerms">
+              <span class="checkmark"></span>
+              <span>{{ 'register.form.acceptTerms' | translate }}</span>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-auth" [disabled]="registerForm.invalid || isLoading" [class.loading]="isLoading">
+          {{ 'register.button.register' | translate }}
+        </button>
+ 
+
+        <div class="register-link">
+          {{ 'register.haveAccount' | translate }} <a routerLink="/login">{{ 'register.button.login' | translate }}</a>
+        </div>
+      </form>
+    </div>
+ 
+</div>

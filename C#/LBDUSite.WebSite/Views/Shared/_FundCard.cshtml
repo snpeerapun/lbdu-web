@@ -1,0 +1,54 @@
+﻿@model LBDUSite.ViewModels.FundCardViewModel
+
+<div class="fund-card" onclick="location.href='@Url.Action("Detail", "Fund", new { id = Model.FundId })'">
+    <div class="fund-header">
+        <div class="fund-company">
+            <div class="company-logo">@Model.AMCLogo</div>
+            @Model.AMCShortName
+        </div>
+        <span class="fund-type @Model.FundTypeCssClass">@Model.FundTypeDisplay</span>
+    </div>
+    <h3 class="fund-name">@Model.FundName</h3>
+    <div class="fund-code">@Model.FundCode</div>
+    <div class="fund-stats-grid">
+        <div class="fund-stat">
+            <span class="fund-stat-label">NAV</span>
+            <span class="fund-stat-value">@Model.NAV.ToString("N4")</span>
+        </div>
+        <div class="fund-stat">
+            <span class="fund-stat-label">YTD</span>
+            <span class="fund-stat-value @Model.NAVChangeClass">
+                @if (Model.YTDReturn.HasValue)
+                {
+                    @((Model.YTDReturn.Value >= 0 ? "+" : "") + Model.YTDReturn.Value.ToString("N2") + "%")
+                }
+                else
+                {
+                    @:N/A
+                }
+            </span>
+        </div>
+        <div class="fund-stat">
+            <span class="fund-stat-label">ความเสี่ยง</span>
+            <div class="fund-risk">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <div class="risk-dot @(i <= Model.RiskLevel ? "active" : "")"></div>
+                }
+            </div>
+        </div>
+        <div class="fund-stat">
+            <span class="fund-stat-label">ขั้นต่ำ</span>
+            <span class="fund-stat-value">
+                @if (Model.MinimumInvestment.HasValue)
+                {
+                    @(Model.MinimumInvestment.Value.ToString("N0") + " ฿")
+                }
+                else
+                {
+                    @:N/A
+                }
+            </span>
+        </div>
+    </div>
+</div>

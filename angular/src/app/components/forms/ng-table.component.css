@@ -1,0 +1,39 @@
+ .ng-table .table th {
+   cursor: pointer;
+   vertical-align: middle;
+ }
+ .ng-table .info-result { 
+   display: inline-block;
+   margin-top: 5px;
+ }
+ .ng-table  .navigation {
+  justify-content: space-between;
+ }
+ .ng-table  .pagination  {
+  grid-area: pagination;
+ }
+ .ng-table .table th i{
+  float:right;
+  color:#eee;
+}
+.ng-table .table th i.fa-sort-down ,
+.ng-table .table th i.fa-sort-up {
+  color:#444;
+}
+.ng-table .table-filter {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.ng-table .table-scroll {
+  max-height: 500px; /* Set the maximum height of the table */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.ng-table .table thead tr th:first-child {
+   border-radius: 10px 0px 0px 0px;
+}
+.ng-table .table thead tr th:last-child {
+   border-radius: 0px 10px 0px 0px;
+}
+

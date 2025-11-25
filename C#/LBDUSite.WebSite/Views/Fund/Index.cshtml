@@ -1,0 +1,258 @@
+﻿@model LBDUSite.Controllers.FundListViewModel
+@{
+    ViewBag.Title = string.IsNullOrEmpty(Model.Category) ? "กองทุนทั้งหมด" : $"กองทุน{Model.Category}";
+}
+
+ 
+
+<!-- Hero Section -->
+<section class="fund-index-hero">
+    <div class="fund-index-container">
+        <div class="fund-index-header">
+            <h1>
+                @if (!string.IsNullOrEmpty(Model.Category))
+                {
+                    <span>กองทุน@Model.Category</span>
+                }
+                else
+                {
+                    <span>กองทุนทั้งหมด</span>
+                }
+            </h1>
+            <p>ค้นหาและเปรียบเทียบกองทุนรวมจากทุกบริษัทจัดการ</p>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <form method="get" action="@Url.Action("Index", "Fund")" class="fund-filter-bar">
+            <input type="text" 
+                   name="search" 
+                   placeholder="ค้นหาชื่อกองทุน หรือ รหัสกองทุน..." 
+                   value="@Model.SearchTerm" />
+
+           <select name="category">
+                <option value="">ทุกประเภท</option>
+                <option value="หุ้น" selected="@(Model.Category == "หุ้น")">กองทุนหุ้น</option>
+                <option value="ผสม" selected="@(Model.Category == "ผสม")">กองทุนผสม</option>
+                <option value="ตราสารหนี้" selected="@(Model.Category == "ตราสารหนี้")">กองทุนตราสารหนี้</option>
+                <option value="อสังหา" selected="@(Model.Category == "อสังหา")">กองทุนอสังหาฯ</option>
+            </select>
+
+            <button type="submit">
+                <i class="fas fa-search"></i>
+                ค้นหา
+            </button>
+
+            @if (!string.IsNullOrEmpty(Model.Category) || !string.IsNullOrEmpty(Model.SearchTerm))
+            {
+                <a href="@Url.Action("Index", "Fund")" class="clear-filter-btn">
+                    <i class="fas fa-times"></i>
+                    ล้างตัวกรอง
+                </a>
+            }
+        </form>
+    </div>
+</section>
+
+<!-- Main Content -->
+<section class="section">
+    <div class="section-container">
+        <!-- Active Filters -->
+        @if (!string.IsNullOrEmpty(Model.Category) || !string.IsNullOrEmpty(Model.SearchTerm))
+        {
+            <div class="active-filters">
+                @if (!string.IsNullOrEmpty(Model.Category))
+                {
+                    <span class="filter-tag">
+                        ประเภท: @Model.Category
+                        <a href="@Url.Action("Index", "Fund", new { search = Model.SearchTerm })" style="color: inherit;">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </span>
+                }
+                @if (!string.IsNullOrEmpty(Model.SearchTerm))
+                {
+                    <span class="filter-tag">
+                        ค้นหา: "@Model.SearchTerm"
+                        <a href="@Url.Action("Index", "Fund", new { category = Model.Category })" style="color: inherit;">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    </span>
+                }
+            </div>
+        }
+
+        <!-- Results Header -->
+        <div class="fund-results-header">
+            <div class="fund-results-info">
+                พบ <strong>@Model.TotalCount.ToString("N0")</strong> กองทุน
+                @if (Model.TotalPages > 1)
+                {
+                    <span> (หน้า @Model.CurrentPage จาก @Model.TotalPages)</span>
+                }
+            </div>
+            <select class="fund-sort-select" onchange="sortFunds(this.value)">
+                <option value="">เรียงตาม</option>
+                <option value="name-asc">ชื่อ (A-Z)</option>
+                <option value="name-desc">ชื่อ (Z-A)</option>
+                <option value="nav-asc">NAV (ต่ำ-สูง)</option>
+                <option value="nav-desc">NAV (สูง-ต่ำ)</option>
+                <option value="return-desc">ผลตอบแทน (สูง-ต่ำ)</option>
+            </select>
+        </div>
+
+        <!-- Fund Grid -->
+        @if (Model.Funds.Any())
+        {
+            <div class="fund-grid">
+                @foreach (var fund in Model.Funds)
+                {
+                    @Html.Partial("_FundCard", fund)
+                }
+            </div>
+
+            <!-- Pagination -->
+            @if (Model.TotalPages > 1)
+            {
+                <div class="pagination">
+                    <!-- Previous Button -->
+                    @if (Model.HasPreviousPage)
+                    {
+                        <a href="@Url.Action("Index", "Fund", new { 
+                            category = Model.Category, 
+                            search = Model.SearchTerm, 
+                            page = Model.CurrentPage - 1 
+                        })" class="pagination-btn">
+                            <i class="fas fa-chevron-left"></i>
+                            ก่อนหน้า
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="pagination-btn" disabled>
+                            <i class="fas fa-chevron-left"></i>
+                            ก่อนหน้า
+                        </button>
+                    }
+
+                    <!-- Page Numbers -->
+                    @{
+                        var startPage = Math.Max(1, Model.CurrentPage - 2);
+                        var endPage = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
+
+                        // Show first page
+                        if (startPage > 1)
+                        {
+                            <a href="@Url.Action("Index", "Fund", new { 
+                                category = Model.Category, 
+                                search = Model.SearchTerm, 
+                                page = 1 
+                            })" class="pagination-btn">1</a>
+
+                            if (startPage > 2)
+                            {
+                                <span class="pagination-info">...</span>
+                            }
+                        }
+
+                        // Show page range
+                        for (int i = startPage; i <= endPage; i++)
+                        {
+                            if (i == Model.CurrentPage)
+                            {
+                                <span class="pagination-btn active">@i</span>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Index", "Fund", new { 
+                                    category = Model.Category, 
+                                    search = Model.SearchTerm, 
+                                    page = i 
+                                })" class="pagination-btn">@i</a>
+                            }
+                        }
+
+                        // Show last page
+                        if (endPage < Model.TotalPages)
+                        {
+                            if (endPage < Model.TotalPages - 1)
+                            {
+                                <span class="pagination-info">...</span>
+                            }
+
+                            <a href="@Url.Action("Index", "Fund", new { 
+                                category = Model.Category, 
+                                search = Model.SearchTerm, 
+                                page = Model.TotalPages 
+                            })" class="pagination-btn">@Model.TotalPages</a>
+                        }
+                    }
+
+                    <!-- Next Button -->
+                    @if (Model.HasNextPage)
+                    {
+                        <a href="@Url.Action("Index", "Fund", new { 
+                            category = Model.Category, 
+                            search = Model.SearchTerm, 
+                            page = Model.CurrentPage + 1 
+                        })" class="pagination-btn">
+                            ถัดไป
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="pagination-btn" disabled>
+                            ถัดไป
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>ไม่พบกองทุนที่ตรงกับเงื่อนไขที่ค้นหา</h3>
+                <p>
+                    @if (!string.IsNullOrEmpty(Model.SearchTerm))
+                    {
+                        <span>ลองค้นหาด้วยคำอื่น หรือ</span>
+                    }
+                    else
+                    {
+                        <span>ลอง</span>
+                    }
+                    <a href="@Url.Action("Index", "Fund")" style="color: var(--primary); font-weight: 600;">ดูกองทุนทั้งหมด</a>
+                </p>
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function sortFunds(sortBy) {
+            if (!sortBy) return;
+            
+            // Get current URL parameters
+            var currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('sort', sortBy);
+            currentUrl.searchParams.set('page', '1'); // Reset to first page
+            
+            // Redirect to sorted URL
+            window.location.href = currentUrl.toString();
+        }
+
+        // Smooth scroll to top after pagination
+        if (window.location.search.includes('page=')) {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+}

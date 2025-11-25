@@ -1,0 +1,25 @@
+<div class="multi-list-container">
+  <div [ngStyle]="{ width: width }" class="mr-2">
+    <input type="text" placeholder="Filter Available" [(ngModel)]="availableFilter" class="form-control mb-2">
+    <h5>Available Items ({{availableItems.length}})</h5>
+    <select multiple [(ngModel)]="selectedAvailable"  class="form-control">
+      <option *ngFor="let item of availableItems | filter: availableFilter : availableLabel" [ngValue]="item" [label]="item[availableLabel]">{{item[availableLabel]}}</option>
+    </select>
+  </div>
+  
+  <!-- Button controls for moving items between lists -->
+  <div class="buttons mr-2 ">
+    <button class="btn btn-sm btn-primary mb-2" type="button" (click)="add()"> > </button>
+    <button class="btn btn-sm btn-primary mb-2" type="button" (click)="addAll()"> >> </button>
+    <button class="btn btn-sm btn-primary mb-2" type="button" (click)="remove()"> < </button>
+    <button class="btn btn-sm btn-primary" type="button" (click)="removeAll()"> << </button>
+  </div>
+  
+  <div [ngStyle]="{ width: width }">
+    <input type="text" placeholder="Filter Selected" [(ngModel)]="selectedFilter" class="form-control mb-2">
+    <h5>Selected Items ({{selectedItems.length}})</h5>
+    <select multiple [(ngModel)]="selectedSelected"  class="form-control">
+      <option *ngFor="let item of selectedItems | filter: selectedFilter : selectedLabel" [ngValue]="item" [label]="item[selectedLabel]">{{item[selectedLabel]}}</option>
+    </select>
+  </div>
+</div>

@@ -1,0 +1,272 @@
+<div class="ng-table-group">
+  <!-- Filter and Export Section -->
+  <div class="table-filter row" *ngIf="allowFilter || allowExport">
+    <div class="col-lg-4" *ngIf="allowFilter">
+      <input
+        class="form-control"
+        type="text"
+        [(ngModel)]="filterTextValue"
+        (keyup.enter)="filter()"
+        placeholder="Filter"
+      />
+    </div>
+    
+  </div>
+<!-- Action Bar (Right) -->
+<div class="action-bar d-flex justify-content-end align-items-center gap-2">
+  <button
+    type="button"
+    class="btn btn-primary btn-sm"
+    *ngIf="allowExport"
+    (click)="export()">
+    <i class="fa fa-download"></i> Export
+  </button>
+
+  <button
+    type="button"
+    class="btn btn-secondary btn-sm"
+    *ngIf="allowGrouping"
+    (click)="toggleGroupingPanel()">
+    <i class="fa" [class.fa-eye]="!showGrouping" [class.fa-eye-slash]="showGrouping"></i>
+    {{ showGrouping ? 'Hide Grouping' : 'Show Grouping' }}
+  </button>
+</div>
+
+  <!-- Grouping Panel -->
+  <div class="grouping-panel" *ngIf="allowGrouping && showGrouping">
+
+    <div class="card mb-3">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">
+          <i class="fa fa-layer-group"></i> Group By Columns
+        </h6>
+        <div class="btn-group btn-group-sm">
+         
+          <button 
+            type="button" 
+            class="btn btn-outline-primary btn-sm" 
+            (click)="expandAllGroups()"
+            *ngIf="groupByColumns().length > 0">
+            <i class="fa fa-expand-arrows-alt"></i> Expand All
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-outline-secondary btn-sm" 
+            (click)="collapseAllGroups()"
+            *ngIf="groupByColumns().length > 0">
+            <i class="fa fa-compress-arrows-alt"></i> Collapse All
+          </button>
+          <button 
+            type="button" 
+            class="btn btn-outline-danger btn-sm" 
+            (click)="clearAllGroups()"
+            *ngIf="groupByColumns().length > 0">
+            <i class="fa fa-times"></i> Clear All
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div 
+          class="drop-zone" 
+          [class.dragging-over]="isDraggingOver"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)">
+          
+          <div class="drop-zone-content" *ngIf="groupByColumns().length === 0">
+            <i class="fa fa-hand-point-right text-muted"></i>
+            <span class="text-muted ms-2">Drag column headers here to group by that column</span>
+          </div>
+          
+          <div class="group-tags" *ngIf="groupByColumns().length > 0">
+            <div 
+              class="group-tag" 
+              *ngFor="let groupColumn of groupByColumns(); let i = index"
+              draggable="true"
+              (dragstart)="onGroupTagDragStart($event, i)"
+              (dragover)="onGroupTagDragOver($event)"
+              (drop)="onGroupTagDrop($event, i)">
+              <span class="group-number">{{ i + 1 }}</span>
+              <span class="group-title">{{ getGroupColumnTitle(groupColumn) }}</span>
+              <button 
+                type="button" 
+                class="btn-close btn-close-white" 
+                (click)="removeGroupColumn(groupColumn)"
+                aria-label="Remove group">
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="table-container">
+    <table class="table table-group-style table-striped">
+      <thead>
+        <tr class="header-row">
+          <ng-container *ngIf="allowCheckbox">
+            <th class="center checkbox-column">
+              <label>
+                <input type="checkbox" 
+                  [checked]="isAllChecked()" 
+                  (change)="onCheckAllChange($any($event.target).checked)" />
+              </label>
+            </th>
+          </ng-container>
+          
+          <ng-container *ngFor="let column of getVisibleColumns(); let i = index">
+            <ng-container *ngIf="column.sort !== false; else noSort">
+              <th 
+                (click)="onSort(column)" 
+                [ngStyle]="{'width': column.width, 'text-align': column.align || 'left'}"
+                draggable="true"
+                (dragstart)="onDragStart($event, column.name||'')"
+                [class.draggable-column]="allowGrouping"
+                class="sortable-column header-cell">
+                {{ column.title }}
+                <i class="fa sort-icon" [class]="'fa ' + sortIcon(column)"></i>
+                <i class="fa fa-grip-vertical drag-handle ms-2" *ngIf="allowGrouping" title="Drag to group"></i>
+              </th>
+            </ng-container>
+            <ng-template #noSort>
+              <th 
+                [ngStyle]="{'width': column.width, 'text-align': column.align || 'left'}"
+                draggable="true"
+                (dragstart)="onDragStart($event, column.name||'')"
+                [class.draggable-column]="allowGrouping"
+                class="header-cell">
+                {{ column.title }}
+                <i class="fa fa-grip-vertical drag-handle ms-2" *ngIf="allowGrouping" title="Drag to group"></i>
+              </th>
+            </ng-template>
+          </ng-container>
+        </tr>
+      </thead>
+      
+      <tbody *ngIf="data().length > 0">
+        <tr *ngFor="let row of data(); let i = index" 
+            [class.group-header-row]="row.isGroupHeader"
+            [class.group-total-row]="row.isGroupTotal"
+            [class.data-row]="!row.isGroupHeader && !row.isGroupTotal"
+            [class.child-row]="!row.isGroupHeader && !row.isGroupTotal && (row.groupLevel || 0) > 0"
+            [class.group-level-0]="!row.isGroupHeader && (row.groupLevel || 0) === 0"
+            [class.group-level-1]="!row.isGroupHeader && (row.groupLevel || 0) === 1"
+            [class.group-level-2]="!row.isGroupHeader && (row.groupLevel || 0) === 2"
+            [class.group-level-3]="!row.isGroupHeader && (row.groupLevel || 0) === 3"
+            [class.group-level-4]="!row.isGroupHeader && (row.groupLevel || 0) === 4"
+            (click)="row.isGroupHeader ? toggleGroup(row.groupKey) : onSelectRow(row)">
+          
+          <ng-container *ngIf="allowCheckbox">
+            <td class="center checkbox-column">
+              <input 
+                type="checkbox" 
+                *ngIf="!row.isGroupHeader && !row.isGroupTotal"
+                [checked]="isRowChecked(row)" 
+                (change)="onItemCheckChange(row, $any($event.target).checked)"
+                (click)="$event.stopPropagation()" />
+            </td>
+          </ng-container>
+          
+          <!-- Group Header Row -->
+          <ng-container *ngIf="row.isGroupHeader">
+            <td [attr.colspan]="getVisibleColumns().length + (allowCheckbox ? 1 : 0)" 
+                class="group-header-cell">
+              <div class="group-header-content" [style.padding-left.px]="(row.level || 0) * 25">
+                <button class="group-toggle-btn" type="button" (click)="$event.stopPropagation(); toggleGroup(row.groupKey)">
+                  <i class="fa expand-icon" 
+                     [class]="'fa ' + (row.expanded ? 'fa-minus-square' : 'fa-plus-square')"></i>
+                </button>
+                <span class="group-info">
+                  <strong class="group-name">{{ row.groupValue }}</strong>
+                  <span class="group-count text-muted"> ({{ row.itemCount }} ITEMS)</span>
+                </span>
+              </div>
+            </td>
+          </ng-container>
+          
+          <!-- Group Total Row -->
+          <ng-container *ngIf="row.isGroupTotal && hasAggregates(row)">
+            <ng-container *ngFor="let column of getVisibleColumns(); let colIndex = index">
+              <td [ngStyle]="{'text-align': column.align || 'left'}" 
+                  [style.padding-left.px]="colIndex === 0 ? ((row.groupLevel || 0) * 25 + 10) : 0"
+                  class="group-total-cell">
+                <ng-container *ngIf="colIndex === 0">
+                  <strong class="total-label">Total</strong>
+                </ng-container>
+                <ng-container *ngIf="colIndex > 0 && column.name && getAggregateValue(row, column)">
+                  <strong>{{ getAggregateValue(row, column) }}</strong>
+                </ng-container>
+              </td>
+            </ng-container>
+          </ng-container>
+          
+          <!-- Data Row (Child Row) -->
+          <ng-container *ngIf="!row.isGroupHeader && !row.isGroupTotal">
+            <ng-container *ngFor="let column of getVisibleColumns(); let colIndex = index">
+              <ng-container *ngIf="!column.template; else customTemplate">
+                <td [ngStyle]="{'text-align': column.align || 'left'}" 
+                    [style.padding-left.px]="colIndex === 0 ? ((row.groupLevel || 0) * 25 + 35) : 0"
+                    class="data-cell child-data-cell">
+                  {{ column.name ? formatValue(row[column.name], column.format) : '' }}
+                </td>
+              </ng-container>
+              <ng-template #customTemplate>
+                <td [ngStyle]="{'text-align': column.align || 'left'}"
+                    [style.padding-left.px]="colIndex === 0 ? ((row.groupLevel || 0) * 25 + 35) : 0"
+                    class="data-cell child-data-cell">
+                  <ng-container *ngTemplateOutlet="getTemplate(column.template); context: getTemplateContext(row)"></ng-container>
+                </td>
+              </ng-template>
+            </ng-container>
+          </ng-container>
+        </tr>
+      </tbody>
+      
+      <tbody *ngIf="data().length === 0">
+        <tr>
+          <td [attr.colspan]="getVisibleColumns().length + (allowCheckbox ? 1 : 0)" class="center empty-state">
+            No data available.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <nav class="navigation d-flex justify-content-between" *ngIf="pagingEnabled">
+    <div class="info-result" *ngIf="flatData().length > 0">
+      <span>
+        Showing {{ startIndex() }} to {{ endIndex() }} of {{ totalItems() | number }} entries
+        <span *ngIf="groupByColumns().length > 0" class="text-muted">
+          (Grouped by: {{ getGroupColumnTitles() }})
+        </span>
+      </span>
+    </div>
+    <ul class="pagination" *ngIf="flatData().length > 0 && allowPaging">
+      <li class="page-item" [ngClass]="{disabled: currentPage() === 1}">
+        <a class="page-link" (click)="onFirstPage()" aria-label="First">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      <li class="page-item" [ngClass]="{disabled: currentPage() === 1}">
+        <a class="page-link" (click)="onPrevPage()" aria-label="Previous">
+          <span aria-hidden="true">&lsaquo;</span>
+        </a>
+      </li>
+      <li *ngFor="let page of getPages()" class="page-item" [ngClass]="{active: currentPage() === page}">
+        <a class="page-link" (click)="onPage(page)">{{ page }}</a>
+      </li>
+      <li class="page-item" [ngClass]="{disabled: currentPage() === totalPages()}">
+        <a class="page-link" (click)="onNextPage()" aria-label="Next">
+          <span aria-hidden="true">&rsaquo;</span>
+        </a>
+      </li>
+      <li class="page-item" [ngClass]="{disabled: currentPage() === totalPages()}">
+        <a class="page-link" (click)="onLastPage()" aria-label="Last">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    </ul>
+  </nav>

@@ -1,0 +1,45 @@
+<!-- log-viewer.component.html -->
+<div class="container">
+    <h2>Log Viewer</h2>
+     <div class="row">
+        <div class="col-md-3">
+            <input type="date" (change)="onDateChange($event)"  class="form-control"/>
+          
+        </div>
+        <div class="col-md-3">
+            <button class="btn btn-info" (click)="loadLogs()">Refresh Logs</button>
+          
+        </div>
+     </div>
+    
+    <table class="table table-bordered mt-3">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Timestamp</th>
+          <th>Level</th>
+          <th>Message</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of logs; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ log.timestamp }}</td>
+          <td [ngClass]="{
+            'text-danger': log.level === 'ERROR',
+            'text-warning': log.level === 'WARN',
+            'text-info': log.level === 'INFO'
+          }">{{ log.level }}</td>
+          <td>
+            <div [ngClass]="{ 'collapsed': !log.showFullMessage }">
+              <pre>{{ log.message }}</pre>
+            </div>
+            <a href="javascript:void(0)" (click)="toggleMessage(log)">
+              {{ log.showFullMessage ? 'Show Less' : 'Show More' }}
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  

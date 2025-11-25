@@ -1,0 +1,336 @@
+{
+  "kyc": {
+    "title": "แบบฟอร์ม KYC",
+    "validation": {
+      "required": "กรุณากรอกข้อมูล",
+      "select": "กรุณาเลือกข้อมูล",
+      "idCard": "กรุณากรอกเลขบัตรประชาชน 13 หลักให้ถูกต้อง"
+    },
+    "common": {
+      "other": "อื่นๆ"
+    },
+    "personalInfo": {
+      "title": "ข้อมูลส่วนตัว",
+      "prefix": {
+        "title": "คำนำหน้า",
+        "options": {
+          "mr": "นาย",
+          "mrs": "นาง",
+          "miss": "นางสาว",
+          "other": "อื่นๆ"
+        }
+      },
+      "firstName": {
+        "label": "ชื่อ",
+        "placeholder": "กรุณากรอกชื่อ"
+      },
+      "lastName": {
+        "label": "นามสกุล",
+        "placeholder": "กรุณากรอกนามสกุล"
+      },
+      "idCard": {
+        "label": "เลขบัตรประชาชน",
+        "placeholder": "กรุณากรอกเลขบัตรประชาชน 13 หลัก"
+      },
+      "dateOfBirth": {
+        "label": "วันเกิด",
+        "placeholder": "กรุณาเลือกวันเกิด"
+      },
+      "maritalStatus": {
+        "title": "สถานภาพ",
+        "options": {
+          "single": "โสด",
+          "married": "สมรส",
+          "divorced": "หย่าร้าง",
+          "widowed": "หม้าย",
+          "other": "อื่นๆ"
+        }
+      }
+    },
+    "addressInfo": {
+      "title": "ข้อมูลที่อยู่",
+      "current": {
+        "title": "ที่อยู่ปัจจุบัน",
+        "address": "ที่อยู่",
+        "subdistrict": "ตำบล/แขวง",
+        "district": "อำเภอ/เขต",
+        "province": "จังหวัด",
+        "postalCode": "รหัสไปรษณีย์"
+      },
+      "registered": {
+        "title": "ที่อยู่ตามทะเบียนบ้าน",
+        "sameAsCurrent": "ที่อยู่เดียวกับที่อยู่ปัจจุบัน"
+      },
+      "office": {
+        "title": "ที่อยู่ที่ทำงาน",
+        "hasOffice": "มีที่อยู่ที่ทำงาน"
+      }
+    },
+    "careerInfo": {
+      "title": "ข้อมูลอาชีพ",
+      "occupation": {
+        "title": "อาชีพ",
+        "options": {
+          "civilServant": "ข้าราชการ",
+          "teacher": "ครู/อาจารย์",
+          "doctor": "แพทย์",
+          "nurse": "พยาบาล",
+          "policeMilitary": "ตำรวจ/ทหาร",
+          "lawyer": "ทนายความ",
+          "judge": "ผู้พิพากษา",
+          "politicalPosition": "ผู้ดำรงตำแหน่งทางการเมือง",
+          "businessOwner": "เจ้าของกิจการ",
+          "other": "อื่นๆ"
+        }
+      },
+      "businessType": {
+        "title": "ประเภทธุรกิจ",
+        "options": {
+          "antiques": "ค้าของเก่า/วัตถุโบราณ",
+          "casino": "คาสิโน/การพนัน",
+          "digitalAssets": "สินทรัพย์ดิจิทัล",
+          "financialServices": "ธุรกิจบริการทางการเงิน",
+          "foreignExchange": "แลกเปลี่ยนเงินตรา",
+          "insurance": "ประกันภัย/ประกันชีวิต",
+          "jewelry": "ค้าอัญมณี/ทอง",
+          "ngo": "มูลนิธิ/สมาคม/องค์กรไม่แสวงหากำไร",
+          "propertyDevelopment": "พัฒนาอสังหาริมทรัพย์",
+          "university": "มหาวิทยาลัย/โรงเรียน",
+          "other": "อื่นๆ"
+        }
+      }
+    },
+    "financialInfo": {
+      "title": "ข้อมูลทางการเงิน",
+      "monthlyIncome": {
+        "title": "รายได้ต่อเดือน",
+        "options": {
+          "0-50000": "ต่ำกว่า 50,000 บาท",
+          "50001-100000": "50,001 - 100,000 บาท",
+          "100001-500000": "100,001 - 500,000 บาท",
+          "500001-1000000": "500,001 - 1,000,000 บาท",
+          "1000001+": "มากกว่า 1,000,000 บาท"
+        }
+      },
+      "investmentType": {
+        "title": "ประเภทการลงทุน",
+        "options": {
+          "domestic": "การลงทุนในประเทศ",
+          "fundManagement": "การจัดการกองทุน",
+          "propertyFund": "กองทุนอสังหาริมทรัพย์",
+          "securities": "หลักทรัพย์",
+          "stockTrading": "ซื้อขายหุ้น",
+          "other": "อื่นๆ"
+        }
+      },
+      "incomeSource": {
+        "title": "แหล่งที่มาของรายได้",
+        "options": {
+          "domestic": "รายได้ในประเทศ",
+          "international": "รายได้ต่างประเทศ",
+          "businessIncome": "รายได้จากธุรกิจ",
+          "investment": "รายได้จากการลงทุน",
+          "inheritance": "มรดก",
+          "savings": "เงินออม",
+          "retirement": "เงินเกษียณ",
+          "other": "อื่นๆ"
+        },
+        "internationalCountry": "ระบุประเทศ"
+      }
+    },
+    "investmentExperience": {
+      "title": "ประสบการณ์การลงทุน",
+      "investmentPeriod": {
+        "title": "ระยะเวลาการลงทุน",
+        "options": {
+          "less-than-1": "น้อยกว่า 1 ปี",
+          "1-3": "1-3 ปี",
+          "3-6": "3-6 ปี",
+          "6-15": "6-15 ปี",
+          "more-than-15": "มากกว่า 15 ปี"
+        }
+      },
+      "investmentPurpose": {
+        "title": "วัตถุประสงค์การลงทุน",
+        "options": {
+          "shortTermInvestment": "ลงทุนระยะสั้น",
+          "longTermInvestment": "ลงทุนระยะยาว",
+          "taxBenefits": "สิทธิประโยชน์ทางภาษี"
+        }
+      }
+    },
+    "agreements": {
+      "title": "ข้อตกลงและเงื่อนไข",
+      "acceptTerms": "ยอมรับข้อกำหนดและเงื่อนไข"
+    },
+    "button": {
+      "submit": {
+        "label": "ยืนยัน",
+        "loading": "กำลังดำเนินการ..."
+      }
+    }
+  },
+  "login": {
+    "title": "เข้าสู่ระบบ",
+    "subtitle": "ยินดีต้อนรับสู่ระบบการลงทุนกองทุนรวม",
+    "form": {
+      "email": {
+        "label": "อีเมล",
+        "placeholder": "กรุณากรอกอีเมล"
+      },
+      "password": {
+        "label": "รหัสผ่าน",
+        "placeholder": "กรุณากรอกรหัสผ่าน"
+      },
+      "rememberMe": "จดจำการเข้าสู่ระบบ"
+    },
+    "validation": {
+      "required": "กรุณากรอกข้อมูล",
+      "email": "กรุณากรอกอีเมลให้ถูกต้อง",
+      "password": {
+        "minLength": "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร"
+      }
+    },
+    "button": {
+      "login": "เข้าสู่ระบบ",
+      "register": "สมัครสมาชิก",
+      "google": "เข้าสู่ระบบด้วย Google",
+      "facebook": "เข้าสู่ระบบด้วย Facebook",
+      "forgotPassword": "ลืมรหัสผ่าน?"
+    },
+    "or": "หรือ",
+    "noAccount": "ยังไม่มีบัญชี?"
+  },
+  "register": {
+    "title": "สมัครสมาชิก",
+    "subtitle": "กรุณากรอกข้อมูลเพื่อสมัครสมาชิก",
+    "form": {
+      "firstName": {
+        "label": "ชื่อ",
+        "placeholder": "กรุณากรอกชื่อ"
+      },
+      "lastName": {
+        "label": "นามสกุล",
+        "placeholder": "กรุณากรอกนามสกุล"
+      },
+      "email": {
+        "label": "อีเมล",
+        "placeholder": "กรุณากรอกอีเมล"
+      },
+      "phone": {
+        "label": "เบอร์โทรศัพท์",
+        "placeholder": "กรุณากรอกเบอร์โทรศัพท์"
+      },
+      "password": {
+        "label": "รหัสผ่าน",
+        "placeholder": "กรุณากรอกรหัสผ่าน"
+      },
+      "confirmPassword": {
+        "label": "ยืนยันรหัสผ่าน",
+        "placeholder": "กรุณายืนยันรหัสผ่าน"
+      },
+      "acceptTerms": {
+        "label": "ฉันยอมรับ",
+        "link": "ข้อกำหนดและเงื่อนไข"
+      }
+    },
+    "validation": {
+      "required": "กรุณากรอกข้อมูล",
+      "email": "กรุณากรอกอีเมลให้ถูกต้อง",
+      "phone": {
+        "pattern": "กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง"
+      },
+      "password": {
+        "minLength": "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร"
+      },
+      "passwordMismatch": "รหัสผ่านไม่ตรงกัน",
+      "acceptTerms": "กรุณายอมรับข้อกำหนดและเงื่อนไข"
+    },
+    "button": {
+      "submit": "สมัครสมาชิก",
+      "backToLogin": "เข้าสู่ระบบ"
+    },
+    "alreadyHaveAccount": "มีบัญชีอยู่แล้ว?",
+    "right": {
+      "title": "ยินดีต้อนรับสู่ LH Fund",
+      "feature1": "เริ่มต้นการลงทุนกับ LH Fund",
+      "feature2": "บริการที่ครอบคลุมทุกความต้องการ",
+      "feature3": "ทีมผู้เชี่ยวชาญพร้อมให้คำปรึกษา"
+    }
+  },
+  "forgotPassword": {
+    "title": "ลืมรหัสผ่าน",
+    "subtitle": "กรุณากรอกอีเมลของคุณ เราจะส่งคำแนะนำในการรีเซ็ตรหัสผ่านให้คุณ",
+    "otpTitle": "ยืนยันรหัส OTP",
+    "otpSubtitle": "กรุณากรอกรหัส 6 หลักที่ส่งไปยังอีเมลของคุณ",
+    "newPasswordTitle": "สร้างรหัสผ่านใหม่",
+    "newPasswordSubtitle": "กรุณากรอกรหัสผ่านใหม่ของคุณ",
+    "form": {
+      "email": {
+        "label": "อีเมล",
+        "placeholder": "กรุณากรอกอีเมล"
+      },
+      "otp": {
+        "label": "รหัสยืนยันแบบใช้ครั้งเดียว"
+      },
+      "password": {
+        "label": "รหัสผ่านใหม่",
+        "placeholder": "กรุณากรอกรหัสผ่านใหม่"
+      },
+      "confirmPassword": {
+        "label": "ยืนยันรหัสผ่าน",
+        "placeholder": "กรุณายืนยันรหัสผ่านใหม่"
+      }
+    },
+    "validation": {
+      "required": "กรุณากรอกข้อมูล",
+      "email": "กรุณากรอกอีเมลให้ถูกต้อง",
+      "passwordLength": "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร",
+      "passwordMismatch": "รหัสผ่านไม่ตรงกัน"
+    },
+    "button": {
+      "reset": "รีเซ็ตรหัสผ่าน",
+      "backToLogin": "กลับไปหน้าเข้าสู่ระบบ",
+      "resendOtp": "ส่งรหัส OTP อีกครั้ง",
+      "resetPassword": "ตั้งรหัสผ่านใหม่"
+    },
+    "success": "คำแนะนำการรีเซ็ตรหัสผ่านได้ถูกส่งไปยังอีเมลของคุณแล้ว",
+    "error": "เกิดข้อผิดพลาดในการดำเนินการ",
+    "right": {
+      "title": "การกู้คืนรหัสผ่าน",
+      "feature1": "รีเซ็ตรหัสผ่านอย่างรวดเร็วและปลอดภัย",
+      "feature2": "ส่งคำแนะนำไปยังอีเมลของคุณ",
+      "feature3": "มาตรการรักษาความปลอดภัยขั้นสูง"
+    }
+  },
+  "language": {
+    "thai": "ภาษาไทย",
+    "english": "English"
+  },
+  "sidebar": {
+    "home": "หน้าหลัก",
+    "navValue": "มูลค่าหน่วยลงทุน",
+    "openAccount": "เปิดบัญชีกับเรา",
+    "buyFund": "ซื้อกองทุน",
+    "contact": "ติดต่อเรา",
+    "forClients": "สำหรับลูกค้า",
+    "kycAssessment": "แบบประเมินลูกค้า KYC",
+    "downloadDocuments": "ดาวน์โหลดเอกสาร",
+    "taxExemption": "ยกเว้นภาษีเงินได้",
+    "dashboard": "แดชบอร์ด",
+    "chat": "แชท",
+    "download": "ดาวน์โหลด",
+    "history": "ประวัติการทำรายการ"
+  },
+  "chat": {
+    "title": "ผู้ช่วย AI",
+    "welcomeMessage": "สวัสดีค่ะ ดิฉันเป็นผู้ช่วยของ LH Fund ยินดีให้คำปรึกษาเกี่ยวกับการลงทุนค่ะ",
+    "inputPlaceholder": "พิมพ์ข้อความ...",
+    "uploadImage": "อัพโหลดรูปภาพ",
+    "sendMessage": "ส่งข้อความ",
+    "uploadedImage": "รูปภาพที่อัพโหลด",
+    "selectedImage": "รูปภาพที่เลือก",
+    "imageOnlyAlert": "กรุณาเลือกไฟล์รูปภาพเท่านั้น",
+    "connectionError": "ขออภัย เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง"
+  }
+}

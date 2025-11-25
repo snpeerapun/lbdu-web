@@ -1,0 +1,462 @@
+{
+  
+  "kyc": {
+    "title": "Know Your Customer (KYC) Form",
+    "personalInfo": {
+      "title": "Personal Information",
+      "prefix": {
+        "title": "Prefix",
+        "options": {
+          "mr": "Mr.",
+          "mrs": "Mrs.",
+          "miss": "Miss",
+          "other": "Other"
+        }
+      },
+      "firstName": {
+        "label": "First Name",
+        "placeholder": "Enter your first name"
+      },
+      "lastName": {
+        "label": "Last Name",
+        "placeholder": "Enter your last name"
+      },
+      "firstNameEn": {
+        "label": "First Name (English)",
+        "placeholder": "Enter your first name in English"
+      },
+      "lastNameEn": {
+        "label": "Last Name (English)",
+        "placeholder": "Enter your last name in English"
+      },
+      "nationality": {
+        "label": "Nationality",
+        "options": {
+          "thai": "Thai",
+          "other": "Other"
+        }
+      },
+      "idCard": {
+        "label": "ID Card Number",
+        "placeholder": "Enter your 13-digit ID card number"
+      },
+      "passportNo": {
+        "label": "Passport Number",
+        "placeholder": "Enter your passport number"
+      },
+      "dateOfBirth": {
+        "label": "Date of Birth",
+        "placeholder": "Select your date of birth"
+      },
+      "age": {
+        "label": "Age",
+        "placeholder": "Enter your age"
+      },
+      "maritalStatus": {
+        "title": "Marital Status",
+        "options": {
+          "single": "Single",
+          "married": "Married",
+          "divorced": "Divorced",
+          "widowed": "Widowed",
+          "other": "Other"
+        }
+      }
+    },
+    "contactInfo": {
+      "title": "Contact Information",
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter your email address"
+      },
+      "mobilePhone": {
+        "label": "Phone Number",
+        "placeholder": "Enter your phone number"
+      },
+      "homePhone": {
+        "label": "Home Phone",
+        "placeholder": "Enter your home phone number"
+      },
+      "fax": {
+        "label": "Fax",
+        "placeholder": "Enter your fax number"
+      }
+    },
+    "addressInfo": {
+      "title": "Address Information",
+      "current": {
+        "title": "Current Address",
+        "address": {
+          "label": "Address",
+          "placeholder": "Enter your current address"
+        },
+        "subdistrict": {
+          "label": "Sub-district",
+          "placeholder": "Enter your sub-district"
+        },
+        "district": {
+          "label": "District",
+          "placeholder": "Enter your district"
+        },
+        "province": {
+          "label": "Province",
+          "placeholder": "Enter your province"
+        },
+        "postalCode": {
+          "label": "Postal Code",
+          "placeholder": "Enter your 5-digit postal code"
+        }
+      },
+      "registered": {
+        "title": "Registered Address",
+        "sameAsCurrent": {
+          "label": "Same as Current Address"
+        }
+      },
+      "office": {
+        "title": "Office Address",
+        "hasOffice": {
+          "label": "Has Office Address"
+        }
+      }
+    },
+    "careerInfo": {
+      "title": "Career Information",
+      "occupation": {
+        "label": "Occupation",
+        "options": {
+          "government": "Government Officer",
+          "state_enterprise": "State Enterprise Employee",
+          "private": "Private Company Employee",
+          "business_owner": "Business Owner",
+          "freelance": "Freelancer",
+          "student": "Student",
+          "retired": "Retired",
+          "other": "Other"
+        }
+      },
+      "businessType": {
+        "label": "Business Type",
+        "options": {
+          "finance": "Finance/Banking",
+          "insurance": "Insurance",
+          "real_estate": "Real Estate",
+          "jewelry": "Jewelry/Gold",
+          "automotive": "Automotive",
+          "tourism": "Tourism/Hotel",
+          "restaurant": "Restaurant",
+          "construction": "Construction",
+          "other": "Other"
+        }
+      },
+      "employerName": {
+        "label": "Employer Name",
+        "placeholder": "Enter your employer name"
+      },
+      "position": {
+        "label": "Position",
+        "placeholder": "Enter your position"
+      },
+      "department": {
+        "label": "Department",
+        "placeholder": "Enter your department"
+      },
+      "experienceYears": {
+        "label": "Years of Experience",
+        "placeholder": "Enter your years of experience"
+      }
+    },
+    "financialInfo": {
+      "title": "Financial Information",
+      "monthlyIncome": {
+        "label": "Monthly Income",
+        "options": {
+          "level1": "Less than 15,000 THB",
+          "level2": "15,000 - 30,000 THB",
+          "level3": "30,001 - 50,000 THB",
+          "level4": "50,001 - 100,000 THB",
+          "level5": "100,001 - 500,000 THB",
+          "level6": "500,001 - 1,000,000 THB",
+          "level7": "More than 1,000,000 THB"
+        }
+      },
+      "otherIncome": {
+        "label": "Other Monthly Income",
+        "placeholder": "Enter your other monthly income"
+      },
+      "incomeSource": {
+        "label": "Source of Income",
+        "options": {
+          "salary": "Salary",
+          "business": "Business",
+          "investment": "Investment",
+          "inheritance": "Inheritance",
+          "other": "Other"
+        }
+      },
+      "assetValue": {
+        "label": "Asset Value",
+        "options": {
+          "level1": "Less than 1M THB",
+          "level2": "1M - 5M THB",
+          "level3": "5M - 10M THB",
+          "level4": "10M - 50M THB",
+          "level5": "More than 50M THB"
+        }
+      },
+      "assetSource": {
+        "label": "Source of Assets",
+        "options": {
+          "savings": "Savings",
+          "business": "Business",
+          "inheritance": "Inheritance",
+          "investment": "Investment",
+          "other": "Other"
+        }
+      }
+    },
+    "investmentExperience": {
+      "title": "Investment Experience",
+      "securitiesExperience": {
+        "label": "Securities Investment Experience",
+        "options": {
+          "none": "None",
+          "less1": "Less than 1 year",
+          "1to5": "1-5 years",
+          "more5": "More than 5 years"
+        }
+      },
+      "derivativesExperience": {
+        "label": "Derivatives Investment Experience",
+        "placeholder": "Enter your derivatives investment experience"
+      },
+      "investmentObjectives": {
+        "label": "Investment Objectives",
+        "options": {
+          "regular_income": "Regular Income",
+          "tax_benefit": "Tax Benefits",
+          "long_term": "Long-term Capital Appreciation",
+          "short_term": "Short-term Trading Profits",
+          "retirement": "Retirement"
+        }
+      },
+      "riskTolerance": {
+        "label": "Risk Tolerance Level",
+        "options": {
+          "low": "Low",
+          "medium_low": "Medium-Low",
+          "medium": "Medium",
+          "medium_high": "Medium-High",
+          "high": "High"
+        }
+      },
+      "investmentPeriod": {
+        "label": "Expected Investment Period",
+        "options": {
+          "less1": "Less than 1 year",
+          "1to3": "1-3 years",
+          "3to5": "3-5 years",
+          "5to7": "5-7 years",
+          "more7": "More than 7 years"
+        }
+      }
+    },
+    "politicalStatus": {
+      "title": "Political Status",
+      "isPoliticalFigure": {
+        "label": "Are you a politically exposed person?"
+      },
+      "politicalPosition": {
+        "label": "Political Position",
+        "placeholder": "Enter your political position"
+      },
+      "politicalRelationship": {
+        "label": "Relationship with Political Figure",
+        "placeholder": "Enter your relationship with a political figure"
+      },
+      "relationshipType": {
+        "label": "Type of Relationship",
+        "placeholder": "Enter the type of relationship"
+      }
+    },
+    "fatcaStatus": {
+      "title": "FATCA Status",
+      "isUSCitizen": {
+        "label": "Are you a U.S. citizen?"
+      },
+      "isUSCardHolder": {
+        "label": "Do you hold a U.S. Green Card?"
+      },
+      "hasUSAddress": {
+        "label": "Do you have a U.S. address?"
+      },
+      "hasUSPhone": {
+        "label": "Do you have a U.S. phone number?"
+      },
+      "hasStandingOrder": {
+        "label": "Do you have standing payment instructions to an account in the U.S.?"
+      },
+      "hasUSMail": {
+        "label": "Do you have a Hold Mail or Care of address in the U.S.?"
+      }
+    },
+    "agreements": {
+      "title": "Terms and Agreements",
+      "acceptTerms": {
+        "label": "I accept the terms and conditions of service"
+      },
+      "acceptDataProcessing": {
+        "label": "I consent to the collection, use, and disclosure of personal data"
+      },
+      "acceptRiskDisclosure": {
+        "label": "I acknowledge and accept investment risks"
+      },
+      "acceptFatca": {
+        "label": "I acknowledge and accept FATCA requirements"
+      }
+    },
+    "button": {
+      "submit": {
+        "label": "Submit",
+        "loading": "Submitting..."
+      }
+    },
+    "validation": {
+      "required": "This field is required",
+      "select": "Please select an option",
+      "idCard": "Please enter a valid 13-digit ID card number",
+      "email": "Please enter a valid email address",
+      "phone": "Please enter a valid phone number",
+      "postalCode": "Please enter a valid 5-digit postal code",
+      "age": "Age must be between 0-120 years",
+      "acceptAgreement": "Please accept the terms and agreements"
+    }
+  },
+  "login": {
+    "title": "Login",
+    "subtitle": "Welcome to Mutual Fund Investment System",
+    "form": {
+      "username": {
+        "placeholder": "Enter your username"
+      },
+      "password": {
+        "placeholder": "Enter your password"
+      }
+    },
+    "button": {
+      "login": "Login",
+      "google": "Continue with Google",
+      "facebook": "Continue with Facebook"
+    },
+    "forgotPassword": "Forgot Password?",
+    "noAccount": "Don't have an account?",
+    "or": "or"
+  },
+  "register": {
+    "title": "Create Account",
+    "subtitle": "Join us to start investing in mutual funds",
+    "form": {
+      "fullName": {
+        "placeholder": "Enter your full name"
+      },
+      "email": {
+        "placeholder": "Enter your email"
+      },
+      "password": {
+        "placeholder": "Enter your password"
+      },
+      "confirmPassword": {
+        "placeholder": "Confirm your password"
+      },
+      "acceptTerms": "I accept the Terms and Conditions"
+    },
+    "validation": {
+      "required": "This field is required",
+      "email": "Please enter a valid email address",
+      "password": {
+        "minLength": "Password must be at least 8 characters"
+      },
+      "passwordMismatch": "Passwords do not match"
+    },
+    "button": {
+      "register": "Create Account",
+      "login": "Login"
+    },
+    "haveAccount": "Already have an account?"
+  },
+  "forgotPassword": {
+    "title": "Reset Password",
+    "subtitle": "Enter your email to reset your password",
+    "otpTitle": "Verify OTP",
+    "otpSubtitle": "Enter the 6-digit code sent to your email",
+    "newPasswordTitle": "Create New Password",
+    "newPasswordSubtitle": "Enter your new password",
+    "form": {
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter your email"
+      },
+      "otp": {
+        "label": "One-Time Password"
+      },
+      "password": {
+        "label": "New Password",
+        "placeholder": "Enter your new password"
+      },
+      "confirmPassword": {
+        "label": "Confirm Password",
+        "placeholder": "Confirm your new password"
+      }
+    },
+    "validation": {
+      "required": "This field is required",
+      "email": "Please enter a valid email address",
+      "passwordLength": "Password must be at least 8 characters long",
+      "passwordMismatch": "Passwords do not match"
+    },
+    "button": {
+      "reset": "Reset Password",
+      "backToLogin": "Back to Login",
+      "resendOtp": "Resend OTP",
+      "resetPassword": "Set New Password"
+    },
+    "success": "Password reset instructions have been sent to your email",
+    "error": "An error occurred. Please try again",
+    "right": {
+      "title": "Password Recovery",
+      "feature1": "Secure password reset process",
+      "feature2": "Instructions sent to your email",
+      "feature3": "Create a new strong password"
+    }
+  },
+  "language": {
+    "thai": "ภาษาไทย",
+    "english": "English"
+  },
+  "sidebar": {
+    "home": "Home",
+    "navValue": "NAV Value",
+    "openAccount": "Open Account",
+    "buyFund": "Buy Fund",
+    "contact": "Contact Us",
+    "forClients": "For Clients",
+    "kycAssessment": "KYC Assessment",
+    "downloadDocuments": "Download Documents",
+    "taxExemption": "Tax Exemption",
+    "dashboard": "Dashboard",
+    "chat": "Chat",
+    "download": "Download",
+    "history": "Transaction History"
+  },
+  "chat": {
+    "title": "AI Assistant",
+    "welcomeMessage": "Hello! I'm the LH Fund assistant. How can I help you with your investment questions today?",
+    "inputPlaceholder": "Type your message...",
+    "uploadImage": "Upload Image",
+    "sendMessage": "Send Message",
+    "uploadedImage": "Uploaded image",
+    "selectedImage": "Selected image",
+    "imageOnlyAlert": "Please select image files only",
+    "connectionError": "Sorry, there was a connection error. Please try again."
+  }
+}

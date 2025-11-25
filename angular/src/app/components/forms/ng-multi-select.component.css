@@ -1,0 +1,131 @@
+.multi-list-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .multi-list-container select {
+     
+    height: 200px;
+  }
+  
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-top: 20px;
+  }
+  
+.ng-multi-list {
+  margin: 1rem 0;
+}
+
+.card {
+  border: 1px solid #dee2e6;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+  background: linear-gradient(to bottom, #0a7c76, #064e4a);
+  border-bottom: 1px solid #dee2e6;
+  padding: 0.75rem;
+}
+
+.card-header .form-control {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.card-header .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.card-header .form-control:focus {
+  background: white;
+  color: #495057;
+}
+
+.card-body {
+  max-height: 300px;
+  overflow-y: auto;
+  background: white;
+}
+
+.list-group-item {
+  border: none;
+  border-radius: 0;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+.list-group-item:hover {
+  background: rgba(10, 124, 118, 0.1);
+  color: #0a7c76;
+}
+
+.list-group-item:active {
+  background: #0a7c76;
+  color: white;
+}
+
+/* Custom scrollbar */
+.card-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.card-body::-webkit-scrollbar-track {
+  background: #f8f9fa;
+  border-radius: 3px;
+}
+
+.card-body::-webkit-scrollbar-thumb {
+  background: #0a7c76;
+  border-radius: 3px;
+}
+
+.card-body::-webkit-scrollbar-thumb:hover {
+  background: #064e4a;
+}
+
+/* Tooltip customization */
+:host ::ng-deep .tooltip {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+:host ::ng-deep .tooltip-inner {
+  background: linear-gradient(to bottom, #0a7c76, #064e4a);
+  color: white;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  max-width: 300px;
+  border-radius: 0.25rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+:host ::ng-deep .bs-tooltip-right .arrow::before {
+  border-right-color: #0a7c76;
+}
+
+:host ::ng-deep .bs-tooltip-left .arrow::before {
+  border-left-color: #0a7c76;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ng-multi-list .row {
+    margin: 0 -5px;
+  }
+  
+  .ng-multi-list .col-6 {
+    padding: 0 5px;
+  }
+  
+  .list-group-item {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}

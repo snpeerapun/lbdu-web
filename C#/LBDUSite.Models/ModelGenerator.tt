@@ -1,0 +1,364 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Data" #>
+<#@ import namespace="System.Data.SqlClient" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+
+<#
+    var modelNamespace = "LBDUSite.Models";
+    var databaseName="LBDU-WEB";
+    var connectionString = "Data Source=W2SQLUHO103;UID=lhfwebuat;password=P@ssw0rd#1;Initial Catalog="+databaseName+";MultipleActiveResultSets=true";
+    // For storing table columns and their data types
+    var tables = new Dictionary<string, List<(string ColumnName, string DataType, bool IsNullable)>>();
+
+    // For many-to-one relationships: child table to a list of parent tables (based on foreign keys)
+    var manyToOneRelationships = new Dictionary<string, List<(string parentName, string columnName, string fkConstraintName)>>();
+    // For inverse one-to-many relationships: parent table to a list of child tables
+    var oneToManyRelationships = new Dictionary<string, List<(string childName, string columnName, string fkConstraintName)>>();
+
+    using (var connection = new SqlConnection(connectionString))
+    {
+        connection.Open();
+        // Fetching all tables
+        var command = new SqlCommand("SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, IS_NULLABLE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_CATALOG = '"+databaseName+"' ORDER BY TABLE_NAME, ORDINAL_POSITION", connection);
+        using (var reader = command.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                var tableName = reader.GetString(0);
+                var columnName = reader.GetString(1);
+                var dataType = reader.GetString(2);
+                var isNullable = reader.GetString(3) == "YES";
+
+                if (!tables.ContainsKey(tableName))
+                {
+                    tables[tableName] = new List<(string, string, bool)>();
+                }
+                tables[tableName].Add((columnName, dataType, isNullable));
+            }
+        }
+
+        // Fetching foreign key relationships for many-to-one
+        var fkCommand = new SqlCommand(@"SELECT 
+                                            FK.TABLE_NAME AS ChildTable, 
+                                            PK.TABLE_NAME AS ParentTable,
+                                            CU.COLUMN_NAME AS ColumnName,
+                                            C.CONSTRAINT_NAME AS FkConstraintName
+                                         FROM 
+                                            INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS C
+                                         INNER JOIN 
+                                            INFORMATION_SCHEMA.TABLE_CONSTRAINTS FK ON C.CONSTRAINT_NAME = FK.CONSTRAINT_NAME
+                                         INNER JOIN 
+                                            INFORMATION_SCHEMA.TABLE_CONSTRAINTS PK ON C.UNIQUE_CONSTRAINT_NAME = PK.CONSTRAINT_NAME
+                                         INNER JOIN 
+                                            INFORMATION_SCHEMA.KEY_COLUMN_USAGE CU ON C.CONSTRAINT_NAME = CU.CONSTRAINT_NAME
+                                         INNER JOIN 
+                                            (SELECT i1.TABLE_NAME, i2.COLUMN_NAME
+                                             FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS i1
+                                             INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE i2 ON i1.CONSTRAINT_NAME = i2.CONSTRAINT_NAME
+                                             WHERE i1.CONSTRAINT_TYPE = 'PRIMARY KEY') PT ON PT.TABLE_NAME = PK.TABLE_NAME", connection);
+        using (var reader = fkCommand.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                var childTable = reader.GetString(0);
+                var parentTable = reader.GetString(1);
+                var columnName = reader.GetString(2);
+                var fkConstraintName = reader.GetString(3);
+
+                if (!manyToOneRelationships.ContainsKey(childTable))
+                {
+                      manyToOneRelationships[childTable] = new List<(string parentName, string columnName, string fkConstraintName)>();
+                }
+                manyToOneRelationships[childTable].Add((parentTable, columnName, fkConstraintName));
+
+                if (!oneToManyRelationships.ContainsKey(parentTable))
+                {
+                    oneToManyRelationships[parentTable] = new List<(string childName, string columnName, string fkConstraintName)>();
+                }
+                oneToManyRelationships[parentTable].Add((childTable, columnName, fkConstraintName));
+            }
+        }
+    }
+#>
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+ 
+namespace <#= modelNamespace #>
+{
+<# foreach (var table in tables.Keys) { #>
+    [Table("<#= table#>")]
+    public class <#= SingularizeClassName(table) #>
+    {
+<#      foreach (var (ColumnName, DataType, IsNullable) in tables[table]) { 
+        var propertyType = GetPropertyType(DataType);
+        var nullableAnnotation = IsNullable ? "?" : "";
+        if (string.Equals(ColumnName, "ID", StringComparison.OrdinalIgnoreCase)) { #>
+        [Key]
+<#      } #>
+        public virtual <#= propertyType #><#= nullableAnnotation #> <#= ColumnName #> { get; set; }
+<#      } #>
+
+<#      if (manyToOneRelationships.ContainsKey(table))
+        {
+            // Group by parent table to handle multiple FKs to same table
+            var groupedParents = new Dictionary<string, List<(string columnName, string fkConstraintName)>>();
+            foreach (var rel in manyToOneRelationships[table])
+            {
+                if (!groupedParents.ContainsKey(rel.parentName))
+                {
+                    groupedParents[rel.parentName] = new List<(string, string)>();
+                }
+                groupedParents[rel.parentName].Add((rel.columnName, rel.fkConstraintName));
+            }
+
+            foreach (var parentGroup in groupedParents)
+            {
+                var parentTable = parentGroup.Key;
+                var foreignKeys = parentGroup.Value;
+                
+                // If only one FK to this parent, use simple naming
+                if (foreignKeys.Count == 1)
+                {
+                    var fk = foreignKeys[0];
+                    var parentClassName = SingularizeClassName(parentTable);
+                    var navigationPropertyName = GetNavigationPropertyName(fk.columnName, parentClassName); #>
+        // Many-to-One relationship
+        [ForeignKey("<#= fk.columnName #>")]
+        public virtual <#= parentClassName #>? <#= navigationPropertyName #> { get; set; }
+<#              }
+                // If multiple FKs to same parent, ensure unique names
+                else
+                {
+                    foreach (var fk in foreignKeys)
+                    {
+                        var parentClassName = SingularizeClassName(parentTable);
+                        var navigationPropertyName = GetNavigationPropertyName(fk.columnName, parentClassName); #>
+        // Many-to-One relationship
+        [ForeignKey("<#= fk.columnName #>")]
+        public virtual <#= parentClassName #>? <#= navigationPropertyName #> { get; set; }
+<#                  }
+                }
+            }
+        } #>
+
+<#      if (oneToManyRelationships.ContainsKey(table))
+        {
+            // Group by child table to handle multiple FKs from same child
+            var groupedChildren = new Dictionary<string, List<(string columnName, string fkConstraintName)>>();
+            foreach (var rel in oneToManyRelationships[table])
+            {
+                if (!groupedChildren.ContainsKey(rel.childName))
+                {
+                    groupedChildren[rel.childName] = new List<(string, string)>();
+                }
+                groupedChildren[rel.childName].Add((rel.columnName, rel.fkConstraintName));
+            }
+
+            foreach (var childGroup in groupedChildren)
+            {
+                var childTable = childGroup.Key;
+                var foreignKeys = childGroup.Value;
+                var childClassName = SingularizeClassName(childTable);
+                
+                // If only one FK from this child, use simple plural naming
+                if (foreignKeys.Count == 1)
+                {
+                    var fk = foreignKeys[0];
+                    var collectionPropertyName = childTable;
+                    var inversePropertyName = GetNavigationPropertyName(fk.columnName, SingularizeClassName(table)); #>
+        // One-to-Many relationship
+        [InverseProperty("<#= inversePropertyName #>")]
+        public virtual ICollection<<#= childClassName #>>? <#= collectionPropertyName #> { get; set; }
+<#              }
+                // If multiple FKs from same child, use column name to differentiate collections
+                else
+                {
+                    foreach (var fk in foreignKeys)
+                    {
+                        var navigationPropertyName = GetNavigationPropertyName(fk.columnName, SingularizeClassName(table));
+                        var collectionPropertyName = GetCollectionPropertyName(childTable, fk.columnName); #>
+        // One-to-Many relationship (via <#= fk.columnName #>)
+        [InverseProperty("<#= navigationPropertyName #>")]
+        public virtual ICollection<<#= childClassName #>>? <#= collectionPropertyName #> { get; set; }
+<#                  }
+                }
+            }
+        } #>
+    }
+
+<# } #>
+}
+
+<#+
+    string SingularizeClassName(string className)
+    {
+        // Special cases - words that don't follow standard pluralization rules
+        var specialCases = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "Addresses", "Address" },
+            { "Countries", "Country" },
+            { "Categories", "Category" },
+            { "Companies", "Company" },
+            { "Properties", "Property" },
+            { "Series", "Series" },
+            { "Species", "Species" },
+            { "Status", "Status" },
+            { "News", "News" }
+        };
+
+        // Check special cases first
+        if (specialCases.ContainsKey(className))
+        {
+            return specialCases[className];
+        }
+
+        // Standard pluralization rules
+        if (className.EndsWith("ies", StringComparison.OrdinalIgnoreCase))
+        {
+            // Categories -> Category, Countries -> Country
+            return className.Substring(0, className.Length - 3) + "y";
+        }
+        else if (className.EndsWith("ches", StringComparison.OrdinalIgnoreCase) ||
+                 className.EndsWith("shes", StringComparison.OrdinalIgnoreCase) ||
+                 className.EndsWith("sses", StringComparison.OrdinalIgnoreCase) ||
+                 className.EndsWith("xes", StringComparison.OrdinalIgnoreCase) ||
+                 className.EndsWith("zes", StringComparison.OrdinalIgnoreCase))
+        {
+            // Branches -> Branch, Dishes -> Dish, Classes -> Class, Boxes -> Box
+            return className.Substring(0, className.Length - 2);
+        }
+        else if (className.EndsWith("ves", StringComparison.OrdinalIgnoreCase))
+        {
+            // Wives -> Wife, Lives -> Life
+            return className.Substring(0, className.Length - 3) + "fe";
+        }
+        else if (className.EndsWith("oes", StringComparison.OrdinalIgnoreCase))
+        {
+            // Heroes -> Hero, Potatoes -> Potato
+            return className.Substring(0, className.Length - 2);
+        }
+        else if (className.EndsWith("s", StringComparison.OrdinalIgnoreCase) && 
+                 !className.EndsWith("ss", StringComparison.OrdinalIgnoreCase) &&
+                 !className.EndsWith("us", StringComparison.OrdinalIgnoreCase) &&
+                 !className.EndsWith("is", StringComparison.OrdinalIgnoreCase))
+        {
+            // Standard plural: Tables -> Table, Schemes -> Scheme
+            // But not: Status -> Statu, Bus -> Bu, Analysis -> Analysi
+            return className.Substring(0, className.Length - 1);
+        }
+       
+        return className;
+    }
+    
+    string RemoveId(string fieldName)
+    {
+        if (fieldName.EndsWith("Id", StringComparison.OrdinalIgnoreCase))
+        {
+            return fieldName.Substring(0, fieldName.Length - 2);
+        }
+        return fieldName;
+    }
+    
+    string GetNavigationPropertyName(string fkColumnName, string parentClassName)
+    {
+        // Remove "Id" suffix from FK column name
+        var baseName = RemoveId(fkColumnName);
+    
+        // If baseName is empty or same as parent class, use parent class name
+        if (string.IsNullOrEmpty(baseName) || baseName == parentClassName)
+        {
+            return parentClassName;
+        }
+    
+        // If baseName already contains parent class name, use it as is
+        if (baseName.Contains(parentClassName))
+        {
+            return baseName;
+        }
+    
+        // ✅ FIX: If baseName doesn't end with Id, append class name to avoid conflict
+        if (!fkColumnName.EndsWith("Id", StringComparison.OrdinalIgnoreCase))
+        {
+            return baseName + parentClassName;  // ChangedBy + User = ChangedByUser
+        }
+    
+        // Otherwise, return the base name
+        return baseName;
+    }
+    
+    string GetCollectionPropertyName(string childTable, string fkColumnName)
+    {
+        var baseName = RemoveId(fkColumnName);
+        
+        // If baseName is meaningful, use it to differentiate
+        if (!string.IsNullOrEmpty(baseName))
+        {
+            return childTable + "By" + baseName;
+        }
+        
+        return childTable;
+    }
+    
+    string GetPropertyType(string sqlType)
+    {
+        string sysType="string";
+        switch (sqlType) 
+        {
+            case "bigint":
+                sysType = "long";
+                break;
+            case "smallint":
+                sysType= "short";
+                break;
+            case "int":
+                sysType= "int";
+                break;
+            case "uniqueidentifier":
+                sysType=  "Guid";
+                 break;
+            case "smalldatetime":
+            case "datetime":
+            case "datetime2":
+            case "date":
+            case "time":
+                sysType=  "DateTime";
+                  break;
+            case "float":
+                sysType="double";
+                break;
+            case "real":
+                sysType="float";
+                break;
+            case "numeric":
+            case "smallmoney":
+            case "decimal":
+            case "money":
+                sysType=  "decimal";
+                 break;
+            case "tinyint":
+                sysType = "byte";
+                break;
+            case "bit":
+                sysType=  "bool";
+                   break;
+            case "image":
+            case "binary":
+            case "varbinary":
+            case "timestamp":
+                sysType=  "byte[]";
+                 break;
+            case "geography":
+                sysType = "Microsoft.SqlServer.Types.SqlGeography";
+                break;
+            case "geometry":
+                sysType = "Microsoft.SqlServer.Types.SqlGeometry";
+                break;
+            default: return sysType;
+        }
+        return sysType;
+    }
+#>
