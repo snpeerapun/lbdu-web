@@ -37,7 +37,7 @@ namespace LBDUSite.Controllers
 
         // API สำหรับ AJAX
         // POST: /Language/SetLanguage
-        [HttpPost("SetLanguage")]
+        [HttpGet("SetLanguage")]
         public IActionResult SetLanguage([FromBody] LanguageRequest request)
         {
             if (string.IsNullOrEmpty(request.Language) ||

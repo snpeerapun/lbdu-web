@@ -20,24 +20,8 @@
 
 <script>
     function changeLanguage(lang) {
-        // เปลี่ยนภาษาผ่าน AJAX
-        fetch('/Language/SetLanguage', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ language: lang })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Reload หน้าเพื่อให้ภาษาเปลี่ยน
-                window.location.reload();
-            }
-        })
-        .catch(error => {
-            console.error('Error changing language:', error);
-        });
+        // ใช้วิธี GET แทน POST เพื่อหลีกเลี่ยงปัญหา CSRF Token
+        var currentPath = window.location.pathname + window.location.search;
+        window.location.href = '/Language/Change?lang=' + lang + '&returnUrl=' + encodeURIComponent(currentPath);
     }
 </script>
- 

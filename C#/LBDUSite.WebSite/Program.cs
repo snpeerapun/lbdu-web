@@ -3,6 +3,7 @@ using LBDUSite.Repository.Interfaces;
 using LBDUSite.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.Options;
 using System.Globalization;
 using System.IO.Compression;
 
@@ -34,30 +35,22 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
 
-    // Request Culture Providers
+    // Request Culture Providers - เรียงลำดับความสำคัญ
     options.RequestCultureProviders = new List<IRequestCultureProvider>
     {
-        new CookieRequestCultureProvider(),
-        new QueryStringRequestCultureProvider(),
-        new AcceptLanguageHeaderRequestCultureProvider()
+        new QueryStringRequestCultureProvider(), // ตรวจสอบ ?culture=th-TH ก่อน
+        new CookieRequestCultureProvider(),      // ตรวจสอบ Cookie
+        new AcceptLanguageHeaderRequestCultureProvider() // ตรวจสอบ Browser Language
     };
 });
 
 // 3. Register Localization Service
 builder.Services.AddScoped<ILocalizationService, LocalizationService>();
 
-// 4. Add Session (required for language switching)
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromHours(2);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
-
-// 5. Add HttpContextAccessor
+// 4. Add HttpContextAccessor (ต้องมีสำหรับ LocalizationService)
 builder.Services.AddHttpContextAccessor();
 
-// MVC with JSON options
+// 5. MVC with JSON options
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options =>
     {
@@ -65,30 +58,30 @@ builder.Services.AddControllersWithViews()
         options.JsonSerializerOptions.WriteIndented = true;
     });
 
-// Repository Factory - Scoped lifecycle
+// 6. Repository Factory - Scoped lifecycle
 builder.Services.AddScoped<IRepositoryFactory>(provider =>
 {
     var config = provider.GetRequiredService<IConfiguration>();
     return new RepositoryFactory(config);
 });
 
+// 7. Cache Service
 builder.Services.AddSingleton<ICacheService, MemoryCacheService>();
-// Memory Cache
 builder.Services.AddMemoryCache();
 
-// Session
+// 8. Session (ลบการเรียกซ้ำออก - ใช้แค่ครั้งเดียว)
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.IdleTimeout = TimeSpan.FromHours(2);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
     options.Cookie.Name = ".LBDUSite.Session";
 });
 
-// Response Caching
+// 9. Response Caching
 builder.Services.AddResponseCaching();
 
-// Response Compression
+// 10. Response Compression
 builder.Services.AddResponseCompression(options =>
 {
     options.EnableForHttps = true;
@@ -106,14 +99,14 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
     options.Level = CompressionLevel.SmallestSize;
 });
 
-// HTTP Client for external APIs
+// 11. HTTP Client for external APIs
 builder.Services.AddHttpClient("SECApi", client =>
 {
     client.BaseAddress = new Uri(configuration["ExternalAPIs:SEC:BaseUrl"] ?? "https://api.sec.or.th/");
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
-// Anti-forgery
+// 12. Anti-forgery
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = "X-CSRF-TOKEN";
@@ -129,15 +122,6 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    /*
-    app.Use(async (context, next) =>
-    {
-        context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
-        context.Response.Headers["Pragma"] = "no-cache";
-        context.Response.Headers["Expires"] = "0";
-        await next();
-    });
-    */
 }
 else
 {
@@ -162,13 +146,14 @@ app.UseStaticFiles(new StaticFileOptions
         }
     }
 });
-//Localization
-app.UseRequestLocalization();
+
+// ✅ CRITICAL: Localization ต้องอยู่ก่อน UseRouting()
+app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
 // Routing
 app.UseRouting();
 
-// Session
+// Session (ต้องอยู่หลัง UseRouting แต่ก่อน UseEndpoints)
 app.UseSession();
 
 // Authentication & Authorization
@@ -177,9 +162,9 @@ app.UseAuthorization();
 // Response Caching
 app.UseResponseCaching();
 
-// ==================== ROUTING (SIMPLIFIED) ====================
+// ==================== ROUTING ====================
 
-// ✅ Default route only - flexible for all controllers
+// Default route - flexible for all controllers
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
