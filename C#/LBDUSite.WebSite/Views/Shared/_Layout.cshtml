@@ -1,5 +1,7 @@
-﻿<!DOCTYPE html>
-<html lang="th">
+﻿@inject LBDUSite.Services.ILocalizationService Localization
+
+<!DOCTYPE html>
+<html lang="@(Localization.GetCurrentLanguage() == "th" ? "th" : "en")">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -28,52 +30,61 @@
             <nav>
                 <ul class="nav-menu">
                     <li>
-                        <a href="@Url.Action("Index", "Home")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+                        <a href="@Url.Action("Index", "Home")"
+                           class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
                             <i class="fas fa-home"></i>
-                            หน้าแรก
+                            @Localization.GetString("Nav_Home")
                         </a>
                     </li>
                     <li>
-                        <a href="@Url.Action("Index", "Fund")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Fund" ? "active" : "")">
+                        <a href="@Url.Action("Index", "Fund")"
+                           class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Fund" ? "active" : "")">
                             <i class="fas fa-chart-line"></i>
-                            กองทุนทั้งหมด
+                            @Localization.GetString("Nav_AllFunds")
                         </a>
                     </li>
                     <li>
                         <a href="#" class="nav-link">
                             <i class="fas fa-graduation-cap"></i>
-                            เรียนรู้
+                            @Localization.GetString("Nav_Learning")
                         </a>
                     </li>
                     <li>
-                        <a href="@Url.Action("Index", "Article")" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Article" ? "active" : "")">
+                        <a href="@Url.Action("Index", "Article")"
+                           class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Article" ? "active" : "")">
                             <i class="fas fa-newspaper"></i>
-                            ข่าวสาร
+                            @Localization.GetString("Nav_Articles")
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link">
-                            <i class="fas fa-phone"></i>
-                            ติดต่อเรา
+                        <a href="@Url.Action("Index", "Contact")"
+                           class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Contact" ? "active" : "")">
+                            <i class="fas fa-envelope"></i>
+                            @Localization.GetString("Nav_Contact")
                         </a>
                     </li>
                 </ul>
             </nav>
 
             <div class="header-actions">
-                <button class="register-btn" onclick="location.href='@Url.Action("Register", "Account")'">
-                    สมัครสมาชิก
-                </button>
-                <button class="login-btn" onclick="location.href='@Url.Action("Login", "Account")'">
+                <!-- Language Switcher -->
+                @Html.Partial("_LanguageSwitcher")
+
+                <!-- User Menu (if logged in) -->
+                <button class="user-btn">
                     <i class="fas fa-user"></i>
-                    เข้าสู่ระบบ
                 </button>
             </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="main-content">
+    <main>
         @RenderBody()
     </main>
 
@@ -82,77 +93,56 @@
         <div class="footer-container">
             <div class="footer-grid">
                 <!-- About Section -->
-                <div class="footer-about">
-                    <h3>LBDU Fund Platform</h3>
-                    <p>
-                        แพลตฟอร์มกองทุนรวมออนไลน์ที่ให้คุณเข้าถึงกองทุนจากทุกบริษัทจัดการในที่เดียว
-                        เปรียบเทียบ วิเคราะห์ และลงทุนได้อย่างสะดวกรวดเร็ว
-                    </p>
-                    <div class="footer-social">
-                        <a href="#" class="social-btn"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-btn"><i class="fab fa-line"></i></a>
-                        <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <div class="logo-icon">LB</div>
+                        <div class="logo-text">
+                            <h3>LBDU</h3>
+                            <span>Fund Platform</span>
+                        </div>
                     </div>
+                    <p>
+                        @if (Localization.GetCurrentLanguage() == "th")
+                        {
+                            <text>แพลตฟอร์มกองทุนรวมครบวงจร เปรียบเทียบและเลือกกองทุนจากทุกบริษัทจัดการในที่เดียว</text>
+                        }
+                        else
+                        {
+                            <text>Complete mutual fund platform. Compare and select funds from all management companies in one place</text>
+                        }
+                    </p>
                 </div>
 
-                <!-- Fund Categories -->
+                <!-- Quick Links -->
                 <div class="footer-section">
-                    <h4>กองทุน</h4>
+                    <h4>@Localization.GetString("Nav_Home")</h4>
                     <ul class="footer-links">
                         <li>
-                            <a href="@Url.Action("Index", "Fund", new { category = "หุ้น" })">
-                                <i class="fas fa-chevron-right"></i> กองทุนหุ้น
+                            <a href="@Url.Action("Index", "Home")">
+                                <i class="fas fa-chevron-right"></i> @Localization.GetString("Nav_Home")
                             </a>
                         </li>
                         <li>
-                            <a href="@Url.Action("Index", "Fund", new { category = "ผสม" })">
-                                <i class="fas fa-chevron-right"></i> กองทุนผสม
+                            <a href="@Url.Action("Index", "Fund")">
+                                <i class="fas fa-chevron-right"></i> @Localization.GetString("Nav_AllFunds")
                             </a>
                         </li>
                         <li>
-                            <a href="@Url.Action("Index", "Fund", new { category = "ตราสารหนี้" })">
-                                <i class="fas fa-chevron-right"></i> กองทุนตราสารหนี้
+                            <a href="@Url.Action("Index", "Article")">
+                                <i class="fas fa-chevron-right"></i> @Localization.GetString("Nav_Articles")
                             </a>
                         </li>
                         <li>
-                            <a href="@Url.Action("Index", "Fund", new { category = "อสังหา" })">
-                                <i class="fas fa-chevron-right"></i> กองทุนอสังหาฯ
+                            <a href="@Url.Action("Index", "Contact")">
+                                <i class="fas fa-chevron-right"></i> @Localization.GetString("Nav_Contact")
                             </a>
                         </li>
                     </ul>
                 </div>
 
-                <!-- About Us -->
+                <!-- Contact Info -->
                 <div class="footer-section">
-                    <h4>เกี่ยวกับเรา</h4>
-                    <ul class="footer-links">
-                        <li>
-                            <a href="@Url.Action("About", "Home")">
-                                <i class="fas fa-chevron-right"></i> เกี่ยวกับ LBDU
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("HowTo", "Home")">
-                                <i class="fas fa-chevron-right"></i> วิธีการใช้งาน
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("FAQ", "Home")">
-                                <i class="fas fa-chevron-right"></i> คำถามที่พบบ่อย
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("Privacy", "Home")">
-                                <i class="fas fa-chevron-right"></i> นโยบายความเป็นส่วนตัว
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Contact -->
-                <div class="footer-section">
-                    <h4>ติดต่อเรา</h4>
+                    <h4>@Localization.GetString("Contact_Information")</h4>
                     <ul class="footer-links">
                         <li>
                             <a href="tel:02-xxx-xxxx">
@@ -166,12 +156,15 @@
                         </li>
                         <li>
                             <a href="#">
-                                <i class="fas fa-map-marker-alt"></i> กรุงเทพฯ ประเทศไทย
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-clock"></i> จ-ศ 8:30-17:30 น.
+                                <i class="fas fa-map-marker-alt"></i>
+                                @if (Localization.GetCurrentLanguage() == "th")
+                                {
+                                    <text>กรุงเทพฯ ประเทศไทย</text>
+                                }
+                                else
+                                {
+                                    <text>Bangkok, Thailand</text>
+                                }
                             </a>
                         </li>
                     </ul>
@@ -180,10 +173,7 @@
 
             <!-- Footer Bottom -->
             <div class="footer-bottom">
-                <p>
-                    &copy; @DateTime.Now.Year LBDU Fund Platform. All rights reserved. |
-                    พัฒนาโดย LBDU Technology
-                </p>
+                <p>&copy; @DateTime.Now.Year LBDU Fund Platform. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -192,28 +182,12 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/js/site.js"></script>
 
-    <script>
-        // Header scroll effect
-        const header = document.getElementById('header');
-        if (header) {
-            window.addEventListener('scroll', function() {
-                if (window.scrollY > 50) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-            });
-        }
+    @RenderSection("Scripts", required: false)
 
-        // Smooth scroll to top
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+    <script>
+        function toggleMobileMenu() {
+            document.querySelector('.nav-menu').classList.toggle('active');
         }
     </script>
-
-    @RenderSection("Scripts", required: false)
 </body>
 </html>

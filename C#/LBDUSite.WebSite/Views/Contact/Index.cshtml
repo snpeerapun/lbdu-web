@@ -1,0 +1,184 @@
+﻿@model LBDUSite.ViewModels.ContactViewModel
+@{
+    ViewBag.Title = "ติดต่อเรา";
+    var contactInfo = ViewBag.ContactInfo as LBDUSite.ViewModels.ContactInfoViewModel;
+}
+
+<!-- Breadcrumb -->
+<nav class="breadcrumb">
+    <div class="breadcrumb-container">
+        <ul class="breadcrumb-list">
+            <li><a href="@Url.Action("Index", "Home")"><i class="fas fa-home"></i> หน้าแรก</a></li>
+            <li class="breadcrumb-separator"><i class="fas fa-chevron-right"></i></li>
+            <li class="active">ติดต่อเรา</li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Contact Header -->
+<section class="contact-header">
+    <div class="contact-header-container">
+        <h1>
+            <i class="fas fa-envelope"></i>
+            ติดต่อเรา
+        </h1>
+        <p>มีคำถามหรือข้อสงสัย? เราพร้อมให้บริการและตอบคำถามของคุณ</p>
+    </div>
+</section>
+
+<!-- Contact Content -->
+<section class="contact-content">
+    <div class="contact-container">
+        <div class="contact-grid">
+            <!-- Contact Information -->
+            <div class="contact-info-section">
+                <h2>ข้อมูลติดต่อ</h2>
+                <p class="contact-description">
+                    ติดต่อเราได้ทุกช่องทาง เราพร้อมให้บริการและตอบคำถามของคุณตลอดเวลา
+                </p>
+
+                <div class="contact-info-list">
+                    <div class="contact-info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>ที่อยู่</h3>
+                            <p>@contactInfo.Address</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>โทรศัพท์</h3>
+                            <p><a href="tel:@contactInfo.Phone.Replace("-", "")">@contactInfo.Phone</a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>อีเมล</h3>
+                            <p><a href="mailto:@contactInfo.Email">@contactInfo.Email</a></p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="info-content">
+                            <h3>เวลาทำการ</h3>
+                            <p>@contactInfo.WorkingHours</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media -->
+                <div class="social-media-section">
+                    <h3>ติดตามเราได้ที่</h3>
+                    <div class="social-links">
+                        <a href="@contactInfo.FacebookUrl" target="_blank" class="social-link facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://line.me/ti/p/@contactInfo.LineId" target="_blank" class="social-link line">
+                            <i class="fab fa-line"></i>
+                        </a>
+                        <a href="https://twitter.com/lbdufund" target="_blank" class="social-link twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.youtube.com/lbdufund" target="_blank" class="social-link youtube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="contact-form-section">
+                <h2>ส่งข้อความถึงเรา</h2>
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
+
+                @using (Html.BeginForm("Index", "Contact", FormMethod.Post, new { @class = "contact-form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.FullName)
+                        @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", placeholder = "กรอกชื่อ-นามสกุล" })
+                        @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "error-message" })
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Email)
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", placeholder = "example@email.com" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "error-message" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Phone)
+                            @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", type = "tel", placeholder = "0xx-xxx-xxxx" })
+                            @Html.ValidationMessageFor(m => m.Phone, "", new { @class = "error-message" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Subject)
+                        @Html.DropDownListFor(m => m.Subject,
+                        new SelectList(new[]
+                        {
+                                        new { Value = "", Text = "-- เลือกหัวข้อ --" },
+                                        new { Value = "สอบถามข้อมูลกองทุน", Text = "สอบถามข้อมูลกองทุน" },
+                                        new { Value = "สอบถามการลงทุน", Text = "สอบถามการลงทุน" },
+                                        new { Value = "ปัญหาการใช้งาน", Text = "ปัญหาการใช้งาน" },
+                                        new { Value = "ข้อเสนอแนะ", Text = "ข้อเสนอแนะ" },
+                                        new { Value = "ร้องเรียน", Text = "ร้องเรียน" },
+                                        new { Value = "ติดต่อสื่อมวลชน", Text = "ติดต่อสื่อมวลชน" },
+                                        new { Value = "อื่นๆ", Text = "อื่นๆ" }
+                                        }, "Value", "Text"),
+                                        new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Subject, "", new { @class = "error-message" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Message)
+                    @Html.TextAreaFor(m => m.Message, new { @class = "form-control", rows = 6, placeholder = "กรอกข้อความของคุณ..." })
+                    @Html.ValidationMessageFor(m => m.Message, "", new { @class = "error-message" })
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large">
+                    <i class="fas fa-paper-plane"></i>
+                    ส่งข้อความ
+                </button>
+                                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Map Section (Optional) -->
+<section class="map-section">
+    <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.6094989793564!2d100.53253731483086!3d13.744677990357394!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29ee109d89f2b%3A0xdb0f4c2d849a07b!2z4Lie4Lij4Liw4Lij4Liy4Lih4LmEIDQg4LmB4LiC4Lin4LiH4Lib4LiX4Li44Lih4Lin4Lix4LiZ!5e0!3m2!1sth!2sth!4v1234567890123!5m2!1sth!2sth"
+                width="100%"
+                height="450"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"></iframe>
+    </div>
+</section>
+
+ 

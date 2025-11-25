@@ -1,7 +1,9 @@
 ﻿using LBDUSite.Repository;
 using LBDUSite.Repository.Interfaces;
 using LBDUSite.Services;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.ResponseCompression;
+using System.Globalization;
 using System.IO.Compression;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,45 @@ builder.Logging.AddConsole();
 builder.Logging.AddDebug();
 
 // ==================== SERVICES ====================
+
+// 1. Add Localization Services
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+// 2. Configure Supported Cultures
+var supportedCultures = new[]
+{
+    new CultureInfo("th-TH"),
+    new CultureInfo("en-US")
+};
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture("th-TH");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+
+    // Request Culture Providers
+    options.RequestCultureProviders = new List<IRequestCultureProvider>
+    {
+        new CookieRequestCultureProvider(),
+        new QueryStringRequestCultureProvider(),
+        new AcceptLanguageHeaderRequestCultureProvider()
+    };
+});
+
+// 3. Register Localization Service
+builder.Services.AddScoped<ILocalizationService, LocalizationService>();
+
+// 4. Add Session (required for language switching)
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(2);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// 5. Add HttpContextAccessor
+builder.Services.AddHttpContextAccessor();
 
 // MVC with JSON options
 builder.Services.AddControllersWithViews()
@@ -121,6 +162,8 @@ app.UseStaticFiles(new StaticFileOptions
         }
     }
 });
+//Localization
+app.UseRequestLocalization();
 
 // Routing
 app.UseRouting();

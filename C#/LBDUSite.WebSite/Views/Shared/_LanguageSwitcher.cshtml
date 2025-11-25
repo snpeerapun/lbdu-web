@@ -1,0 +1,43 @@
+@inject LBDUSite.Services.ILocalizationService Localization
+
+@{
+    var currentLang = Localization.GetCurrentLanguage();
+    var currentUrl = Context.Request.Path + Context.Request.QueryString;
+}
+
+<div class="language-switcher">
+    <button class="language-btn @(currentLang == "th" ? "active" : "")" 
+            onclick="changeLanguage('th')">
+        <img src="/images/flags/th.png" alt="ไทย" />
+        <span>ไทย</span>
+    </button>
+    <button class="language-btn @(currentLang == "en" ? "active" : "")" 
+            onclick="changeLanguage('en')">
+        <img src="/images/flags/en.png" alt="English" />
+        <span>EN</span>
+    </button>
+</div>
+
+<script>
+    function changeLanguage(lang) {
+        // เปลี่ยนภาษาผ่าน AJAX
+        fetch('/Language/SetLanguage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ language: lang })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Reload หน้าเพื่อให้ภาษาเปลี่ยน
+                window.location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error changing language:', error);
+        });
+    }
+</script>
+ 

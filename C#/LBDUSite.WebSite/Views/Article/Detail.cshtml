@@ -1,0 +1,142 @@
+﻿@model LBDUSite.ViewModels.ArticleDetailViewModel
+@{
+    ViewBag.Title = Model.Title;
+}
+
+<!-- Breadcrumb -->
+<nav class="breadcrumb">
+    <div class="breadcrumb-container">
+        <ul class="breadcrumb-list">
+            <li><a href="@Url.Action("Index", "Home")"><i class="fas fa-home"></i> หน้าแรก</a></li>
+            <li class="breadcrumb-separator"><i class="fas fa-chevron-right"></i></li>
+            <li><a href="@Url.Action("Index", "Article")">บทความและข่าวสาร</a></li>
+            <li class="breadcrumb-separator"><i class="fas fa-chevron-right"></i></li>
+            <li class="active">@Model.Title</li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Article Detail -->
+<article class="article-detail">
+    <div class="article-detail-container">
+        <!-- Article Header -->
+        <header class="article-header">
+            @if (!string.IsNullOrEmpty(Model.CategoryName))
+            {
+                <div class="article-category-badge">
+                    <i class="fas fa-folder"></i> @Model.CategoryName
+                </div>
+            }
+            <h1 class="article-title">@Model.Title</h1>
+
+            <div class="article-meta-info">
+                <div class="meta-item">
+                    <i class="fas fa-user"></i>
+                    <span>@Model.AuthorName</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-calendar"></i>
+                    <span>@Model.PublishedDateDisplay</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-eye"></i>
+                    <span>@((Model.ViewCount ?? 0).ToString("N0")) ครั้ง</span>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.Excerpt))
+            {
+                <p class="article-excerpt">@Model.Excerpt</p>
+            }
+        </header>
+
+        <!-- Featured Image -->
+        @if (!string.IsNullOrEmpty(Model.FeaturedImageUrl))
+        {
+            <div class="article-featured-image">
+                <img src="@Model.FeaturedImageUrl" alt="@Model.Title" />
+            </div>
+        }
+
+        <!-- Article Content -->
+        <div class="article-content">
+            @Html.Raw(Model.Content)
+        </div>
+
+        <!-- Tags -->
+        @if (Model.TagList.Any())
+        {
+            <div class="article-tags">
+                <div class="tags-label">
+                    <i class="fas fa-tags"></i> แท็ก:
+                </div>
+                <div class="tags-list">
+                    @foreach (var tag in Model.TagList)
+                    {
+                        <span class="tag">@tag</span>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Share Buttons -->
+        <div class="article-share">
+            <div class="share-label">
+                <i class="fas fa-share-alt"></i> แชร์บทความนี้:
+            </div>
+            <div class="share-buttons">
+                @{
+                    var currentUrl = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}{Context.Request.QueryString}";
+                    var encodedUrl = System.Net.WebUtility.UrlEncode(currentUrl);
+                    var encodedTitle = System.Net.WebUtility.UrlEncode(Model.Title);
+                }
+
+                <a href="https://www.facebook.com/sharer/sharer.php?u=@encodedUrl"
+                   target="_blank"
+                   class="share-btn facebook">
+                    <i class="fab fa-facebook-f"></i> Facebook
+                </a>
+                <a href="https://twitter.com/intent/tweet?url=@encodedUrl&text=@encodedTitle"
+                   target="_blank"
+                   class="share-btn twitter">
+                    <i class="fab fa-twitter"></i> Twitter
+                </a>
+                <a href="https://social-plugins.line.me/lineit/share?url=@encodedUrl"
+                   target="_blank"
+                   class="share-btn line">
+                    <i class="fab fa-line"></i> LINE
+                </a>
+            </div>
+        </div>
+    </div>
+</article>
+
+<!-- Related Articles -->
+@if (Model.RelatedArticles.Any())
+{
+    <section class="related-articles">
+        <div class="related-container">
+            <div class="section-header">
+                <h2>
+                    <i class="fas fa-newspaper"></i>
+                    บทความที่เกี่ยวข้อง
+                </h2>
+            </div>
+
+            <div class="articles-grid">
+                @foreach (var article in Model.RelatedArticles)
+                {
+                    @Html.Partial("_ArticleCard", article)
+                }
+            </div>
+
+            <div class="view-all-container">
+                <a href="@Url.Action("Index", "Article")" class="view-all-btn">
+                    <span>ดูบทความทั้งหมด</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+}
+ 

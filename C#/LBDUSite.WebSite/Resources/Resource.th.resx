@@ -1,0 +1,309 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Home" xml:space="preserve">
+    <value>หน้าแรก</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>เกี่ยวกับเรา</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>ติดต่อเรา</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>ค้นหา</value>
+  </data>
+  <data name="ViewAll" xml:space="preserve">
+    <value>ดูทั้งหมด</value>
+  </data>
+  <data name="ReadMore" xml:space="preserve">
+    <value>อ่านเพิ่มเติม</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>ส่ง</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>ยกเลิก</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>บันทึก</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>ลบ</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>แก้ไข</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>กลับ</value>
+  </data>
+  <data name="Nav_Home" xml:space="preserve">
+    <value>หน้าแรก</value>
+  </data>
+  <data name="Nav_AllFunds" xml:space="preserve">
+    <value>กองทุนทั้งหมด</value>
+  </data>
+  <data name="Nav_Learning" xml:space="preserve">
+    <value>เรียนรู้</value>
+  </data>
+  <data name="Nav_Articles" xml:space="preserve">
+    <value>บทความ</value>
+  </data>
+  <data name="Nav_Contact" xml:space="preserve">
+    <value>ติดต่อเรา</value>
+  </data>
+  <data name="Fund_Title" xml:space="preserve">
+    <value>กองทุนทั้งหมด</value>
+  </data>
+  <data name="Fund_Search" xml:space="preserve">
+    <value>ค้นหากองทุน...</value>
+  </data>
+  <data name="Fund_Category" xml:space="preserve">
+    <value>หมวดหมู่</value>
+  </data>
+  <data name="Fund_AllCategories" xml:space="preserve">
+    <value>ทุกประเภท</value>
+  </data>
+  <data name="Fund_NAV" xml:space="preserve">
+    <value>NAV</value>
+  </data>
+  <data name="Fund_Return" xml:space="preserve">
+    <value>ผลตอบแทน</value>
+  </data>
+  <data name="Fund_Risk" xml:space="preserve">
+    <value>ความเสี่ยง</value>
+  </data>
+  <data name="Fund_MinimumInvestment" xml:space="preserve">
+    <value>ขั้นต่ำ</value>
+  </data>
+  <data name="Fund_BuyFund" xml:space="preserve">
+    <value>ซื้อกองทุน</value>
+  </data>
+  <data name="Fund_NoResults" xml:space="preserve">
+    <value>ไม่พบกองทุนที่ตรงกับเงื่อนไข</value>
+  </data>
+  <data name="Article_Title" xml:space="preserve">
+    <value>บทความและข่าวสาร</value>
+  </data>
+  <data name="Article_Search" xml:space="preserve">
+    <value>ค้นหาบทความ...</value>
+  </data>
+  <data name="Article_Category" xml:space="preserve">
+    <value>หมวดหมู่</value>
+  </data>
+  <data name="Article_AllCategories" xml:space="preserve">
+    <value>ทั้งหมด</value>
+  </data>
+  <data name="Article_Featured" xml:space="preserve">
+    <value>แนะนำ</value>
+  </data>
+  <data name="Article_Popular" xml:space="preserve">
+    <value>ยอดนิยม</value>
+  </data>
+  <data name="Article_ReadingTime" xml:space="preserve">
+    <value>นาที</value>
+  </data>
+  <data name="Article_Views" xml:space="preserve">
+    <value>ครั้ง</value>
+  </data>
+  <data name="Article_ShareThis" xml:space="preserve">
+    <value>แชร์บทความนี้</value>
+  </data>
+  <data name="Article_RelatedArticles" xml:space="preserve">
+    <value>บทความที่เกี่ยวข้อง</value>
+  </data>
+  <data name="Article_NoResults" xml:space="preserve">
+    <value>ไม่พบบทความ</value>
+  </data>
+  <data name="Contact_Title" xml:space="preserve">
+    <value>ติดต่อเรา</value>
+  </data>
+  <data name="Contact_Description" xml:space="preserve">
+    <value>มีคำถามหรือข้อสงสัย? เราพร้อมให้บริการและตอบคำถามของคุณ</value>
+  </data>
+  <data name="Contact_Information" xml:space="preserve">
+    <value>ข้อมูลติดต่อ</value>
+  </data>
+  <data name="Contact_SendMessage" xml:space="preserve">
+    <value>ส่งข้อความถึงเรา</value>
+  </data>
+  <data name="Contact_FullName" xml:space="preserve">
+    <value>ชื่อ-นามสกุล</value>
+  </data>
+  <data name="Contact_Email" xml:space="preserve">
+    <value>อีเมล</value>
+  </data>
+  <data name="Contact_Phone" xml:space="preserve">
+    <value>เบอร์โทรศัพท์</value>
+  </data>
+  <data name="Contact_Subject" xml:space="preserve">
+    <value>หัวข้อ</value>
+  </data>
+  <data name="Contact_Message" xml:space="preserve">
+    <value>ข้อความ</value>
+  </data>
+  <data name="Contact_Submit" xml:space="preserve">
+    <value>ส่งข้อความ</value>
+  </data>
+  <data name="Contact_Address" xml:space="preserve">
+    <value>ที่อยู่</value>
+  </data>
+  <data name="Contact_WorkingHours" xml:space="preserve">
+    <value>เวลาทำการ</value>
+  </data>
+  <data name="Contact_FollowUs" xml:space="preserve">
+    <value>ติดตามเราได้ที่</value>
+  </data>
+  <data name="Contact_SuccessMessage" xml:space="preserve">
+    <value>ส่งข้อความเรียบร้อยแล้ว เราจะติดต่อกลับโดยเร็วที่สุด</value>
+  </data>
+  <data name="Validation_Required" xml:space="preserve">
+    <value>กรุณากรอก {0}</value>
+  </data>
+  <data name="Validation_Email" xml:space="preserve">
+    <value>รูปแบบอีเมลไม่ถูกต้อง</value>
+  </data>
+  <data name="Validation_Phone" xml:space="preserve">
+    <value>รูปแบบเบอร์โทรศัพท์ไม่ถูกต้อง</value>
+  </data>
+  <data name="Validation_MinLength" xml:space="preserve">
+    <value>{0} ต้องมีความยาวอย่างน้อย {1} ตัวอักษร</value>
+  </data>
+  <data name="Pagination_Previous" xml:space="preserve">
+    <value>ก่อนหน้า</value>
+  </data>
+  <data name="Pagination_Next" xml:space="preserve">
+    <value>ถัดไป</value>
+  </data>
+  <data name="Pagination_Page" xml:space="preserve">
+    <value>หน้า</value>
+  </data>
+  <data name="Pagination_Of" xml:space="preserve">
+    <value>จาก</value>
+  </data>
+  <data name="Error_NotFound" xml:space="preserve">
+    <value>ไม่พบหน้าที่ต้องการ</value>
+  </data>
+  <data name="Error_ServerError" xml:space="preserve">
+    <value>เกิดข้อผิดพลาดภายในระบบ</value>
+  </data>
+  <data name="Error_NoAccess" xml:space="preserve">
+    <value>คุณไม่มีสิทธิ์เข้าถึงหน้านี้</value>
+  </data>
+</root>
