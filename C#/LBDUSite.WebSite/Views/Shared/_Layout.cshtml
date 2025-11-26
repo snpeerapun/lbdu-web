@@ -44,8 +44,16 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="nav-link">
+                        <a href="@Url.Action("Index", "Compare")"
+                           class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Compare" ? "active" : "")">
                             <i class="fas fa-graduation-cap"></i>
+                            @Localization.GetString("Nav_Compare")
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Index", "Learning")"
+                           class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Learning" ? "active" : "")">
+                            <i class="fas fa-newspaper"></i>
                             @Localization.GetString("Nav_Learning")
                         </a>
                     </li>
@@ -70,16 +78,8 @@
                 <!-- Language Switcher -->
                 @Html.Partial("_LanguageSwitcher")
 
-                <!-- User Menu (if logged in) -->
-                <button class="user-btn">
-                    <i class="fas fa-user"></i>
-                </button>
             </div>
-
-            <!-- Mobile Menu Toggle -->
-            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-                <i class="fas fa-bars"></i>
-            </button>
+ 
         </div>
     </header>
 

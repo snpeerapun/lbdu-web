@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Localization;
+﻿using LBDUSite.Services;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.Extensions.Localization;
+using System.Globalization;
 using System.Reflection;
 
 namespace LBDUSite.Services
@@ -8,14 +11,12 @@ namespace LBDUSite.Services
         string GetString(string key);
         string GetString(string key, params object[] args);
         string GetCurrentLanguage();
-        void SetLanguage(string culture);
     }
 
     public class LocalizationService : ILocalizationService
     {
         private readonly IStringLocalizer _localizer;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private string _currentLanguage = "th";
 
         public LocalizationService(
             IStringLocalizerFactory factory,
@@ -25,71 +26,44 @@ namespace LBDUSite.Services
             var assemblyName = new AssemblyName(type.GetTypeInfo().Assembly.FullName);
             _localizer = factory.Create("Resources", assemblyName.Name);
             _httpContextAccessor = httpContextAccessor;
-
-            // ดึงภาษาจาก Cookie หรือ Session
-            var context = _httpContextAccessor.HttpContext;
-            if (context != null)
-            {
-                if (context.Request.Cookies.TryGetValue("Language", out var language))
-                {
-                    _currentLanguage = language;
-                }
-                else if (context.Session.GetString("Language") != null)
-                {
-                    _currentLanguage = context.Session.GetString("Language") ?? "th";
-                }
-            }
         }
 
         public string GetString(string key)
         {
-            return _localizer[key];
+            // ใช้ Culture ที่ถูกตั้งค่าโดย ASP.NET Core Localization Middleware
+            var localizedString = _localizer[key];
+
+            // ถ้าไม่เจอ ให้ return key กลับไป
+            if (localizedString.ResourceNotFound)
+            {
+                return $"[{key}]"; // แสดงว่าไม่เจอ resource
+            }
+
+            return localizedString.Value;
         }
 
         public string GetString(string key, params object[] args)
         {
-            return string.Format(_localizer[key], args);
+            var format = GetString(key);
+            return string.Format(format, args);
         }
 
         public string GetCurrentLanguage()
         {
-            var context = _httpContextAccessor.HttpContext;
-            if (context != null)
-            {
-                if (context.Request.Cookies.TryGetValue("Language", out var language))
-                {
-                    return language;
-                }
-                if (context.Session.GetString("Language") != null)
-                {
-                    return context.Session.GetString("Language") ?? "th";
-                }
-            }
-            return _currentLanguage;
-        }
+            // ดึงจาก CurrentCulture ที่ ASP.NET Core ตั้งค่าไว้
+            var culture = CultureInfo.CurrentCulture.Name;
 
-        public void SetLanguage(string culture)
-        {
-            _currentLanguage = culture;
-            var context = _httpContextAccessor.HttpContext;
-            if (context != null)
-            {
-                // บันทึกลง Cookie (เก็บ 1 ปี)
-                context.Response.Cookies.Append("Language", culture, new CookieOptions
-                {
-                    Expires = DateTimeOffset.Now.AddYears(1),
-                    HttpOnly = true,
-                    SameSite = SameSiteMode.Lax
-                });
+            if (culture.StartsWith("th"))
+                return "th";
+            else if (culture.StartsWith("en"))
+                return "en";
 
-                // บันทึกลง Session
-                context.Session.SetString("Language", culture);
-            }
+            return "th"; // Default
         }
     }
 
-    // Empty class for resource reference
     public class Resources
     {
     }
 }
+ 

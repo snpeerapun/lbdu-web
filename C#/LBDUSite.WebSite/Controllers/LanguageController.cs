@@ -1,67 +1,56 @@
-﻿using LBDUSite.Services;
+﻿using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LBDUSite.Controllers
 {
-    [Route("Language")]
     public class LanguageController : Controller
     {
-        private readonly ILocalizationService _localization;
-
-        public LanguageController(ILocalizationService localization)
+        [HttpGet]
+        public IActionResult Change(string lang, string returnUrl = "/")
         {
-            _localization = localization ?? throw new ArgumentNullException(nameof(localization));
-        }
+            // Validate และแปลง lang เป็น culture code
+            string culture;
+            if (lang == "th")
+                culture = "th-TH";
+            else if (lang == "en")
+                culture = "en-US";
+            else
+                culture = "th-TH"; // Default
 
-        // GET: /Language/Change?lang=en&returnUrl=/
-        [HttpGet("Change")]
-        public IActionResult Change(string lang, string? returnUrl = null)
-        {
-            if (string.IsNullOrEmpty(lang) || (lang != "th" && lang != "en"))
+            // ตั้งค่า Cookie สำหรับ ASP.NET Core Localization
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddYears(1),
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.Lax,
+                    IsEssential = true,
+                    Path = "/"
+                }
+            );
+
+            // ตั้งค่า Cookie เสริมสำหรับ Custom ของคุณ (ถ้าต้องการ)
+            Response.Cookies.Append(
+                "Language",
+                lang,
+                new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddYears(1),
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.Lax,
+                    Path = "/"
+                }
+            );
+
+            // Redirect back
+            if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
             {
-                lang = "th"; // Default to Thai
+                returnUrl = "/";
             }
 
-            // เปลี่ยนภาษา
-            _localization.SetLanguage(lang);
-
-            // Redirect กลับไปหน้าเดิม
-            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-
-            // ถ้าไม่มี returnUrl ให้กลับไปหน้าแรก
-            return RedirectToAction("Index", "Home");
+            return LocalRedirect(returnUrl);
         }
-
-        // API สำหรับ AJAX
-        // POST: /Language/SetLanguage
-        [HttpGet("SetLanguage")]
-        public IActionResult SetLanguage([FromBody] LanguageRequest request)
-        {
-            if (string.IsNullOrEmpty(request.Language) ||
-                (request.Language != "th" && request.Language != "en"))
-            {
-                return BadRequest(new { success = false, message = "Invalid language code" });
-            }
-
-            _localization.SetLanguage(request.Language);
-
-            return Ok(new { success = true, language = request.Language });
-        }
-
-        // GET: /Language/Current
-        [HttpGet("Current")]
-        public IActionResult Current()
-        {
-            var currentLang = _localization.GetCurrentLanguage();
-            return Ok(new { language = currentLang });
-        }
-    }
-
-    public class LanguageRequest
-    {
-        public string Language { get; set; }
     }
 }

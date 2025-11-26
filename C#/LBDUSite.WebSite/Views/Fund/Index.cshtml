@@ -1,258 +1,1436 @@
-﻿@model LBDUSite.Controllers.FundListViewModel
+﻿@inject LBDUSite.Services.ILocalizationService Localization
+@model LBDUSite.ViewModels.FundListViewModel
 @{
-    ViewBag.Title = string.IsNullOrEmpty(Model.Category) ? "กองทุนทั้งหมด" : $"กองทุน{Model.Category}";
+    ViewBag.Title = "กองทุนทั้งหมด";
+    var currentLang = Localization.GetCurrentLanguage();
 }
 
- 
-
 <!-- Hero Section -->
-<section class="fund-index-hero">
-    <div class="fund-index-container">
-        <div class="fund-index-header">
-            <h1>
-                @if (!string.IsNullOrEmpty(Model.Category))
-                {
-                    <span>กองทุน@Model.Category</span>
-                }
-                else
-                {
-                    <span>กองทุนทั้งหมด</span>
-                }
-            </h1>
-            <p>ค้นหาและเปรียบเทียบกองทุนรวมจากทุกบริษัทจัดการ</p>
-        </div>
+<section class="fund-list-hero">
+    <div class="hero-container">
+        <h1 class="hero-title">
+            @(currentLang == "th" ? "ค้นหากองทุนที่เหมาะกับคุณ" : "Find the Right Fund for You")
+        </h1>
+        <p class="hero-subtitle">
+            @(currentLang == "th" ? "เปรียบเทียบกองทุนจากทุกบริษัทจัดการในที่เดียว" : "Compare funds from all management companies")
+        </p>
 
-        <!-- Search & Filter Bar -->
-        <form method="get" action="@Url.Action("Index", "Fund")" class="fund-filter-bar">
-            <input type="text" 
-                   name="search" 
-                   placeholder="ค้นหาชื่อกองทุน หรือ รหัสกองทุน..." 
-                   value="@Model.SearchTerm" />
-
-           <select name="category">
-                <option value="">ทุกประเภท</option>
-                <option value="หุ้น" selected="@(Model.Category == "หุ้น")">กองทุนหุ้น</option>
-                <option value="ผสม" selected="@(Model.Category == "ผสม")">กองทุนผสม</option>
-                <option value="ตราสารหนี้" selected="@(Model.Category == "ตราสารหนี้")">กองทุนตราสารหนี้</option>
-                <option value="อสังหา" selected="@(Model.Category == "อสังหา")">กองทุนอสังหาฯ</option>
-            </select>
-
-            <button type="submit">
-                <i class="fas fa-search"></i>
-                ค้นหา
+        <!-- Search Bar -->
+        <div class="search-bar-large">
+            <i class="fas fa-search"></i>
+            <input type="text"
+                   placeholder="@(currentLang == "th" ? "ค้นหาชื่อกองทุน หรือ รหัสกองทุน เช่น KFEQUITY-A" : "Search fund name or code")"
+                   id="fundSearchInput"
+                   value="@Model.SearchTerm"
+                   onkeypress="if(event.key === 'Enter') performSearch()">
+            <button class="search-btn" onclick="performSearch()">
+                @(currentLang == "th" ? "ค้นหา" : "Search")
             </button>
-
-            @if (!string.IsNullOrEmpty(Model.Category) || !string.IsNullOrEmpty(Model.SearchTerm))
-            {
-                <a href="@Url.Action("Index", "Fund")" class="clear-filter-btn">
-                    <i class="fas fa-times"></i>
-                    ล้างตัวกรอง
-                </a>
-            }
-        </form>
+        </div>
     </div>
 </section>
 
-<!-- Main Content -->
-<section class="section">
-    <div class="section-container">
-        <!-- Active Filters -->
-        @if (!string.IsNullOrEmpty(Model.Category) || !string.IsNullOrEmpty(Model.SearchTerm))
-        {
-            <div class="active-filters">
-                @if (!string.IsNullOrEmpty(Model.Category))
-                {
-                    <span class="filter-tag">
-                        ประเภท: @Model.Category
-                        <a href="@Url.Action("Index", "Fund", new { search = Model.SearchTerm })" style="color: inherit;">
-                            <i class="fas fa-times"></i>
-                        </a>
-                    </span>
-                }
-                @if (!string.IsNullOrEmpty(Model.SearchTerm))
-                {
-                    <span class="filter-tag">
-                        ค้นหา: "@Model.SearchTerm"
-                        <a href="@Url.Action("Index", "Fund", new { category = Model.Category })" style="color: inherit;">
-                            <i class="fas fa-times"></i>
-                        </a>
-                    </span>
-                }
-            </div>
-        }
+<!-- Filter Section -->
+<section class="fund-filters-section">
+    <div class="filters-container">
 
-        <!-- Results Header -->
-        <div class="fund-results-header">
-            <div class="fund-results-info">
-                พบ <strong>@Model.TotalCount.ToString("N0")</strong> กองทุน
-                @if (Model.TotalPages > 1)
-                {
-                    <span> (หน้า @Model.CurrentPage จาก @Model.TotalPages)</span>
-                }
+        <!-- Quick Filter Chips -->
+        <div class="quick-filters">
+            <div class="filter-chips-scroll">
+                <div class="filter-chip-bar">
+                <!-- แนะนำ & Special -->
+                <button class="filter-chip active" data-filter="recommended" onclick="applyFilter('recommended')">
+                    <i class="fas fa-star"></i>
+                    @(currentLang == "th" ? "แนะนำ" : "Recommended")
+                </button>
+                <button class="filter-chip" data-filter="ipo" onclick="applyFilter('ipo')">
+                    <i class="fas fa-rocket"></i>
+                    @(currentLang == "th" ? "IPO ใหม่" : "New IPO")
+                </button>
+                <button class="filter-chip" data-filter="top-return" onclick="applyFilter('top-return')">
+                    <i class="fas fa-fire"></i>
+                    @(currentLang == "th" ? "ผลตอบแทนสูงสุด" : "Top Return")
+                </button>
+                <!-- ภาษี -->
+                <button class="filter-chip" data-filter="ssf" onclick="applyFilter('ssf')">
+                    <i class="fas fa-receipt"></i>
+                    กองทุนลดหย่อนภาษี
+                </button>
+                <!-- Morningstar -->
+                <button class="filter-chip" data-filter="ms5star" onclick="applyFilter('ms5star')">
+                    <i class="fas fa-star"></i>
+                    Morningstar
+                </button>
+                <!-- Morningstar -->
+                <button class="filter-chip" data-filter="ms5star" onclick="applyFilter('ms5star')">
+                    <i class="fas fa-star"></i>
+                    หุ้นต่างประเทศ
+                </button>
+                </div>
+                <div class="filter-advance">
+                    <!-- Sorting -->
+                    <!-- AMC Filter Button
+                    <button class="filter-action-btn" onclick="openAMCModal()">
+                        <i class="fas fa-building"></i>
+                        <span>@(currentLang == "th" ? "บลจ." : "AMC")</span>
+                        <span class="selected-count" id="amcSelectedCount" style="display: none;">3</span>
+                    </button>-->
+                    <div class="sort-dropdown">
+                        <label for="sortBy">
+                            <i class="fas fa-sort"></i>
+                            @(currentLang == "th" ? "เรียงตาม" : "Sort by")
+                        </label>
+                        <select id="sortBy" class="select-modern" onchange="applySorting()">
+                            <option value="recommend">@(currentLang == "th" ? "แนะนำ" : "Recommended")</option>
+                            <option value="ret1y_desc">@(currentLang == "th" ? "ผลตอบแทน 1 ปี สูง→ต่ำ" : "1Y Return High→Low")</option>
+                            <option value="ytd_desc">@(currentLang == "th" ? "ผลตอบแทน YTD สูง→ต่ำ" : "YTD Return High→Low")</option>
+                            <option value="ret3y_desc">@(currentLang == "th" ? "ผลตอบแทน 3 ปี สูง→ต่ำ" : "3Y Return High→Low")</option>
+                            <option value="fee_asc">@(currentLang == "th" ? "ค่าธรรมเนียม ต่ำ→สูง" : "Fee Low→High")</option>
+                            <option value="risk_asc">@(currentLang == "th" ? "ความเสี่ยง ต่ำ→สูง" : "Risk Low→High")</option>
+                            <option value="nav_desc">@(currentLang == "th" ? "NAV สูง→ต่ำ" : "NAV High→Low")</option>
+                        </select>
+                    </div>
+                    <!-- Advanced Filters Button -->
+                    <button class="btn-advanced-filter" onclick="openAdvancedFilter()">
+                        <i class="fas fa-sliders-h"></i>
+                    </button>
+                </div>
             </div>
-            <select class="fund-sort-select" onchange="sortFunds(this.value)">
-                <option value="">เรียงตาม</option>
-                <option value="name-asc">ชื่อ (A-Z)</option>
-                <option value="name-desc">ชื่อ (Z-A)</option>
-                <option value="nav-asc">NAV (ต่ำ-สูง)</option>
-                <option value="nav-desc">NAV (สูง-ต่ำ)</option>
-                <option value="return-desc">ผลตอบแทน (สูง-ต่ำ)</option>
-            </select>
+
         </div>
 
-        <!-- Fund Grid -->
-        @if (Model.Funds.Any())
+        <!-- Bottom Filter Row -->
+        
+    </div>
+</section>
+
+ 
+<!-- Fund Grid Display -->
+<section class="fund-list-section">
+    <div class="fund-list-container">
+        @if (Model.Funds != null && Model.Funds.Any())
         {
-            <div class="fund-grid">
+            <div class="fund-grid" id="fundGrid">
                 @foreach (var fund in Model.Funds)
                 {
-                    @Html.Partial("_FundCard", fund)
+                    <div class="fund-card" onclick="location.href='@Url.Action("Detail", "Fund", new { id = fund.FundId })'">
+                        <div class="fund-card-header">
+                            <div class="fund-company">
+                                <div class="company-logo-small">@fund.AMCLogo</div>
+                                <span class="company-name">@fund.AMCShortName</span>
+                            </div>
+                            <span class="fund-type-badge @fund.FundType">@fund.FundTypeDisplay</span>
+                        </div>
+
+                        <div class="fund-card-body">
+                            <h3 class="fund-card-code">@fund.FundCode</h3>
+                            <p class="fund-card-name">@fund.FundName</p>
+
+                            <div class="fund-card-stats">
+                                <div class="fund-stat">
+                                    <span class="stat-label">NAV</span>
+                                    <span class="stat-value">@fund.NAV.ToString("N2")</span>
+                                </div>
+                                @if (fund.YTDReturn.HasValue)
+                                {
+                                    <div class="fund-stat">
+                                        <span class="stat-label">YTD</span>
+                                        <span class="stat-value @(fund.YTDReturn >= 0 ? "positive" : "negative")">
+                                            @((fund.YTDReturn >= 0 ? "+" : "") + fund.YTDReturn.Value.ToString("N2"))%
+                                        </span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="fund-card-footer">
+                            <span class="risk-indicator">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                @(currentLang == "th" ? "ความเสี่ยง" : "Risk") @fund.RiskLevel
+                            </span>
+                            <span class="view-detail">
+                                @(currentLang == "th" ? "ดูรายละเอียด" : "View Details") <i class="fas fa-arrow-right"></i>
+                            </span>
+                        </div>
+                    </div>
                 }
             </div>
 
             <!-- Pagination -->
             @if (Model.TotalPages > 1)
             {
-                <div class="pagination">
-                    <!-- Previous Button -->
+                <div class="pagination" id="paginationContainer">
                     @if (Model.HasPreviousPage)
                     {
-                        <a href="@Url.Action("Index", "Fund", new { 
-                            category = Model.Category, 
-                            search = Model.SearchTerm, 
-                            page = Model.CurrentPage - 1 
-                        })" class="pagination-btn">
+                        <a href="javascript:void(0)"
+                           class="pagination-btn"
+                           onclick="loadPage(@(Model.CurrentPage - 1))">
                             <i class="fas fa-chevron-left"></i>
-                            ก่อนหน้า
+                            @(currentLang == "th" ? "ก่อนหน้า" : "Previous")
                         </a>
                     }
-                    else
+
+                    @for (int i = Math.Max(1, Model.CurrentPage - 2); i <= Math.Min(Model.TotalPages, Model.CurrentPage + 2); i++)
                     {
-                        <button class="pagination-btn" disabled>
-                            <i class="fas fa-chevron-left"></i>
-                            ก่อนหน้า
-                        </button>
+                        <a href="javascript:void(0)"
+                           class="pagination-number @(i == Model.CurrentPage ? "active" : "")"
+                           onclick="loadPage(@i)">
+                            @i
+                        </a>
                     }
 
-                    <!-- Page Numbers -->
-                    @{
-                        var startPage = Math.Max(1, Model.CurrentPage - 2);
-                        var endPage = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
-
-                        // Show first page
-                        if (startPage > 1)
-                        {
-                            <a href="@Url.Action("Index", "Fund", new { 
-                                category = Model.Category, 
-                                search = Model.SearchTerm, 
-                                page = 1 
-                            })" class="pagination-btn">1</a>
-
-                            if (startPage > 2)
-                            {
-                                <span class="pagination-info">...</span>
-                            }
-                        }
-
-                        // Show page range
-                        for (int i = startPage; i <= endPage; i++)
-                        {
-                            if (i == Model.CurrentPage)
-                            {
-                                <span class="pagination-btn active">@i</span>
-                            }
-                            else
-                            {
-                                <a href="@Url.Action("Index", "Fund", new { 
-                                    category = Model.Category, 
-                                    search = Model.SearchTerm, 
-                                    page = i 
-                                })" class="pagination-btn">@i</a>
-                            }
-                        }
-
-                        // Show last page
-                        if (endPage < Model.TotalPages)
-                        {
-                            if (endPage < Model.TotalPages - 1)
-                            {
-                                <span class="pagination-info">...</span>
-                            }
-
-                            <a href="@Url.Action("Index", "Fund", new { 
-                                category = Model.Category, 
-                                search = Model.SearchTerm, 
-                                page = Model.TotalPages 
-                            })" class="pagination-btn">@Model.TotalPages</a>
-                        }
-                    }
-
-                    <!-- Next Button -->
                     @if (Model.HasNextPage)
                     {
-                        <a href="@Url.Action("Index", "Fund", new { 
-                            category = Model.Category, 
-                            search = Model.SearchTerm, 
-                            page = Model.CurrentPage + 1 
-                        })" class="pagination-btn">
-                            ถัดไป
+                        <a href="javascript:void(0)"
+                           class="pagination-btn"
+                           onclick="loadPage(@(Model.CurrentPage + 1))">
+                            @(currentLang == "th" ? "ถัดไป" : "Next")
                             <i class="fas fa-chevron-right"></i>
                         </a>
-                    }
-                    else
-                    {
-                        <button class="pagination-btn" disabled>
-                            ถัดไป
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
                     }
                 </div>
             }
         }
         else
         {
-            <!-- Empty State -->
-            <div class="empty-state">
-                <div class="empty-state-icon">
-                    <i class="fas fa-search"></i>
-                </div>
-                <h3>ไม่พบกองทุนที่ตรงกับเงื่อนไขที่ค้นหา</h3>
-                <p>
-                    @if (!string.IsNullOrEmpty(Model.SearchTerm))
-                    {
-                        <span>ลองค้นหาด้วยคำอื่น หรือ</span>
-                    }
-                    else
-                    {
-                        <span>ลอง</span>
-                    }
-                    <a href="@Url.Action("Index", "Fund")" style="color: var(--primary); font-weight: 600;">ดูกองทุนทั้งหมด</a>
-                </p>
+            <div class="no-results">
+                <i class="fas fa-search"></i>
+                <h3>@(currentLang == "th" ? "ไม่พบกองทุนที่ตรงกับเงื่อนไข" : "No funds found")</h3>
+                <p>@(currentLang == "th" ? "ลองปรับเปลี่ยนตัวกรองหรือคำค้นหา" : "Try adjusting your filters")</p>
+                <button class="btn btn-primary" onclick="clearAllFilters()">
+                    @(currentLang == "th" ? "ล้างตัวกรองทั้งหมด" : "Clear All Filters")
+                </button>
             </div>
         }
     </div>
 </section>
 
+<!-- AMC Selection Modal -->
+<div class="modal-overlay" id="amcModal" style="display: none;">
+    <div class="modal-content modal-amc">
+        <div class="modal-header">
+            <h3>
+                <i class="fas fa-building"></i>
+                @(currentLang == "th" ? "เลือกบริษัทจัดการ (บลจ.)" : "Select Asset Management Company")
+            </h3>
+            <button class="modal-close" onclick="closeAMCModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="modal-search">
+            <i class="fas fa-search"></i>
+            <input type="text"
+                   placeholder="@(currentLang == "th" ? "ค้นหาชื่อ บลจ." : "Search AMC name")"
+                   id="amcSearchInput"
+                   oninput="filterAMCList()">
+        </div>
+
+        <div class="modal-body">
+            <div class="amc-list" id="amcList">
+                <!-- AMC items will be loaded here -->
+                <label class="amc-item">
+                    <input type="checkbox" name="amc" value="all" onchange="toggleAllAMC()">
+                    <span class="amc-name" style="font-weight: 700;">@(currentLang == "th" ? "เลือกทั้งหมด" : "Select All")</span>
+                </label>
+                <!-- Mock AMC data -->
+                <label class="amc-item">
+                    <input type="checkbox" name="amc" value="kbank" class="amc-checkbox">
+                    <span class="amc-logo">KB</span>
+                    <span class="amc-name">@(currentLang == "th" ? "กสิกรไทย" : "Kasikorn")</span>
+                    <span class="amc-count">(125 @(currentLang == "th" ? "กองทุน" : "funds"))</span>
+                </label>
+                <label class="amc-item">
+                    <input type="checkbox" name="amc" value="scb" class="amc-checkbox">
+                    <span class="amc-logo">SC</span>
+                    <span class="amc-name">@(currentLang == "th" ? "ไทยพาณิชย์" : "SCB")</span>
+                    <span class="amc-count">(98 @(currentLang == "th" ? "กองทุน" : "funds"))</span>
+                </label>
+                <label class="amc-item">
+                    <input type="checkbox" name="amc" value="ktam" class="amc-checkbox">
+                    <span class="amc-logo">KT</span>
+                    <span class="amc-name">@(currentLang == "th" ? "กรุงไทย" : "Krungthai")</span>
+                    <span class="amc-count">(87 @(currentLang == "th" ? "กองทุน" : "funds"))</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeAMCModal()">
+                @(currentLang == "th" ? "ยกเลิก" : "Cancel")
+            </button>
+            <button class="btn btn-primary" onclick="applyAMCFilter()">
+                @(currentLang == "th" ? "ยืนยัน" : "Confirm")
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Advanced Filter Side Panel -->
+<div class="side-panel-overlay" id="advancedFilterPanel" style="display: none;">
+    <div class="side-panel">
+        <div class="side-panel-header">
+            <h3>
+                <i class="fas fa-sliders-h"></i>
+                @(currentLang == "th" ? "ตัวกรองเพิ่มเติม" : "Advanced Filters")
+            </h3>
+            <button class="panel-close" onclick="closeAdvancedFilter()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="side-panel-body">
+            <!-- Risk Level -->
+            <div class="filter-section">
+                <label class="filter-section-label">
+                    @(currentLang == "th" ? "ระดับความเสี่ยง" : "Risk Level")
+                </label>
+                <div class="risk-level-selector">
+                    <div class="risk-range-labels">
+                        <span>1 @(currentLang == "th" ? "(ต่ำ)" : "(Low)")</span>
+                        <span>8 @(currentLang == "th" ? "(สูง)" : "(High)")</span>
+                    </div>
+                    <div class="range-slider-container">
+                        <input type="range" id="riskLevelMin" min="1" max="8" value="1" class="risk-slider" oninput="updateRiskRange()">
+                        <input type="range" id="riskLevelMax" min="1" max="8" value="8" class="risk-slider" oninput="updateRiskRange()">
+                    </div>
+                    <div class="risk-selected-range">
+                        <span id="selectedRiskRange">1 - 8</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Minimum Return -->
+            <div class="filter-section">
+                <label class="filter-section-label">
+                    @(currentLang == "th" ? "ผลตอบแทนขั้นต่ำ (% ต่อปี)" : "Minimum Return (% p.a.)")
+                </label>
+                <input type="number" id="minReturn" class="filter-input" placeholder="0" min="0" step="0.1">
+            </div>
+
+            <!-- Minimum Investment -->
+            <div class="filter-section">
+                <label class="filter-section-label">
+                    @(currentLang == "th" ? "เงินลงทุนขั้นต่ำ (บาท)" : "Minimum Investment (Baht)")
+                </label>
+                <input type="number" id="minInvestment" class="filter-input" placeholder="0" min="0" step="1000">
+            </div>
+
+            <!-- Dividend Policy -->
+            <div class="filter-section">
+                <label class="filter-section-label">
+                    @(currentLang == "th" ? "นโยบายเงินปันผล" : "Dividend Policy")
+                </label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="dividend" value="distribute">
+                        <span>@(currentLang == "th" ? "จ่ายปันผล" : "Distributing")</span>
+                    </label>
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="dividend" value="accumulate">
+                        <span>@(currentLang == "th" ? "สะสมเงินปันผล" : "Accumulating")</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="side-panel-footer">
+            <button class="btn btn-outline" onclick="resetAdvancedFilters()">
+                @(currentLang == "th" ? "รีเซ็ต" : "Reset")
+            </button>
+            <button class="btn btn-primary" onclick="applyAdvancedFilters()">
+                @(currentLang == "th" ? "ใช้ตัวกรอง" : "Apply Filters")
+            </button>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script>
-        function sortFunds(sortBy) {
-            if (!sortBy) return;
-            
-            // Get current URL parameters
-            var currentUrl = new URL(window.location.href);
-            currentUrl.searchParams.set('sort', sortBy);
-            currentUrl.searchParams.set('page', '1'); // Reset to first page
-            
-            // Redirect to sorted URL
-            window.location.href = currentUrl.toString();
+        const currentLang = '@currentLang';
+        let currentFilter = 'recommended';
+        let currentSort = 'recommend';
+        let currentPage = @Model.CurrentPage;
+        let selectedAMCs = [];
+
+        // Filter Names
+        const filterNames = {
+            'recommended': currentLang === 'th' ? 'กองทุนแนะนำ' : 'Recommended Funds',
+            'ipo': currentLang === 'th' ? 'IPO ใหม่' : 'New IPO',
+            'top-return': currentLang === 'th' ? 'ผลตอบแทนสูงสุด' : 'Top Return',
+            'ssf': currentLang === 'th' ? 'กองทุน SSF' : 'SSF Funds',
+            'rmf': currentLang === 'th' ? 'กองทุน RMF' : 'RMF Funds',
+            'ms5star': 'Morningstar ★★★★★',
+            'ms4star': 'Morningstar ★★★★+',
+            'equity': currentLang === 'th' ? 'กองทุนหุ้น' : 'Equity Funds',
+            'fixed': currentLang === 'th' ? 'กองทุนตราสารหนี้' : 'Fixed Income Funds',
+            'mixed': currentLang === 'th' ? 'กองทุนผสม' : 'Mixed Funds',
+            'money-market': currentLang === 'th' ? 'กองทุนตลาดเงิน' : 'Money Market Funds',
+            'foreign': currentLang === 'th' ? 'กองทุนต่างประเทศ' : 'Foreign Funds',
+            'reit': 'REIT'
+        };
+
+        // Filter Subtitles
+        const filterSubtitles = {
+            'recommended': currentLang === 'th' ? 'แสดงกองทุนที่เราแนะนำสำหรับคุณ' : 'Showing our recommended funds for you',
+            'ipo': currentLang === 'th' ? 'แสดงกองทุน IPO ใหม่ล่าสุด' : 'Showing latest IPO funds',
+            'top-return': currentLang === 'th' ? 'แสดงกองทุนที่มีผลตอบแทนสูงสุด' : 'Showing top performing funds',
+            'ssf': currentLang === 'th' ? 'แสดงกองทุน SSF ที่สามารถลดหย่อนภาษีได้' : 'Showing SSF funds with tax benefits',
+            'rmf': currentLang === 'th' ? 'แสดงกองทุน RMF ที่สามารถลดหย่อนภาษีได้' : 'Showing RMF funds with tax benefits',
+            'ms5star': currentLang === 'th' ? 'แสดงกองทุนที่ได้รับการจัดอันดับ 5 ดาวจาก Morningstar' : 'Showing 5-star rated funds by Morningstar',
+            'ms4star': currentLang === 'th' ? 'แสดงกองทุนที่ได้รับการจัดอันดับ 4 ดาวขึ้นไปจาก Morningstar' : 'Showing 4+ star rated funds by Morningstar',
+            'equity': currentLang === 'th' ? 'แสดงกองทุนหุ้นทั้งหมด' : 'Showing all equity funds',
+            'fixed': currentLang === 'th' ? 'แสดงกองทุนตราสารหนี้ทั้งหมด' : 'Showing all fixed income funds',
+            'mixed': currentLang === 'th' ? 'แสดงกองทุนผสมทั้งหมด' : 'Showing all mixed funds'
+        };
+
+        // Apply Filter
+        function applyFilter(filter) {
+            currentFilter = filter;
+            currentPage = 1;
+
+            // Update active chip
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update header
+            document.getElementById('currentFilterName').textContent = filterNames[filter];
+            document.getElementById('resultsSubtitle').textContent = filterSubtitles[filter] || '';
+
+            // Load funds
+            loadFunds();
         }
 
-        // Smooth scroll to top after pagination
-        if (window.location.search.includes('page=')) {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
+        // Apply Sorting
+        function applySorting() {
+            currentSort = document.getElementById('sortBy').value;
+            currentPage = 1;
+            loadFunds();
+        }
+
+        // Load Funds (AJAX)
+        function loadFunds() {
+            const params = new URLSearchParams({
+                filter: currentFilter,
+                sort: currentSort,
+                page: currentPage,
+                amc: selectedAMCs.join(',')
             });
+
+            // Show loading
+            document.getElementById('fundGrid').style.opacity = '0.5';
+
+            // In production, use AJAX to load funds
+            // For now, reload page with parameters
+            window.location.href = '/Fund?' + params.toString();
+        }
+
+        // Load Page
+        function loadPage(page) {
+            currentPage = page;
+            loadFunds();
+        }
+
+        // Search
+        function performSearch() {
+            const searchTerm = document.getElementById('fundSearchInput').value;
+            if (searchTerm) {
+                window.location.href = '/Fund/Search?q=' + encodeURIComponent(searchTerm);
+            }
+        }
+
+        // AMC Modal
+        function openAMCModal() {
+            document.getElementById('amcModal').style.display = 'flex';
+        }
+
+        function closeAMCModal() {
+            document.getElementById('amcModal').style.display = 'none';
+        }
+
+        function filterAMCList() {
+            const searchTerm = document.getElementById('amcSearchInput').value.toLowerCase();
+            document.querySelectorAll('.amc-item').forEach(item => {
+                const name = item.querySelector('.amc-name')?.textContent.toLowerCase();
+                if (name && name.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else if (!item.querySelector('input[value="all"]')) {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        function toggleAllAMC() {
+            const allCheckbox = document.querySelector('input[name="amc"][value="all"]');
+            const checkboxes = document.querySelectorAll('.amc-checkbox');
+            checkboxes.forEach(cb => cb.checked = allCheckbox.checked);
+        }
+
+        function applyAMCFilter() {
+            selectedAMCs = Array.from(document.querySelectorAll('.amc-checkbox:checked'))
+                .map(cb => cb.value);
+
+            const count = selectedAMCs.length;
+            const badge = document.getElementById('amcSelectedCount');
+            if (count > 0) {
+                badge.textContent = count;
+                badge.style.display = 'inline-flex';
+            } else {
+                badge.style.display = 'none';
+            }
+
+            closeAMCModal();
+            currentPage = 1;
+            loadFunds();
+        }
+
+        // Advanced Filter Panel
+        function openAdvancedFilter() {
+            document.getElementById('advancedFilterPanel').style.display = 'flex';
+        }
+
+        function closeAdvancedFilter() {
+            document.getElementById('advancedFilterPanel').style.display = 'none';
+        }
+
+        function updateRiskRange() {
+            const min = document.getElementById('riskLevelMin').value;
+            const max = document.getElementById('riskLevelMax').value;
+            document.getElementById('selectedRiskRange').textContent = min + ' - ' + max;
+        }
+
+        function resetAdvancedFilters() {
+            document.getElementById('riskLevelMin').value = 1;
+            document.getElementById('riskLevelMax').value = 8;
+            document.getElementById('minReturn').value = '';
+            document.getElementById('minInvestment').value = '';
+            document.querySelectorAll('input[name="dividend"]').forEach(cb => cb.checked = false);
+            updateRiskRange();
+        }
+
+        function applyAdvancedFilters() {
+            // Get filter values
+            const riskMin = document.getElementById('riskLevelMin').value;
+            const riskMax = document.getElementById('riskLevelMax').value;
+            const minReturn = document.getElementById('minReturn').value;
+            const minInvestment = document.getElementById('minInvestment').value;
+            const dividendTypes = Array.from(document.querySelectorAll('input[name="dividend"]:checked'))
+                .map(cb => cb.value);
+
+            // Apply filters (implement your logic here)
+            console.log('Advanced filters:', { riskMin, riskMax, minReturn, minInvestment, dividendTypes });
+
+            closeAdvancedFilter();
+            currentPage = 1;
+            loadFunds();
+        }
+
+        function clearAllFilters() {
+            currentFilter = 'recommended';
+            currentSort = 'recommend';
+            selectedAMCs = [];
+            resetAdvancedFilters();
+            document.getElementById('fundSearchInput').value = '';
+
+            // Reset chips
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            document.querySelector('.filter-chip[data-filter="recommended"]').classList.add('active');
+
+            loadFunds();
         }
     </script>
 }
+ 
+<style>
+       /* ==================== FUND LIST PAGE STYLES ==================== */
+
+    /* Fund List Hero */
+    .fund-list-hero {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        padding: 80px 20px 60px;
+        color: white;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .fund-list-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50%;
+        height: 100%;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><circle cx="700" cy="300" r="250" fill="rgba(255,255,255,0.05)"/><circle cx="900" cy="700" r="350" fill="rgba(255,255,255,0.03)"/></svg>');
+        background-size: cover;
+    }
+
+    .hero-container {
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 15px;
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 1.125rem;
+        opacity: 0.95;
+        margin-bottom: 40px;
+    }
+
+    /* Search Bar Large */
+    .search-bar-large {
+        display: flex;
+        align-items: center;
+        background: white;
+        border-radius: 50px;
+        padding: 8px 8px 8px 25px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        max-width: 700px;
+        margin: 0 auto;
+        transition: all 0.3s ease;
+    }
+
+    .search-bar-large:focus-within {
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-bar-large i {
+        color: var(--gray-400);
+        font-size: 1.25rem;
+        margin-right: 15px;
+    }
+
+    .search-bar-large input {
+        flex: 1;
+        border: none;
+        outline: none;
+        font-size: 1rem;
+        color: var(--gray-900);
+        font-family: 'Noto Sans Thai', sans-serif;
+    }
+
+    .search-bar-large input::placeholder {
+        color: var(--gray-400);
+    }
+
+    .search-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        font-family: 'Noto Sans Thai', sans-serif;
+    }
+
+    .search-btn:hover {
+        background: var(--primary-dark);
+        transform: scale(1.05);
+    }
+
+    /* ==================== Filter Section ==================== */
+    .fund-filters-section {
+        background: white;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--gray-200);
+        position: sticky;
+        top: 80px;
+        z-index: 100;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .filters-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Quick Filter Chips - Horizontal Scroll */
+  
+
+    .filter-chips-scroll {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 10px 0;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+         justify-content: space-between;
+        align-items: center;
+    }
+
+    .filter-chips-scroll::-webkit-scrollbar {
+        display: none;
+    }
+    .filter-advance {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 10px 0;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+         justify-content: space-between;
+        align-items: center;
+    }
+    .filter-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 20px;
+        border: 2px solid var(--gray-300);
+        border-radius: 50px;
+        background: white;
+        color: var(--gray-700);
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        flex-shrink: 0;
+        font-family: 'Noto Sans Thai', sans-serif;
+    }
+
+    .filter-chip:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(28, 165, 155, 0.2);
+    }
+
+    .filter-chip.active {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    .filter-chip i {
+        font-size: 0.875rem;
+    }
+
+    /* Chip Variants */
+    .chip-featured {
+        border-color: var(--success);
+        color: var(--success);
+    }
+
+    .chip-featured.active {
+        background: var(--success);
+        border-color: var(--success);
+        color: white;
+    }
+
+    .chip-hot {
+        border-color: #ef4444;
+        color: #ef4444;
+    }
+
+    .chip-hot.active {
+        background: #ef4444;
+        border-color: #ef4444;
+        color: white;
+    }
+
+    .chip-tax {
+        border-color: #8b5cf6;
+        color: #8b5cf6;
+    }
+
+    .chip-tax.active {
+        background: #8b5cf6;
+        border-color: #8b5cf6;
+        color: white;
+    }
+
+    .chip-rating {
+        border-color: var(--warning);
+        color: var(--warning);
+    }
+
+    .chip-rating.active {
+        background: var(--warning);
+        border-color: var(--warning);
+        color: white;
+    }
+
+    /* Filter Bottom Row */
+    .filter-bottom-row {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--gray-200);
+        flex-wrap: wrap;
+    }
+
+    .sort-dropdown {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .sort-dropdown label {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--gray-700);
+        white-space: nowrap;
+    }
+
+    .select-modern {
+        padding: 10px 35px 10px 15px;
+        border: 2px solid var(--gray-300);
+        border-radius: 8px;
+        background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E") no-repeat right 12px center;
+        background-size: 12px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--gray-700);
+        cursor: pointer;
+        appearance: none;
+        transition: all 0.3s ease;
+        min-width: 200px;
+        font-family: 'Noto Sans Thai', sans-serif;
+    }
+
+    .select-modern:hover {
+        border-color: var(--primary);
+    }
+
+    .select-modern:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(28, 165, 155, 0.1);
+    }
+
+    .filter-action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border: 2px solid var(--gray-300);
+        border-radius: 8px;
+        background: white;
+        color: var(--gray-700);
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        font-family: 'Noto Sans Thai', sans-serif;
+    }
+
+    .filter-action-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .btn-advanced-filter {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border: 2px solid var(--gray-300);
+        border-radius: 8px;
+        background: white;
+        color: var(--gray-700);
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-left: auto;
+        font-family: 'Noto Sans Thai', sans-serif;
+    }
+
+    .btn-advanced-filter:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .selected-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 20px;
+        height: 20px;
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        padding: 0 6px;
+        font-weight: 700;
+    }
+
+    /* ==================== Results Header ==================== */
+    .fund-results-header {
+        padding: 30px 0;
+        background: white;
+    }
+
+    .results-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .results-info {
+        text-align: left;
+    }
+
+    .results-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 8px;
+    }
+
+    .results-count {
+        color: var(--primary);
+        font-weight: 700;
+    }
+
+    .results-subtitle {
+        font-size: 1rem;
+        color: var(--gray-600);
+    }
+
+    /* ==================== Fund List Section ==================== */
+    .fund-list-section {
+        padding: 40px 0 80px;
+        background: var(--gray-50);
+    }
+
+    .fund-list-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .fund-display-section {
+        padding: 40px 0 80px;
+        background: var(--gray-50);
+    }
+
+    .fund-display-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* No Results */
+    .no-results {
+        text-align: center;
+        padding: 80px 20px;
+        color: var(--gray-500);
+    }
+
+    .no-results i {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .no-results h3 {
+        font-size: 1.5rem;
+        color: var(--gray-700);
+        margin-bottom: 10px;
+    }
+
+    .no-results p {
+        margin-bottom: 30px;
+        color: var(--gray-600);
+    }
+
+    /* ==================== Pagination ==================== */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 50px;
+        flex-wrap: wrap;
+    }
+
+    .pagination-btn,
+    .pagination-number {
+        padding: 10px 16px;
+        border: 2px solid var(--gray-300);
+        background: white;
+        color: var(--gray-700);
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: 'Noto Sans Thai', sans-serif;
+        font-size: 0.875rem;
+    }
+
+    .pagination-btn:hover,
+    .pagination-number:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--gray-100);
+    }
+
+    .pagination-number.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    /* ==================== AMC Modal ==================== */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 20px;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 600px;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-amc {
+        max-width: 600px;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 25px;
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .modal-header h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin: 0;
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--gray-400);
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .modal-close:hover {
+        background: var(--gray-100);
+        color: var(--gray-700);
+    }
+
+    .modal-search {
+        padding: 15px 25px;
+        border-bottom: 1px solid var(--gray-200);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .modal-search i {
+        color: var(--gray-400);
+    }
+
+    .modal-search input {
+        flex: 1;
+        border: none;
+        outline: none;
+        font-size: 1rem;
+        font-family: 'Noto Sans Thai', sans-serif;
+    }
+
+    .modal-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 25px;
+    }
+
+    .amc-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .amc-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border: 1px solid var(--gray-200);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .amc-item:hover {
+        background: var(--gray-50);
+        border-color: var(--primary);
+    }
+
+    .amc-item input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .amc-logo {
+        width: 40px;
+        height: 40px;
+        background: var(--primary);
+        color: white;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.875rem;
+    }
+
+    .amc-name {
+        flex: 1;
+        font-weight: 600;
+        color: var(--gray-900);
+    }
+
+    .amc-count {
+        font-size: 0.875rem;
+        color: var(--gray-500);
+    }
+
+    .modal-footer {
+        padding: 15px 25px;
+        border-top: 1px solid var(--gray-200);
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    .btn-outline {
+        padding: 12px 24px;
+        background: white;
+        color: var(--gray-700);
+        border: 2px solid var(--gray-300);
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Noto Sans Thai', sans-serif;
+    }
+
+    .btn-outline:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .btn-primary {
+        padding: 12px 24px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Noto Sans Thai', sans-serif;
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+    }
+
+    /* ==================== Side Panel (Advanced Filters) ==================== */
+    .side-panel-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .side-panel {
+        background: white;
+        width: 100%;
+        max-width: 400px;
+        height: 100vh;
+        box-shadow: -5px 0 30px rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: column;
+        animation: slideInRight 0.3s ease;
+    }
+
+    @@keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+        }
+        to {
+            transform: translateX(0);
+        }
+    }
+
+    .side-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 25px;
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .side-panel-header h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .panel-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--gray-400);
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .panel-close:hover {
+        background: var(--gray-100);
+        color: var(--gray-700);
+    }
+
+    .side-panel-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 25px;
+    }
+
+    .filter-section {
+        margin-bottom: 30px;
+    }
+
+    .filter-section-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--gray-700);
+        margin-bottom: 10px;
+    }
+
+    .filter-input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid var(--gray-300);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        font-family: 'Noto Sans Thai', sans-serif;
+    }
+
+    .filter-input:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+
+    .checkbox-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        border: 1px solid var(--gray-200);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .checkbox-item:hover {
+        background: var(--gray-50);
+    }
+
+    .checkbox-item input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .risk-level-selector {
+        padding: 15px;
+        background: var(--gray-50);
+        border-radius: 8px;
+    }
+
+    .risk-range-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-size: 0.875rem;
+        color: var(--gray-600);
+    }
+
+    .range-slider-container {
+        position: relative;
+        margin: 15px 0;
+    }
+
+    .risk-slider {
+        width: 100%;
+        margin: 10px 0;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 6px;
+        border-radius: 3px;
+        background: var(--gray-300);
+        outline: none;
+    }
+
+    .risk-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--primary);
+        cursor: pointer;
+    }
+
+    .risk-slider::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--primary);
+        cursor: pointer;
+        border: none;
+    }
+
+    .risk-selected-range {
+        text-align: center;
+        margin-top: 10px;
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    .side-panel-footer {
+        padding: 15px 25px;
+        border-top: 1px solid var(--gray-200);
+        display: flex;
+        gap: 10px;
+    }
+
+    .side-panel-footer .btn {
+        flex: 1;
+    }
+
+    /* ==================== Responsive ==================== */
+    @@media (max-width: 768px) {
+        .hero-title {
+            font-size: 1.75rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+        }
+
+        .filter-bottom-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .btn-advanced-filter {
+            margin-left: 0;
+        }
+
+        .sort-dropdown {
+            flex-direction: column;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .select-modern {
+            width: 100%;
+            min-width: auto;
+        }
+
+        .side-panel {
+            max-width: 100%;
+        }
+
+        .fund-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .search-bar-large {
+            flex-direction: column;
+            padding: 15px;
+            border-radius: 16px;
+        }
+
+        .search-btn {
+            width: 100%;
+        }
+    }
+     
+</style>

@@ -43,11 +43,10 @@ namespace LBDUSite.Controllers
                         .Include<FundInvestmentInfo>()
                         .Where(new { IsActive = true });
 
-
                 // Apply category filter
                 if (!string.IsNullOrEmpty(category))
                 {
-                  //  query = query.Where("PolicyDesc LIKE @Policy", new { Policy = $"%{category}%" });
+                    // query = query.Where("PolicyDesc LIKE @Policy", new { Policy = $"%{category}%" });
                 }
 
                 // Apply search filter
@@ -80,8 +79,7 @@ namespace LBDUSite.Controllers
                     Category = category,
                     SearchTerm = search
                 };
-
-
+              
                 ViewBag.Title = string.IsNullOrEmpty(category)
                     ? "กองทุนทั้งหมด"
                     : $"กองทุน{category}";
@@ -105,7 +103,7 @@ namespace LBDUSite.Controllers
             {
                 var fund = _repo.Fetch<Fund>()
                        .Include<AMC>()
-                       .Include<FundCardViewModel>()
+                       .Include<FundClass>()
                        .Include<FundPerformance>()
                        .Include<FundInvestmentInfo>()
                        .Include<FundDividend>()
@@ -125,6 +123,15 @@ namespace LBDUSite.Controllers
                 viewModel.RelatedFunds = GetRelatedFunds(fund);
                 viewModel.RelatedNews = GetRelatedNews(fund.Id);
                 viewModel.NAVChartData = GetNAVChartData(fund.Id, 30);
+
+                // 🆕 Get Dividend History
+                viewModel.DividendHistory = GetDividendHistory(fund.Id);
+
+                // 🆕 Get Top 5 Holdings (Mock data for now)
+                viewModel.Top5Holdings = GetTop5Holdings(fund.Id);
+
+                // 🆕 Get Asset Allocation (Mock data for now)
+                viewModel.AssetAllocation = GetAssetAllocation(fund.Id);
 
                 ViewBag.Title = viewModel.FundName;
                 return View(viewModel);
@@ -222,12 +229,17 @@ namespace LBDUSite.Controllers
 
                 Documents = new List<DocumentViewModel>
                 {
-                    new DocumentViewModel { Title = "หนังสือชี้ชวน", Url = urls?.URLFactsheet },
-                    new DocumentViewModel { Title = "รายงานประจำปี", Url = urls?.URLAnnualReport },
-                    new DocumentViewModel { Title = "Fund Fact Sheet", Url = urls?.URLFactsheet }
+                    new DocumentViewModel { Title = "หนังสือชี้ชวน", Url = urls?.URLFactsheet, IconClass = "fa-file-pdf" },
+                    new DocumentViewModel { Title = "รายงานประจำปี", Url = urls?.URLAnnualReport, IconClass = "fa-file-pdf" },
+                    new DocumentViewModel { Title = "Fund Fact Sheet", Url = urls?.URLFactsheet, IconClass = "fa-file-pdf" }
                 }.Where(d => !string.IsNullOrEmpty(d.Url)).ToList(),
 
-                FundManager = new FundManagerViewModel(),
+                FundManager = new FundManagerViewModel
+                {
+                    Name = "ทีมผู้จัดการกองทุน",
+                    Initials = "FM",
+                    Experience = "ประสบการณ์ 10+ ปี"
+                },
 
                 PerformanceData = fund.FundPerformances?
                     .Select(p => new FundPerformanceViewModel
@@ -277,19 +289,119 @@ namespace LBDUSite.Controllers
             };
         }
 
+        // 🆕 Get Dividend History
+        private List<DividendHistoryItem> GetDividendHistory(int fundId)
+        {
+            try
+            {
+                var dividends = _repo.Fetch<FundDividend>()
+                    .Where(new { FundId = fundId })
+                    .OrderByDescending("ExDividendDate")
+                    .Take(10)
+                    .ToList();
+
+                if (dividends.Any())
+                {
+                    return dividends.Select(d => new DividendHistoryItem
+                    {
+                        ExDividendDate = DateTime.Now,
+                        DividendPerUnit =   0
+                    }).ToList();
+                }
+
+                // Mock data if no real data
+                return GenerateMockDividendHistory();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting dividend history for fund ID: {FundId}", fundId);
+                return GenerateMockDividendHistory();
+            }
+        }
+
+        // 🆕 Get Top 5 Holdings (Mock for now)
+        private List<HoldingItem> GetTop5Holdings(int fundId)
+        {
+            try
+            {
+                // TODO: Implement real data from FundPortfolio table when available
+                // For now, return mock data based on fund type
+
+                return new List<HoldingItem>
+                {
+                    new HoldingItem { SecurityName = "ปตท.", SecurityCode = "PTT", Weight = 8.50m, Sector = "พลังงาน" },
+                    new HoldingItem { SecurityName = "ธนาคารกสิกรไทย", SecurityCode = "KBANK", Weight = 7.20m, Sector = "ธนาคาร" },
+                    new HoldingItem { SecurityName = "บมจ.ไทยเบฟเวอเรจ", SecurityCode = "THBEV", Weight = 6.80m, Sector = "อาหารและเครื่องดื่ม" },
+                    new HoldingItem { SecurityName = "ซีพี ออลล์", SecurityCode = "CPALL", Weight = 6.50m, Sector = "พาณิชย์" },
+                    new HoldingItem { SecurityName = "แอดวานซ์ อินโฟร์ เซอร์วิส", SecurityCode = "ADVANC", Weight = 5.90m, Sector = "โทรคมนาคม" }
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting top 5 holdings for fund ID: {FundId}", fundId);
+                return new List<HoldingItem>();
+            }
+        }
+
+        // 🆕 Get Asset Allocation (Mock for now)
+        private List<AssetAllocationItem> GetAssetAllocation(int fundId)
+        {
+            try
+            {
+                // TODO: Implement real data from FundAssetAllocation table when available
+                // For now, return mock data
+
+                return new List<AssetAllocationItem>
+                {
+                    new AssetAllocationItem
+                    {
+                        AssetType = "หุ้นไทย",
+                        AssetTypeEn = "Thai Equity",
+                        Percentage = 65.0m,
+                        Color = "#1CA59B"
+                    },
+                    new AssetAllocationItem
+                    {
+                        AssetType = "พันธบัตรรัฐบาล",
+                        AssetTypeEn = "Government Bonds",
+                        Percentage = 20.0m,
+                        Color = "#4CAF50"
+                    },
+                    new AssetAllocationItem
+                    {
+                        AssetType = "เงินฝาก",
+                        AssetTypeEn = "Cash & Deposits",
+                        Percentage = 10.0m,
+                        Color = "#2196F3"
+                    },
+                    new AssetAllocationItem
+                    {
+                        AssetType = "ตราสารหนี้เอกชน",
+                        AssetTypeEn = "Corporate Bonds",
+                        Percentage = 5.0m,
+                        Color = "#FF9800"
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting asset allocation for fund ID: {FundId}", fundId);
+                return new List<AssetAllocationItem>();
+            }
+        }
+
         private List<FundCardViewModel> GetRelatedFunds(Fund fund)
         {
             try
             {
-               
-                   var relatedFunds = _repo.Fetch<Fund>()
-                        .Include<AMC>()
-                        .Include<FundClass>()
-                        .Include<FundPerformance>()
-                        .Include<FundInvestmentInfo>()
-                    .Where($"FundId != {fund.Id} AND IsActive = 1 AND AMCId = {fund.AMCId}")
-                    .OrderBy("FundId")
-                    .Take(3)
+                var relatedFunds = _repo.Fetch<Fund>()
+                    .Include<AMC>()
+                    .Include<FundClass>()
+                    .Include<FundPerformance>()
+                    .Include<FundInvestmentInfo>()
+                    .Where($"Id != {fund.Id} AND IsActive = 1 AND AMCId = {fund.AMCId}")
+                    .OrderBy("ProjAbbrName")
+                    .Take(4)
                     .ToList();
 
                 return relatedFunds.Select(f => MapToFundCardViewModel(f)).ToList();
@@ -305,27 +417,42 @@ namespace LBDUSite.Controllers
         {
             try
             {
-                var articles = _repo.Fetch<Article>()
-                    .Include(a => a.Category)
-                    .Include(a => a.ArticleRelatedFunds)
-                    .Where(new { Status = "Published" })
-                    .OrderByDescending("PublishedDate")
-                    .Take(10)
-                    .ToList()
-                    .Where(a => a.ArticleRelatedFunds?.Any(arf => arf.Id == fundId) == true)
-                    .Take(3);
-
-                return articles.Select(a => new NewsCardViewModel
+                // Mock data - ในการใช้งานจริงดึงจาก Article table
+                return new List<NewsCardViewModel>
                 {
-                    ArticleId = a.Id,
-                    Title = a.Title,
-                    Excerpt = a.Excerpt,
-                    Slug = a.Slug,
-                    FeaturedImageUrl = a.FeaturedImageUrl,
-                    PublishedDate = a.PublishedDate ?? DateTime.Now,
-                    CategoryName = a.Category?.CategoryName,
-                    ReadingTime = 3
-                }).ToList();
+                    new NewsCardViewModel
+                    {
+                        ArticleId = 1,
+                        Title = "แนวโน้มตลาดหุ้นไทยในไตรมาสที่ 4",
+                        Excerpt = "วิเคราะห์ปัจจัยสำคัญที่ส่งผลต่อตลาดหุ้นไทยในช่วงปลายปี พร้อมแนะนำกลยุทธ์การลงทุน",
+                        Slug = "thai-stock-market-q4-outlook",
+                        FeaturedImageUrl = "/images/news/market-outlook.jpg",
+                        PublishedDate = DateTime.Now.AddDays(-5),
+                        CategoryName = "ตลาดหุ้น",
+                        ReadingTime = 5
+                    },
+                    new NewsCardViewModel
+                    {
+                        ArticleId = 2,
+                        Title = "เคล็ดลับการเลือกกองทุนรวมที่เหมาะสมกับคุณ",
+                        Excerpt = "รู้จักประเภทกองทุนรวมและวิธีเลือกกองทุนที่เหมาะกับเป้าหมายการลงทุนและความเสี่ยงที่รับได้",
+                        Slug = "how-to-choose-mutual-funds",
+                        FeaturedImageUrl = "/images/news/fund-selection.jpg",
+                        PublishedDate = DateTime.Now.AddDays(-10),
+                        CategoryName = "คู่มือการลงทุน",
+                        ReadingTime = 7
+                    },
+                    new NewsCardViewModel
+                    {
+                        ArticleId = 3,
+                        Title = "ภาพรวมเศรษฐกิจไทย 2024: โอกาสและความท้าทาย",
+                        Excerpt = "สรุปสถานการณ์เศรษฐกิจไทยและปัจจัยที่นักลงทุนควรติดตาม",
+                        Slug = "thai-economy-2024-overview",
+                        FeaturedImageUrl = "/images/news/economy.jpg",
+                        CategoryName = "เศรษฐกิจ",
+                        ReadingTime = 6
+                    }
+                };
             }
             catch (Exception ex)
             {
@@ -341,21 +468,63 @@ namespace LBDUSite.Controllers
                 var startDate = DateTime.Now.AddDays(-days);
 
                 var navData = _repo.Fetch<FundNAV>()
-                    .Where($"FundId = {fundId} AND NAVDate >= @StartDate", new { StartDate = startDate })
+                    .Where($"FundClassId IN (SELECT Id FROM FundClass WHERE FundId = {fundId}) AND NAVDate >= @StartDate",
+                        new { StartDate = startDate })
                     .OrderBy("NAVDate")
                     .ToList();
 
-                return navData.Select(n => new ChartDataPoint
+                if (navData.Any())
                 {
-                    Date = n.NAVDate,
-                    Value = n.NAV
-                }).ToList();
+                    return navData.Select(n => new ChartDataPoint
+                    {
+                        Date = n.NAVDate,
+                        Value = n.NAV
+                    }).ToList();
+                }
+
+                // Generate mock data if no real data
+                return GenerateMockNAVData(days);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting NAV chart data for fund ID: {FundId}", fundId);
-                return new List<ChartDataPoint>();
+                return GenerateMockNAVData(days);
             }
+        }
+
+        #endregion
+
+        #region Mock Data Generators
+
+        private List<DividendHistoryItem> GenerateMockDividendHistory()
+        {
+            var random = new Random();
+            return Enumerable.Range(0, 5).Select(i => new DividendHistoryItem
+            {
+                ExDividendDate = DateTime.Now.AddMonths(-(i * 3)),
+                DividendPerUnit = (decimal)(0.15 + random.NextDouble() * 0.15) // 0.15 - 0.30
+            }).ToList();
+        }
+
+        private List<ChartDataPoint> GenerateMockNAVData(int days)
+        {
+            var random = new Random();
+            var baseNAV = 10.0m + (decimal)(random.NextDouble() * 5); // 10-15 baht
+            var data = new List<ChartDataPoint>();
+
+            for (int i = days; i >= 0; i--)
+            {
+                var change = (decimal)((random.NextDouble() - 0.5) * 0.2); // -0.1 to +0.1
+                baseNAV += change;
+
+                data.Add(new ChartDataPoint
+                {
+                    Date = DateTime.Now.AddDays(-i),
+                    Value = Math.Round(baseNAV, 4)
+                });
+            }
+
+            return data;
         }
 
         #endregion
@@ -443,17 +612,5 @@ namespace LBDUSite.Controllers
     }
 
     // ViewModel for Fund List
-    public class FundListViewModel
-    {
-        public List<FundCardViewModel> Funds { get; set; } = new();
-        public int CurrentPage { get; set; }
-        public int PageSize { get; set; }
-        public int TotalCount { get; set; }
-        public int TotalPages { get; set; }
-        public string? Category { get; set; }
-        public string? SearchTerm { get; set; }
-
-        public bool HasPreviousPage => CurrentPage > 1;
-        public bool HasNextPage => CurrentPage < TotalPages;
-    }
+ 
 }

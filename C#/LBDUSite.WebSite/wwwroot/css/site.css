@@ -27,7 +27,7 @@
     --white: #ffffff;
     /* Layout */
     --header-height: 80px;
-    --container-width: 1400px;
+    --container-width: 1300px;
 }
 
 /* ==================== GLOBAL RESET ==================== */
@@ -75,7 +75,7 @@ button {
 .header-container {
     max-width: var(--container-width);
     margin: 0 auto;
-    padding: 0 30px;
+
     height: 100%;
     display: flex;
     align-items: center;
@@ -223,7 +223,7 @@ button {
 .hero-container {
     max-width: var(--container-width);
     margin: 0 auto;
-    padding: 0 30px;
+    padding:   30px;
     position: relative;
     z-index: 1;
 }
@@ -662,7 +662,7 @@ button {
 
 /* ==================== FOOTER ==================== */
 .footer {
-    background: var(--gray-900);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     color: var(--white);
     padding: 60px 0 30px;
 }
@@ -730,7 +730,7 @@ button {
     }
 
     .footer-links a {
-        color: rgba(255, 255, 255, 0.7);
+        color: #ffffff;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
@@ -911,12 +911,12 @@ button {
 }
 
 .btn-primary {
-    background: var(--accent);
-    color: var(--dark);
+    background: var(--primary);
+    color: var(--white);
 }
 
     .btn-primary:hover {
-        background: #FF9800;
+        background: var(--primary-dark);
         transform: translateY(-2px);
         box-shadow: 0 8px 20px rgba(255, 167, 38, 0.4);
     }
@@ -924,7 +924,7 @@ button {
 .btn-outline {
     background: transparent;
     color: var(--white);
-    border: 2px solid var(--white);
+    border: 2px solid var(--gray-300);
 }
 
     .btn-outline:hover {
@@ -1595,7 +1595,7 @@ button {
 }
 
 .contact-container {
-    max-width: 1200px;
+    max-width: var(--container-width);
     margin: 0 auto;
     padding: 0 20px;
 }
@@ -1864,13 +1864,14 @@ textarea.form-control {
 /* Article Detail */
 .article-detail {
     padding: 60px 0;
-    background: white;
+
 }
 
 .article-detail-container {
-    max-width: 800px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 20px;
+    background: white;
 }
 
 .article-header {
@@ -2099,7 +2100,7 @@ textarea.form-control {
 }
 
 .related-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 20px;
 }
@@ -2362,3 +2363,604 @@ textarea.form-control {
         padding: 8px;
     }
 }
+
+/* Dividend Table */
+.dividend-table-wrapper {
+    overflow-x: auto;
+}
+
+.dividend-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .dividend-table thead {
+        background: var(--gray-50);
+    }
+
+    .dividend-table th,
+    .dividend-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .dividend-table th {
+        font-weight: 600;
+        color: var(--gray-700);
+        font-size: 0.875rem;
+    }
+
+    .dividend-table tbody tr:hover {
+        background: var(--gray-50);
+    }
+
+.text-right {
+    text-align: right !important;
+}
+
+/* Holdings List */
+.holdings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.holding-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+    .holding-item:hover {
+        border-color: var(--primary);
+        background: var(--gray-50);
+    }
+
+.holding-info {
+    flex: 1;
+}
+
+.holding-name {
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 4px;
+}
+
+.holding-code {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+}
+
+.holding-weight {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 150px;
+}
+
+.weight-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--gray-200);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.weight-fill {
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.5s ease;
+}
+
+.weight-value {
+    font-weight: 600;
+    color: var(--primary);
+    min-width: 50px;
+    text-align: right;
+}
+
+/* Asset Allocation */
+.asset-allocation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: center;
+}
+
+.allocation-chart {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.allocation-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.legend-label {
+    flex: 1;
+    font-size: 0.875rem;
+    color: var(--gray-700);
+}
+
+.legend-value {
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+@media (max-width: 768px) {
+    .asset-allocation-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .holding-weight {
+        min-width: 120px;
+    }
+}
+
+.related-section,
+.news-section {
+    padding: 60px 0;
+    background: var(--gray-50);
+}
+
+.section-container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.section-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--gray-900);
+}
+
+.view-all-btn {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+    .view-all-btn:hover {
+        color: var(--primary-dark);
+        transform: translateX(5px);
+    }
+
+/* Fund Grid */
+.fund-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.fund-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+    .fund-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+.fund-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.fund-company {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.company-logo-small {
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    color: white;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.company-name {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+}
+
+.fund-type-badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+    .fund-type-badge.equity {
+        background: rgba(239, 68, 68, 0.1);
+        color: #dc2626;
+    }
+
+    .fund-type-badge.fixed {
+        background: rgba(59, 130, 246, 0.1);
+        color: #2563eb;
+    }
+
+    .fund-type-badge.mixed {
+        background: rgba(168, 85, 247, 0.1);
+        color: #7c3aed;
+    }
+
+.fund-card-body {
+    flex: 1;
+    margin-bottom: 15px;
+}
+
+.fund-card-code {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 8px;
+}
+
+.fund-card-name {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    margin-bottom: 15px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.fund-card-stats {
+    display: flex;
+    gap: 20px;
+    padding-top: 12px;
+    border-top: 1px solid var(--gray-200);
+}
+
+.fund-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+    .fund-stat .stat-label {
+        font-size: 0.75rem;
+        color: var(--gray-500);
+        text-transform: uppercase;
+    }
+
+    .fund-stat .stat-value {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--gray-900);
+    }
+
+        .fund-stat .stat-value.positive {
+            color: var(--success);
+        }
+
+        .fund-stat .stat-value.negative {
+            color: var(--danger);
+        }
+
+.fund-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--gray-200);
+}
+
+.risk-indicator {
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.view-detail {
+    font-size: 0.875rem;
+    color: var(--primary);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* News Grid */
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.news-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+    .news-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+.news-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: var(--gray-100);
+    position: relative;
+}
+
+    .news-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+.news-card:hover .news-image img {
+    transform: scale(1.05);
+}
+
+.news-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-400);
+    font-size: 3rem;
+}
+
+.news-content {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-category {
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+}
+
+.news-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 12px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.news-excerpt {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    line-height: 1.6;
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex: 1;
+}
+
+.news-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    padding-top: 12px;
+    border-top: 1px solid var(--gray-200);
+}
+
+    .news-meta span {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+/* Dividend Table */
+.dividend-table-wrapper {
+    overflow-x: auto;
+}
+
+.dividend-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .dividend-table thead {
+        background: var(--gray-50);
+    }
+
+    .dividend-table th,
+    .dividend-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .dividend-table th {
+        font-weight: 600;
+        color: var(--gray-700);
+        font-size: 0.875rem;
+    }
+
+    .dividend-table tbody tr:hover {
+        background: var(--gray-50);
+    }
+
+.text-right {
+    text-align: right !important;
+}
+
+/* Holdings List */
+.holdings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.holding-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+    .holding-item:hover {
+        border-color: var(--primary);
+        background: var(--gray-50);
+    }
+
+.holding-info {
+    flex: 1;
+}
+
+.holding-name {
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 4px;
+}
+
+.holding-code {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+}
+
+.holding-weight {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 150px;
+}
+
+.weight-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--gray-200);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.weight-fill {
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.5s ease;
+}
+
+.weight-value {
+    font-weight: 600;
+    color: var(--primary);
+    min-width: 50px;
+    text-align: right;
+}
+
+/* Asset Allocation */
+.asset-allocation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: center;
+}
+
+.allocation-chart {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.allocation-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.legend-label {
+    flex: 1;
+    font-size: 0.875rem;
+    color: var(--gray-700);
+}
+
+.legend-value {
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+    

@@ -20,9 +20,13 @@ builder.Logging.AddDebug();
 // ==================== SERVICES ====================
 
 // 1. Add Localization Services
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+// ในส่วน Services Configuration
+builder.Services.AddLocalization(options =>
+{
+    options.ResourcesPath = "Resources";
+});
 
-// 2. Configure Supported Cultures
+// Configure Supported Cultures
 var supportedCultures = new[]
 {
     new CultureInfo("th-TH"),
@@ -34,13 +38,14 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.DefaultRequestCulture = new RequestCulture("th-TH");
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
+    options.FallBackToParentCultures = true;
+    options.FallBackToParentUICultures = true;
 
-    // Request Culture Providers - เรียงลำดับความสำคัญ
     options.RequestCultureProviders = new List<IRequestCultureProvider>
     {
-        new QueryStringRequestCultureProvider(), // ตรวจสอบ ?culture=th-TH ก่อน
-        new CookieRequestCultureProvider(),      // ตรวจสอบ Cookie
-        new AcceptLanguageHeaderRequestCultureProvider() // ตรวจสอบ Browser Language
+        new CookieRequestCultureProvider(),
+        new QueryStringRequestCultureProvider(),
+        new AcceptLanguageHeaderRequestCultureProvider()
     };
 });
 

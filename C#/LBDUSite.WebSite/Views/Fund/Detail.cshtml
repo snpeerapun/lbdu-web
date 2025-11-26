@@ -1,15 +1,17 @@
-﻿@model LBDUSite.ViewModels.FundDetailViewModel
+﻿@inject LBDUSite.Services.ILocalizationService Localization
+@model LBDUSite.ViewModels.FundDetailViewModel
 @{
     ViewBag.Title = Model.FundName;
+    var currentLang = Localization.GetCurrentLanguage();
 }
- 
+
 <!-- Breadcrumb -->
 <nav class="breadcrumb">
     <div class="breadcrumb-container">
         <ul class="breadcrumb-list">
-            <li><a href="@Url.Action("Index", "Home")"><i class="fas fa-home"></i> หน้าแรก</a></li>
+            <li><a href="@Url.Action("Index", "Home")"><i class="fas fa-home"></i> @Localization.GetString("Nav_Home")</a></li>
             <li class="breadcrumb-separator"><i class="fas fa-chevron-right"></i></li>
-            <li><a href="@Url.Action("Index", "Fund")">กองทุนทั้งหมด</a></li>
+            <li><a href="@Url.Action("Index", "Fund")">@Localization.GetString("Nav_AllFunds")</a></li>
             <li class="breadcrumb-separator"><i class="fas fa-chevron-right"></i></li>
             <li class="active">@Model.FundCode</li>
         </ul>
@@ -34,13 +36,13 @@
             </div>
 
             <div class="fund-detail-actions">
-                <button class="btn btn-primary" onclick="alert('ฟีเจอร์ซื้อกองทุนกำลังพัฒนา')">
+                <button class="btn btn-primary" onclick="alert('@(currentLang == "th" ? "ฟีเจอร์ซื้อกองทุนกำลังพัฒนา" : "Buy feature is under development")')">
                     <i class="fas fa-shopping-cart"></i>
-                    ซื้อกองทุน
+                    @(currentLang == "th" ? "ซื้อกองทุน" : "Buy Fund")
                 </button>
                 <button class="btn btn-outline" onclick="toggleFavorite(@Model.FundId)">
                     <i class="far fa-heart"></i>
-                    บันทึก
+                    @(currentLang == "th" ? "บันทึก" : "Save")
                 </button>
             </div>
         </div>
@@ -56,19 +58,19 @@
             <div class="detail-card">
                 <h3 class="detail-card-title">
                     <i class="fas fa-chart-line"></i>
-                    ผลการดำเนินงาน
+                    @Localization.GetString("Fund_Performance")
                 </h3>
 
                 <div class="performance-grid">
                     <div class="performance-item">
-                        <div class="performance-label">NAV ล่าสุด</div>
+                        <div class="performance-label">@Localization.GetString("Fund_LatestNAV")</div>
                         <div class="performance-value">@Model.CurrentNAV.ToString("N4")</div>
                         <div style="font-size: 0.75rem; color: var(--gray-500); margin-top: 5px;">
-                            @Model.NAVDate.ToString("dd MMM yyyy", new System.Globalization.CultureInfo("th-TH"))
+                            @Model.NAVDate.ToString("dd MMM yyyy", new System.Globalization.CultureInfo(currentLang == "th" ? "th-TH" : "en-US"))
                         </div>
                     </div>
                     <div class="performance-item">
-                        <div class="performance-label">ผลตอบแทน YTD</div>
+                        <div class="performance-label">@Localization.GetString("Fund_YTDReturn")</div>
                         <div class="performance-value @(Model.YTDReturn >= 0 ? "positive" : "negative")">
                             @if (Model.YTDReturn.HasValue)
                             {
@@ -76,12 +78,12 @@
                             }
                             else
                             {
-                                @:N/A
+                                <text>N/A</text>
                             }
                         </div>
                     </div>
                     <div class="performance-item">
-                        <div class="performance-label">ผลตอบแทน 1 ปี</div>
+                        <div class="performance-label">@Localization.GetString("Fund_1YReturn")</div>
                         <div class="performance-value @(Model.OneYearReturn >= 0 ? "positive" : "negative")">
                             @if (Model.OneYearReturn.HasValue)
                             {
@@ -89,19 +91,19 @@
                             }
                             else
                             {
-                                @:N/A
+                                <text>N/A</text>
                             }
                         </div>
                     </div>
                 </div>
 
                 <div class="chart-controls">
-                    <button class="chart-btn active" onclick="updateChart('1M')">1 เดือน</button>
-                    <button class="chart-btn" onclick="updateChart('3M')">3 เดือน</button>
-                    <button class="chart-btn" onclick="updateChart('6M')">6 เดือน</button>
-                    <button class="chart-btn" onclick="updateChart('1Y')">1 ปี</button>
-                    <button class="chart-btn" onclick="updateChart('3Y')">3 ปี</button>
-                    <button class="chart-btn" onclick="updateChart('5Y')">5 ปี</button>
+                    <button class="chart-btn active" onclick="updateChart('1M')">@(currentLang == "th" ? "1 เดือน" : "1M")</button>
+                    <button class="chart-btn" onclick="updateChart('3M')">@(currentLang == "th" ? "3 เดือน" : "3M")</button>
+                    <button class="chart-btn" onclick="updateChart('6M')">@(currentLang == "th" ? "6 เดือน" : "6M")</button>
+                    <button class="chart-btn" onclick="updateChart('1Y')">@(currentLang == "th" ? "1 ปี" : "1Y")</button>
+                    <button class="chart-btn" onclick="updateChart('3Y')">@(currentLang == "th" ? "3 ปี" : "3Y")</button>
+                    <button class="chart-btn" onclick="updateChart('5Y')">@(currentLang == "th" ? "5 ปี" : "5Y")</button>
                 </div>
 
                 <div class="chart-wrapper">
@@ -109,78 +111,165 @@
                 </div>
             </div>
 
+            <!-- Dividend History Card -->
+            @if (Model.DividendHistory != null && Model.DividendHistory.Any())
+            {
+                <div class="detail-card">
+                    <h3 class="detail-card-title">
+                        <i class="fas fa-coins"></i>
+                        @Localization.GetString("Fund_DividendHistory")
+                    </h3>
+
+                    <div class="dividend-table-wrapper">
+                        <table class="dividend-table">
+                            <thead>
+                                <tr>
+                                    <th>@Localization.GetString("Fund_ExDividendDate")</th>
+                                    <th class="text-right">@Localization.GetString("Fund_DividendPerUnit") (@Localization.GetString("Fund_Baht"))</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var dividend in Model.DividendHistory)
+                                {
+                                    <tr>
+                                        <td>@dividend.ExDividendDate.ToString("dd/MM/yyyy")</td>
+                                        <td class="text-right">@dividend.DividendPerUnit.ToString("N4")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+
+            <!-- Top 5 Holdings Card -->
+            @if (Model.Top5Holdings != null && Model.Top5Holdings.Any())
+            {
+                <div class="detail-card">
+                    <h3 class="detail-card-title">
+                        <i class="fas fa-chart-pie"></i>
+                        @Localization.GetString("Fund_Top5Holdings")
+                    </h3>
+
+                    <div class="holdings-list">
+                        @foreach (var holding in Model.Top5Holdings)
+                        {
+                            <div class="holding-item">
+                                <div class="holding-info">
+                                    <div class="holding-name">@holding.SecurityName</div>
+                                    <div class="holding-code">@holding.SecurityCode</div>
+                                </div>
+                                <div class="holding-weight">
+                                    <div class="weight-bar">
+                                        <div class="weight-fill" style="width: @(holding.Weight * 10)%"></div>
+                                    </div>
+                                    <span class="weight-value">@holding.Weight.ToString("N2")%</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Asset Allocation Card -->
+            @if (Model.AssetAllocation != null && Model.AssetAllocation.Any())
+            {
+                <div class="detail-card">
+                    <h3 class="detail-card-title">
+                        <i class="fas fa-pie-chart"></i>
+                        @Localization.GetString("Fund_AssetAllocation")
+                    </h3>
+
+                    <div class="asset-allocation-grid">
+                        <div class="allocation-chart">
+                            <canvas id="allocationChart"></canvas>
+                        </div>
+                        <div class="allocation-legend">
+                            @foreach (var asset in Model.AssetAllocation)
+                            {
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background-color: @asset.Color"></span>
+                                    <span class="legend-label">@(currentLang == "th" ? asset.AssetType : asset.AssetTypeEn)</span>
+                                    <span class="legend-value">@asset.Percentage.ToString("N1")%</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+
             <!-- Fund Information Card -->
             <div class="detail-card">
                 <h3 class="detail-card-title">
                     <i class="fas fa-info-circle"></i>
-                    ข้อมูลกองทุน
+                    @Localization.GetString("Fund_Information")
                 </h3>
 
                 <div class="info-table">
                     <div class="info-row">
-                        <span class="info-label">ชื่อย่อ</span>
+                        <span class="info-label">@(currentLang == "th" ? "ชื่อย่อ" : "Fund Code")</span>
                         <span class="info-value">@Model.FundCode</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-label">ประเภทกองทุน</span>
+                        <span class="info-label">@(currentLang == "th" ? "ประเภทกองทุน" : "Fund Type")</span>
                         <span class="info-value">@Model.FundTypeDisplay</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-label">บริษัทจัดการ</span>
+                        <span class="info-label">@(currentLang == "th" ? "บริษัทจัดการ" : "Management Company")</span>
                         <span class="info-value">@Model.AMCName</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-label">ระดับความเสี่ยง</span>
+                        <span class="info-label">@(currentLang == "th" ? "ระดับความเสี่ยง" : "Risk Level")</span>
                         <span class="info-value">@Model.RiskLevel (@Model.RiskLevelDesc)</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-label">นโยบายการจ่ายเงินปันผล</span>
+                        <span class="info-label">@(currentLang == "th" ? "นโยบายการจ่ายเงินปันผล" : "Dividend Policy")</span>
                         <span class="info-value">@Model.DividendPolicy</span>
                     </div>
                     @if (Model.MinimumSubIPO.HasValue)
                     {
                         <div class="info-row">
-                            <span class="info-label">มูลค่าขั้นต่ำในการซื้อครั้งแรก</span>
-                            <span class="info-value">@Model.MinimumSubIPO.Value.ToString("N0") บาท</span>
+                            <span class="info-label">@(currentLang == "th" ? "มูลค่าขั้นต่ำในการซื้อครั้งแรก" : "Minimum Initial Investment")</span>
+                            <span class="info-value">@Model.MinimumSubIPO.Value.ToString("N0") @Localization.GetString("Fund_Baht")</span>
                         </div>
                     }
                     @if (Model.MinimumSub.HasValue)
                     {
                         <div class="info-row">
-                            <span class="info-label">มูลค่าขั้นต่ำในการซื้อครั้งถัดไป</span>
-                            <span class="info-value">@Model.MinimumSub.Value.ToString("N0") บาท</span>
+                            <span class="info-label">@(currentLang == "th" ? "มูลค่าขั้นต่ำในการซื้อครั้งถัดไป" : "Minimum Subsequent Investment")</span>
+                            <span class="info-value">@Model.MinimumSub.Value.ToString("N0") @Localization.GetString("Fund_Baht")</span>
                         </div>
                     }
                     @if (Model.MinimumRedempt.HasValue)
                     {
                         <div class="info-row">
-                            <span class="info-label">มูลค่าขั้นต่ำในการขายคืน</span>
-                            <span class="info-value">@Model.MinimumRedempt.Value.ToString("N0") บาท</span>
+                            <span class="info-label">@(currentLang == "th" ? "มูลค่าขั้นต่ำในการขายคืน" : "Minimum Redemption")</span>
+                            <span class="info-value">@Model.MinimumRedempt.Value.ToString("N0") @Localization.GetString("Fund_Baht")</span>
                         </div>
                     }
                     <div class="info-row">
-                        <span class="info-label">ค่าธรรมเนียมการจัดการ</span>
+                        <span class="info-label">@(currentLang == "th" ? "ค่าธรรมเนียมการจัดการ" : "Management Fee")</span>
                         <span class="info-value">@Model.ManagementFee</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-label">ค่าธรรมเนียมการขาย</span>
+                        <span class="info-label">@(currentLang == "th" ? "ค่าธรรมเนียมการขาย" : "Front-end Fee")</span>
                         <span class="info-value">@Model.FrontEndFee</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-label">ค่าธรรมเนียมการรับซื้อคืน</span>
+                        <span class="info-label">@(currentLang == "th" ? "ค่าธรรมเนียมการรับซื้อคืน" : "Back-end Fee")</span>
                         <span class="info-value">@Model.BackEndFee</span>
                     </div>
                     @if (Model.RegisDate.HasValue)
                     {
                         <div class="info-row">
-                            <span class="info-label">วันที่จดทะเบียนกองทุน</span>
-                            <span class="info-value">@Model.RegisDate.Value.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo("th-TH"))</span>
+                            <span class="info-label">@(currentLang == "th" ? "วันที่จดทะเบียนกองทุน" : "Registration Date")</span>
+                            <span class="info-value">@Model.RegisDate.Value.ToString("dd MMMM yyyy", new System.Globalization.CultureInfo(currentLang == "th" ? "th-TH" : "en-US"))</span>
                         </div>
                     }
                     @if (!string.IsNullOrEmpty(Model.SettlementPeriod))
                     {
                         <div class="info-row">
-                            <span class="info-label">ระยะเวลาการชำระเงิน</span>
+                            <span class="info-label">@(currentLang == "th" ? "ระยะเวลาการชำระเงิน" : "Settlement Period")</span>
                             <span class="info-value">@Model.SettlementPeriod</span>
                         </div>
                     }
@@ -194,19 +283,19 @@
             <div class="detail-card quick-actions">
                 <h3 class="detail-card-title">
                     <i class="fas fa-bolt"></i>
-                    ดำเนินการ
+                    @(currentLang == "th" ? "ดำเนินการ" : "Quick Actions")
                 </h3>
-                <button class="btn btn-primary" onclick="alert('ฟีเจอร์ซื้อกองทุนกำลังพัฒนา')">
+                <button class="btn btn-primary" onclick="alert('@(currentLang == "th" ? "ฟีเจอร์ซื้อกองทุนกำลังพัฒนา" : "Buy feature is under development")')">
                     <i class="fas fa-shopping-cart"></i>
-                    ซื้อกองทุน
+                    @(currentLang == "th" ? "ซื้อกองทุน" : "Buy Fund")
                 </button>
-                <button class="btn btn-secondary" onclick="alert('ฟีเจอร์สับเปลี่ยนกองทุนกำลังพัฒนา')">
+                <button class="btn btn-secondary" onclick="alert('@(currentLang == "th" ? "ฟีเจอร์สับเปลี่ยนกองทุนกำลังพัฒนา" : "Switch feature is under development")')">
                     <i class="fas fa-exchange-alt"></i>
-                    สับเปลี่ยนกองทุน
+                    @(currentLang == "th" ? "สับเปลี่ยนกองทุน" : "Switch Fund")
                 </button>
-                <button class="btn btn-danger" onclick="alert('ฟีเจอร์ขายคืนกองทุนกำลังพัฒนา')">
+                <button class="btn btn-danger" onclick="alert('@(currentLang == "th" ? "ฟีเจอร์ขายคืนกองทุนกำลังพัฒนา" : "Redeem feature is under development")')">
                     <i class="fas fa-hand-holding-usd"></i>
-                    ขายคืนกองทุน
+                    @(currentLang == "th" ? "ขายคืนกองทุน" : "Redeem Fund")
                 </button>
             </div>
 
@@ -214,7 +303,7 @@
             <div class="detail-card fund-manager-card">
                 <h3 class="detail-card-title">
                     <i class="fas fa-user-tie"></i>
-                    ผู้จัดการกองทุน
+                    @(currentLang == "th" ? "ผู้จัดการกองทุน" : "Fund Manager")
                 </h3>
                 <div class="manager-avatar">@Model.FundManager.Initials</div>
                 <div class="manager-name">@Model.FundManager.Name</div>
@@ -227,7 +316,7 @@
                 <div class="detail-card">
                     <h3 class="detail-card-title">
                         <i class="fas fa-file-pdf"></i>
-                        เอกสารที่เกี่ยวข้อง
+                        @(currentLang == "th" ? "เอกสารที่เกี่ยวข้อง" : "Related Documents")
                     </h3>
                     <div class="document-list">
                         @foreach (var doc in Model.Documents)
@@ -251,16 +340,55 @@
     <section class="related-section">
         <div class="section-container">
             <div class="section-header">
-                <h2 class="section-title">กองทุนที่เกี่ยวข้อง</h2>
+                <h2 class="section-title">@Localization.GetString("Fund_RelatedFunds")</h2>
                 <a href="@Url.Action("Index", "Fund", new { category = Model.FundType })" class="view-all-btn">
-                    ดูทั้งหมด <i class="fas fa-arrow-right"></i>
+                    @Localization.GetString("Fund_ViewAll") <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
 
             <div class="fund-grid">
                 @foreach (var fund in Model.RelatedFunds)
                 {
-                    @Html.Partial("_FundCard", fund)
+                    <div class="fund-card" onclick="location.href='@Url.Action("Detail", "Fund", new { id = fund.FundId })'">
+                        <div class="fund-card-header">
+                            <div class="fund-company">
+                                <div class="company-logo-small">@fund.AMCLogo</div>
+                                <span class="company-name">@fund.AMCShortName</span>
+                            </div>
+                            <span class="fund-type-badge @fund.FundType">@fund.FundTypeDisplay</span>
+                        </div>
+
+                        <div class="fund-card-body">
+                            <h3 class="fund-card-code">@fund.FundCode</h3>
+                            <p class="fund-card-name">@fund.FundName</p>
+
+                            <div class="fund-card-stats">
+                                <div class="fund-stat">
+                                    <span class="stat-label">NAV</span>
+                                    <span class="stat-value">@fund.NAV.ToString("N2")</span>
+                                </div>
+                                @if (fund.YTDReturn.HasValue)
+                                {
+                                    <div class="fund-stat">
+                                        <span class="stat-label">YTD</span>
+                                        <span class="stat-value @(fund.YTDReturn >= 0 ? "positive" : "negative")">
+                                            @((fund.YTDReturn >= 0 ? "+" : "") + fund.YTDReturn.Value.ToString("N2"))%
+                                        </span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="fund-card-footer">
+                            <span class="risk-indicator">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                @(currentLang == "th" ? "ความเสี่ยง" : "Risk") @fund.RiskLevel
+                            </span>
+                            <span class="view-detail">
+                                @(currentLang == "th" ? "ดูรายละเอียด" : "View Details") <i class="fas fa-arrow-right"></i>
+                            </span>
+                        </div>
+                    </div>
                 }
             </div>
         </div>
@@ -273,7 +401,7 @@
     <section class="news-section">
         <div class="section-container">
             <div class="section-header">
-                <h2 class="section-title">ข่าวสารที่เกี่ยวข้อง</h2>
+                <h2 class="section-title">@Localization.GetString("Fund_RelatedNews")</h2>
             </div>
 
             <div class="news-grid">
@@ -283,23 +411,23 @@
                         <div class="news-image">
                             @if (!string.IsNullOrEmpty(news.FeaturedImageUrl))
                             {
-                                <img src="@news.FeaturedImageUrl" alt="@news.Title" style="width:100%; height:100%; object-fit:cover;">
+                                <img src="@news.FeaturedImageUrl" alt="@news.Title">
                             }
                             else
                             {
-                                <i class="fas fa-newspaper"></i>
+                                <div class="news-placeholder">
+                                    <i class="fas fa-newspaper"></i>
+                                </div>
                             }
                         </div>
                         <div class="news-content">
-                            <div class="news-meta">
-                                <span><i class="far fa-calendar"></i> @news.PublishedDateDisplay</span>
-                                <span><i class="far fa-clock"></i> @news.ReadingTime นาที</span>
-                            </div>
+                            <div class="news-category">@news.CategoryName</div>
                             <h3 class="news-title">@news.Title</h3>
                             <p class="news-excerpt">@news.Excerpt</p>
-                            <a href="@Url.Action("Detail", "Article", new { slug = news.Slug })" class="news-link">
-                                อ่านต่อ <i class="fas fa-arrow-right"></i>
-                            </a>
+                            <div class="news-meta">
+                                <span><i class="far fa-calendar"></i> @news.PublishedDateDisplay</span>
+                                <span><i class="far fa-clock"></i> @news.ReadingTime @(currentLang == "th" ? "นาที" : "min")</span>
+                            </div>
                         </div>
                     </div>
                 }
@@ -309,15 +437,16 @@
 }
 
 @section Scripts {
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <script>
-        // Chart Data from server
+        var currentLang = '@currentLang';
         var chartData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.NAVChartData));
+        var allocationData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.AssetAllocation));
         var navChart = null;
+        var allocationChart = null;
 
-        // Initialize Chart
+        // Initialize NAV Chart
         function initChart(data) {
             var ctx = document.getElementById('navChart');
             if (!ctx) return;
@@ -326,7 +455,7 @@
                 navChart.destroy();
             }
 
-            var labels = data.map(d => new Date(d.Date).toLocaleDateString('th-TH', { day: 'numeric', month: 'short' }));
+            var labels = data.map(d => new Date(d.Date).toLocaleDateString(currentLang == 'th' ? 'th-TH' : 'en-US', { day: 'numeric', month: 'short' }));
             var values = data.map(d => d.Value);
 
             navChart = new Chart(ctx, {
@@ -352,20 +481,10 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            display: false
-                        },
+                        legend: { display: false },
                         tooltip: {
                             backgroundColor: 'rgba(0, 0, 0, 0.8)',
                             padding: 12,
-                            titleFont: {
-                                size: 14,
-                                family: 'Noto Sans Thai'
-                            },
-                            bodyFont: {
-                                size: 13,
-                                family: 'Noto Sans Thai'
-                            },
                             callbacks: {
                                 label: function(context) {
                                     return 'NAV: ' + context.parsed.y.toFixed(4);
@@ -374,16 +493,10 @@
                         }
                     },
                     scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        },
+                        x: { grid: { display: false } },
                         y: {
                             beginAtZero: false,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.05)'
-                            },
+                            grid: { color: 'rgba(0, 0, 0, 0.05)' },
                             ticks: {
                                 callback: function(value) {
                                     return value.toFixed(2);
@@ -395,36 +508,78 @@
             });
         }
 
-        // Update Chart Period
+        // Initialize Asset Allocation Chart
+        function initAllocationChart(data) {
+            var ctx = document.getElementById('allocationChart');
+            if (!ctx) return;
+
+            if (allocationChart) {
+                allocationChart.destroy();
+            }
+
+            var labels = data.map(d => currentLang == 'th' ? d.AssetType : d.AssetTypeEn);
+            var values = data.map(d => d.Percentage);
+            var colors = data.map(d => d.Color);
+
+            allocationChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: colors,
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         function updateChart(period) {
-            // Update active button
             document.querySelectorAll('.chart-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
-
-            // In production, fetch new data from server
-            // For now, just reinitialize with existing data
             initChart(chartData);
         }
 
-        // Toggle Favorite
         function toggleFavorite(fundId) {
-            // In production, make AJAX call to server
-            alert('ฟีเจอร์บันทึกกองทุนโปรดกำลังพัฒนา');
+            alert(currentLang == 'th' ? 'ฟีเจอร์บันทึกกองทุนโปรดกำลังพัฒนา' : 'Favorite feature is under development');
         }
 
-        // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             if (chartData && chartData.length > 0) {
                 initChart(chartData);
             } else {
-                // Show message if no chart data
                 var chartWrapper = document.querySelector('.chart-wrapper');
                 if (chartWrapper) {
-                    chartWrapper.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--gray-500);"><i class="fas fa-chart-line" style="font-size: 3rem; margin-right: 15px;"></i><span>ไม่มีข้อมูลกราฟ NAV</span></div>';
+                    chartWrapper.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 300px; color: var(--gray-500);"><i class="fas fa-chart-line" style="font-size: 3rem; margin-right: 15px;"></i><span>' + (currentLang == 'th' ? 'ไม่มีข้อมูลกราฟ NAV' : 'No NAV chart data available') + '</span></div>';
                 }
+            }
+
+            if (allocationData && allocationData.length > 0) {
+                initAllocationChart(allocationData);
             }
         });
     </script>
 }
+<style>
+        /* Related Funds & News Sections */
+   
+</style>

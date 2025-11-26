@@ -118,192 +118,256 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Home" xml:space="preserve">
-    <value>Home</value>
+    <value>หน้าแรก</value>
   </data>
   <data name="About" xml:space="preserve">
-    <value>About Us</value>
+    <value>เกี่ยวกับเรา</value>
   </data>
   <data name="Contact" xml:space="preserve">
-    <value>Contact Us</value>
+    <value>ติดต่อเรา</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Search</value>
+    <value>ค้นหา</value>
   </data>
   <data name="ViewAll" xml:space="preserve">
-    <value>View All</value>
+    <value>ดูทั้งหมด</value>
   </data>
   <data name="ReadMore" xml:space="preserve">
-    <value>Read More</value>
+    <value>อ่านเพิ่มเติม</value>
   </data>
   <data name="Submit" xml:space="preserve">
-    <value>Submit</value>
+    <value>ส่ง</value>
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
+    <value>ยกเลิก</value>
   </data>
   <data name="Save" xml:space="preserve">
-    <value>Save</value>
+    <value>บันทึก</value>
   </data>
   <data name="Delete" xml:space="preserve">
-    <value>Delete</value>
+    <value>ลบ</value>
   </data>
   <data name="Edit" xml:space="preserve">
-    <value>Edit</value>
+    <value>แก้ไข</value>
   </data>
   <data name="Back" xml:space="preserve">
-    <value>Back</value>
+    <value>กลับ</value>
   </data>
   <data name="Nav_Home" xml:space="preserve">
-    <value>Home</value>
+    <value>หน้าแรก</value>
   </data>
   <data name="Nav_AllFunds" xml:space="preserve">
-    <value>All Funds</value>
+    <value>กองทุนทั้งหมด</value>
   </data>
   <data name="Nav_Learning" xml:space="preserve">
-    <value>Learning</value>
+    <value>เรียนรู้</value>
+  </data>
+ <data name="Nav_Compare" xml:space="preserve">
+    <value>เปรียบเทียบกองทุน</value>
   </data>
   <data name="Nav_Articles" xml:space="preserve">
-    <value>Articles</value>
+    <value>บทความ</value>
   </data>
   <data name="Nav_Contact" xml:space="preserve">
-    <value>Contact</value>
+    <value>ติดต่อเรา</value>
   </data>
   <data name="Fund_Title" xml:space="preserve">
-    <value>All Funds</value>
+    <value>กองทุนทั้งหมด</value>
   </data>
   <data name="Fund_Search" xml:space="preserve">
-    <value>Search funds...</value>
+    <value>ค้นหากองทุน...</value>
   </data>
   <data name="Fund_Category" xml:space="preserve">
-    <value>Category</value>
+    <value>หมวดหมู่</value>
   </data>
   <data name="Fund_AllCategories" xml:space="preserve">
-    <value>All Categories</value>
+    <value>ทุกประเภท</value>
   </data>
   <data name="Fund_NAV" xml:space="preserve">
     <value>NAV</value>
   </data>
   <data name="Fund_Return" xml:space="preserve">
-    <value>Return</value>
+    <value>ผลตอบแทน</value>
   </data>
   <data name="Fund_Risk" xml:space="preserve">
-    <value>Risk</value>
+    <value>ความเสี่ยง</value>
   </data>
   <data name="Fund_MinimumInvestment" xml:space="preserve">
-    <value>Minimum</value>
+    <value>ขั้นต่ำ</value>
   </data>
   <data name="Fund_BuyFund" xml:space="preserve">
-    <value>Buy Fund</value>
+    <value>ซื้อกองทุน</value>
   </data>
   <data name="Fund_NoResults" xml:space="preserve">
-    <value>No funds found matching your criteria</value>
+    <value>ไม่พบกองทุนที่ตรงกับเงื่อนไข</value>
   </data>
   <data name="Article_Title" xml:space="preserve">
-    <value>Articles &amp; News</value>
+    <value>บทความและข่าวสาร</value>
   </data>
   <data name="Article_Search" xml:space="preserve">
-    <value>Search articles...</value>
+    <value>ค้นหาบทความ...</value>
   </data>
   <data name="Article_Category" xml:space="preserve">
-    <value>Category</value>
+    <value>หมวดหมู่</value>
   </data>
   <data name="Article_AllCategories" xml:space="preserve">
-    <value>All</value>
+    <value>ทั้งหมด</value>
   </data>
   <data name="Article_Featured" xml:space="preserve">
-    <value>Featured</value>
+    <value>แนะนำ</value>
   </data>
   <data name="Article_Popular" xml:space="preserve">
-    <value>Popular</value>
+    <value>ยอดนิยม</value>
   </data>
   <data name="Article_ReadingTime" xml:space="preserve">
-    <value>min</value>
+    <value>นาที</value>
   </data>
   <data name="Article_Views" xml:space="preserve">
-    <value>views</value>
+    <value>ครั้ง</value>
   </data>
   <data name="Article_ShareThis" xml:space="preserve">
-    <value>Share this article</value>
+    <value>แชร์บทความนี้</value>
   </data>
   <data name="Article_RelatedArticles" xml:space="preserve">
-    <value>Related Articles</value>
+    <value>บทความที่เกี่ยวข้อง</value>
   </data>
   <data name="Article_NoResults" xml:space="preserve">
-    <value>No articles found</value>
+    <value>ไม่พบบทความ</value>
   </data>
   <data name="Contact_Title" xml:space="preserve">
-    <value>Contact Us</value>
+    <value>ติดต่อเรา</value>
   </data>
   <data name="Contact_Description" xml:space="preserve">
-    <value>Have questions or concerns? We're ready to assist and answer your questions</value>
+    <value>มีคำถามหรือข้อสงสัย? เราพร้อมให้บริการและตอบคำถามของคุณ</value>
   </data>
   <data name="Contact_Information" xml:space="preserve">
-    <value>Contact Information</value>
+    <value>ข้อมูลติดต่อ</value>
   </data>
   <data name="Contact_SendMessage" xml:space="preserve">
-    <value>Send Us a Message</value>
+    <value>ส่งข้อความถึงเรา</value>
   </data>
   <data name="Contact_FullName" xml:space="preserve">
-    <value>Full Name</value>
+    <value>ชื่อ-นามสกุล</value>
   </data>
   <data name="Contact_Email" xml:space="preserve">
-    <value>Email</value>
+    <value>อีเมล</value>
   </data>
   <data name="Contact_Phone" xml:space="preserve">
-    <value>Phone Number</value>
+    <value>เบอร์โทรศัพท์</value>
   </data>
   <data name="Contact_Subject" xml:space="preserve">
-    <value>Subject</value>
+    <value>หัวข้อ</value>
   </data>
   <data name="Contact_Message" xml:space="preserve">
-    <value>Message</value>
+    <value>ข้อความ</value>
   </data>
   <data name="Contact_Submit" xml:space="preserve">
-    <value>Send Message</value>
+    <value>ส่งข้อความ</value>
   </data>
   <data name="Contact_Address" xml:space="preserve">
-    <value>Address</value>
+    <value>ที่อยู่</value>
   </data>
   <data name="Contact_WorkingHours" xml:space="preserve">
-    <value>Working Hours</value>
+    <value>เวลาทำการ</value>
   </data>
   <data name="Contact_FollowUs" xml:space="preserve">
-    <value>Follow Us</value>
+    <value>ติดตามเราได้ที่</value>
   </data>
   <data name="Contact_SuccessMessage" xml:space="preserve">
-    <value>Message sent successfully. We will contact you as soon as possible</value>
+    <value>ส่งข้อความเรียบร้อยแล้ว เราจะติดต่อกลับโดยเร็วที่สุด</value>
   </data>
   <data name="Validation_Required" xml:space="preserve">
-    <value>Please enter {0}</value>
+    <value>กรุณากรอก {0}</value>
   </data>
   <data name="Validation_Email" xml:space="preserve">
-    <value>Invalid email format</value>
+    <value>รูปแบบอีเมลไม่ถูกต้อง</value>
   </data>
   <data name="Validation_Phone" xml:space="preserve">
-    <value>Invalid phone number format</value>
+    <value>รูปแบบเบอร์โทรศัพท์ไม่ถูกต้อง</value>
   </data>
   <data name="Validation_MinLength" xml:space="preserve">
-    <value>{0} must be at least {1} characters long</value>
+    <value>{0} ต้องมีความยาวอย่างน้อย {1} ตัวอักษร</value>
   </data>
   <data name="Pagination_Previous" xml:space="preserve">
-    <value>Previous</value>
+    <value>ก่อนหน้า</value>
   </data>
   <data name="Pagination_Next" xml:space="preserve">
-    <value>Next</value>
+    <value>ถัดไป</value>
   </data>
   <data name="Pagination_Page" xml:space="preserve">
-    <value>Page</value>
+    <value>หน้า</value>
   </data>
   <data name="Pagination_Of" xml:space="preserve">
-    <value>of</value>
+    <value>จาก</value>
   </data>
   <data name="Error_NotFound" xml:space="preserve">
-    <value>Page not found</value>
+    <value>ไม่พบหน้าที่ต้องการ</value>
   </data>
   <data name="Error_ServerError" xml:space="preserve">
-    <value>Internal server error</value>
+    <value>เกิดข้อผิดพลาดภายในระบบ</value>
   </data>
   <data name="Error_NoAccess" xml:space="preserve">
-    <value>You don't have permission to access this page</value>
+    <value>คุณไม่มีสิทธิ์เข้าถึงหน้านี้</value>
   </data>
+  <!-- Fund Detail Page -->
+<data name="Fund_Performance" xml:space="preserve">
+  <value>ผลการดำเนินงาน</value>
+</data>
+<data name="Fund_LatestNAV" xml:space="preserve">
+  <value>NAV ล่าสุด</value>
+</data>
+<data name="Fund_YTDReturn" xml:space="preserve">
+  <value>ผลตอบแทน YTD</value>
+</data>
+<data name="Fund_1YReturn" xml:space="preserve">
+  <value>ผลตอบแทน 1 ปี</value>
+</data>
+<data name="Fund_Information" xml:space="preserve">
+  <value>ข้อมูลกองทุน</value>
+</data>
+<data name="Fund_DividendHistory" xml:space="preserve">
+  <value>ประวัติการจ่ายเงินปันผล</value>
+</data>
+<data name="Fund_Portfolio" xml:space="preserve">
+  <value>สัดส่วนการลงทุน</value>
+</data>
+<data name="Fund_Top5Holdings" xml:space="preserve">
+  <value>การลงทุน 5 อันดับแรก</value>
+</data>
+<data name="Fund_AssetAllocation" xml:space="preserve">
+  <value>การกระจายสินทรัพย์</value>
+</data>
+<data name="Fund_RelatedFunds" xml:space="preserve">
+  <value>กองทุนที่เกี่ยวข้อง</value>
+</data>
+<data name="Fund_RelatedNews" xml:space="preserve">
+  <value>ข่าวสารที่เกี่ยวข้อง</value>
+</data>
+<data name="Fund_NoData" xml:space="preserve">
+  <value>ไม่มีข้อมูล</value>
+</data>
+<data name="Fund_ExDividendDate" xml:space="preserve">
+  <value>วันที่จ่าย</value>
+</data>
+<data name="Fund_DividendPerUnit" xml:space="preserve">
+  <value>เงินปันผลต่อหน่วย</value>
+</data>
+<data name="Fund_SecurityName" xml:space="preserve">
+  <value>ชื่อหลักทรัพย์</value>
+</data>
+<data name="Fund_Weight" xml:space="preserve">
+  <value>สัดส่วน</value>
+</data>
+<data name="Fund_AssetType" xml:space="preserve">
+  <value>ประเภทสินทรัพย์</value>
+</data>
+<data name="Fund_ViewAll" xml:space="preserve">
+  <value>ดูทั้งหมด</value>
+</data>
+<data name="Fund_ReadMore" xml:space="preserve">
+  <value>อ่านต่อ</value>
+</data>
+<data name="Fund_Baht" xml:space="preserve">
+  <value>บาท</value>
+</data>
 </root>

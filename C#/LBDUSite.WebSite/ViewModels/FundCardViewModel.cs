@@ -11,6 +11,7 @@ namespace LBDUSite.ViewModels
         public string FundTypeDisplay { get; set; }   // "กองทุนหุ้น"
 
         // AMC Info
+        public string AMCName { get; set; }           // "กองทุนธนาคารไทยพาณิชย์"
         public string AMCShortName { get; set; }      // "KFUND"
         public string AMCLogo { get; set; }           // First 2 letters
 

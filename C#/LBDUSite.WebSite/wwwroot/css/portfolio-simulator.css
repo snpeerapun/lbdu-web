@@ -1,0 +1,1006 @@
+﻿/* ==================== PORTFOLIO SIMULATOR - FULL CSS ==================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Trebuchet MS', Roboto, Ubuntu, sans-serif;
+    background: #131722;
+    color: #d1d4dc;
+    overflow-x: hidden;
+}
+
+/* ==================== TOP BAR ==================== */
+
+.top-bar {
+    background: #1e222d;
+    border-bottom: 1px solid #2a2e39;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #2962ff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .logo::before {
+        content: '🎯';
+        font-size: 1.5rem;
+    }
+
+/* ==================== MAIN CONTAINER ==================== */
+
+.main-container {
+    display: grid;
+    grid-template-columns: 380px 1fr 400px;
+    height: calc(100vh - 50px);
+}
+
+/* ==================== LEFT PANEL - WIZARD STEPS ==================== */
+
+.left-panel {
+    background: #1e222d;
+    border-right: 1px solid #2a2e39;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.wizard-steps {
+    margin-bottom: 30px;
+}
+
+.step-indicator {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: #2a2e39;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-left: 4px solid transparent;
+}
+
+    .step-indicator.active {
+        background: #363a45;
+        border-left-color: #2962ff;
+    }
+
+    .step-indicator.completed {
+        border-left-color: #4caf50;
+    }
+
+    .step-indicator:hover {
+        background: #363a45;
+    }
+
+.step-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #434651;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 12px;
+    font-size: 0.9rem;
+}
+
+.step-indicator.active .step-number {
+    background: #2962ff;
+    color: white;
+}
+
+.step-indicator.completed .step-number {
+    background: #4caf50;
+    color: white;
+}
+
+    .step-indicator.completed .step-number::before {
+        content: '✓';
+    }
+
+.step-info h4 {
+    font-size: 0.95rem;
+    margin-bottom: 3px;
+}
+
+.step-info p {
+    font-size: 0.8rem;
+    color: #787b86;
+}
+
+/* ==================== WIZARD CONTENT ==================== */
+
+.wizard-content {
+    background: #2a2e39;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+    .wizard-content h3 {
+        color: #2962ff;
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+    }
+
+/* ==================== FORM ELEMENTS ==================== */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #d1d4dc;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+.form-input {
+    width: 100%;
+    background: #363a45;
+    border: 1px solid #434651;
+    color: #d1d4dc;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+    .form-input:focus {
+        outline: none;
+        border-color: #2962ff;
+    }
+
+/* ==================== RISK OPTIONS ==================== */
+
+.risk-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.risk-option {
+    background: #363a45;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+    .risk-option:hover {
+        background: #434651;
+    }
+
+    .risk-option.selected {
+        border-color: #2962ff;
+        background: #2a2e39;
+    }
+
+.risk-option-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.risk-icon {
+    font-size: 1.3rem;
+}
+
+.risk-name {
+    font-weight: 600;
+}
+
+.risk-desc {
+    font-size: 0.85rem;
+    color: #787b86;
+    margin-left: 35px;
+}
+
+/* ==================== AMOUNT INPUT ==================== */
+
+.amount-input-group {
+    position: relative;
+}
+
+.amount-prefix {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #787b86;
+    font-size: 1rem;
+}
+
+.amount-input {
+    padding-left: 35px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+/* ==================== SLIDER ==================== */
+
+.slider-container {
+    margin-top: 10px;
+}
+
+.slider {
+    width: 100%;
+    height: 6px;
+    background: #363a45;
+    border-radius: 3px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 18px;
+        height: 18px;
+        background: #2962ff;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+        width: 18px;
+        height: 18px;
+        background: #2962ff;
+        border-radius: 50%;
+        cursor: pointer;
+        border: none;
+    }
+
+/* ==================== ALLOCATION ADJUSTER ==================== */
+
+.allocation-adjuster {
+    margin-top: 20px;
+}
+
+.adjuster-item {
+    margin-bottom: 20px;
+}
+
+.adjuster-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.adjuster-value {
+    font-weight: 600;
+    color: #2962ff;
+    font-size: 1rem;
+}
+
+.total-allocation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: #363a45;
+    border-radius: 6px;
+    margin-top: 15px;
+    font-size: 1rem;
+    border: 2px solid transparent;
+}
+
+    .total-allocation.valid {
+        background: rgba(76, 175, 80, 0.15);
+        border-color: #4caf50;
+    }
+
+    .total-allocation.invalid {
+        background: rgba(244, 67, 54, 0.15);
+        border-color: #f44336;
+    }
+
+/* ==================== BUTTONS ==================== */
+
+.btn-wizard {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #2962ff 0%, #1e53e5 100%);
+    color: white;
+}
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(41, 98, 255, 0.4);
+    }
+
+.btn-secondary {
+    background: #434651;
+    color: #d1d4dc;
+}
+
+    .btn-secondary:hover {
+        background: #555a67;
+    }
+
+.btn-success {
+    background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+    color: white;
+}
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+    }
+
+/* ==================== CENTER PANEL - PREVIEW ==================== */
+
+.center-panel {
+    background: #131722;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.preview-card {
+    background: #1e222d;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.preview-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.risk-badge {
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+    .risk-badge.conservative {
+        background: rgba(76, 175, 80, 0.2);
+        color: #4caf50;
+    }
+
+    .risk-badge.moderate {
+        background: rgba(255, 152, 0, 0.2);
+        color: #ff9800;
+    }
+
+    .risk-badge.balanced {
+        background: rgba(33, 150, 243, 0.2);
+        color: #2196f3;
+    }
+
+    .risk-badge.aggressive {
+        background: rgba(244, 67, 54, 0.2);
+        color: #f44336;
+    }
+
+    .risk-badge.very-aggressive {
+        background: rgba(156, 39, 176, 0.2);
+        color: #9c27b0;
+    }
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.metric-card {
+    background: #2a2e39;
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.metric-label {
+    font-size: 0.85rem;
+    color: #787b86;
+    margin-bottom: 5px;
+}
+
+.metric-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #d1d4dc;
+}
+
+.chart-container {
+    height: 350px;
+    margin-bottom: 20px;
+}
+
+/* ==================== RIGHT PANEL - ORDER SUMMARY ==================== */
+
+.right-panel {
+    background: #1e222d;
+    border-left: 1px solid #2a2e39;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.section-title {
+    font-size: 0.85rem;
+    color: #787b86;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.order-summary {
+    background: #2a2e39;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #363a45;
+}
+
+    .summary-row:last-child {
+        border-bottom: none;
+    }
+
+.summary-label {
+    color: #787b86;
+    font-size: 0.9rem;
+}
+
+.summary-value {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.summary-row.total {
+    padding-top: 15px;
+    border-top: 2px solid #434651;
+    margin-top: 10px;
+}
+
+    .summary-row.total .summary-value {
+        color: #2962ff;
+        font-size: 1.3rem;
+    }
+
+/* ==================== ASSET ALLOCATION LIST ==================== */
+
+.asset-allocation-list {
+    margin-bottom: 25px;
+}
+
+.allocation-group {
+    margin-bottom: 20px;
+}
+
+.allocation-group-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #2a2e39;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    border-left: 4px solid;
+}
+
+    .allocation-group-header.equity {
+        border-left-color: #f44336;
+    }
+
+    .allocation-group-header.mixed {
+        border-left-color: #ff9800;
+    }
+
+    .allocation-group-header.fixed {
+        border-left-color: #4caf50;
+    }
+
+    .allocation-group-header.money {
+        border-left-color: #2196f3;
+    }
+
+.allocation-group-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.allocation-group-amount {
+    font-weight: 600;
+    color: #2962ff;
+}
+
+.fund-order-item {
+    background: #363a45;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 8px;
+    margin-left: 10px;
+}
+
+.fund-order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 8px;
+}
+
+.fund-code {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #d1d4dc;
+}
+
+.fund-amount {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #4caf50;
+}
+
+.fund-name {
+    font-size: 0.8rem;
+    color: #787b86;
+    margin-bottom: 8px;
+}
+
+.fund-stats {
+    display: flex;
+    gap: 12px;
+    font-size: 0.75rem;
+}
+
+.fund-stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.fund-stat-label {
+    color: #787b86;
+}
+
+.fund-stat-value {
+    color: #d1d4dc;
+    font-weight: 600;
+}
+
+.order-actions {
+    margin-top: 20px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #787b86;
+}
+
+/* ==================== MODE TOGGLE ==================== */
+
+.mode-toggle {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.mode-btn {
+    flex: 1;
+    padding: 10px;
+    background: #363a45;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    color: #787b86;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+    .mode-btn.active {
+        background: #2962ff;
+        color: white;
+        border-color: #2962ff;
+    }
+
+/* ==================== SCROLLBAR ==================== */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1e222d;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #434651;
+    border-radius: 4px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555a67;
+    }
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 1400px) {
+    .main-container {
+        grid-template-columns: 350px 1fr 350px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .main-container {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+
+    .left-panel,
+    .center-panel,
+    .right-panel {
+        border: none;
+        min-height: auto;
+    }
+
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chart-container {
+        height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .top-bar {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .logo {
+        justify-content: center;
+    }
+
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .step-indicator {
+        padding: 12px;
+    }
+
+    .step-number {
+        width: 28px;
+        height: 28px;
+        font-size: 0.85rem;
+    }
+
+    .step-info h4 {
+        font-size: 0.9rem;
+    }
+
+    .step-info p {
+        font-size: 0.75rem;
+    }
+
+    .wizard-content {
+        padding: 15px;
+    }
+
+        .wizard-content h3 {
+            font-size: 1rem;
+        }
+
+    .form-input {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+
+    .amount-input {
+        font-size: 1.1rem;
+    }
+
+    .btn {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .preview-card {
+        padding: 20px;
+    }
+
+    .preview-title {
+        font-size: 1.1rem;
+    }
+
+    .metric-value {
+        font-size: 1.5rem;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+
+    .fund-order-item {
+        padding: 10px;
+    }
+
+    .fund-code {
+        font-size: 0.9rem;
+    }
+
+    .fund-amount {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .top-bar {
+        padding: 10px;
+    }
+
+    .logo {
+        font-size: 1.1rem;
+    }
+
+        .logo::before {
+            font-size: 1.3rem;
+        }
+
+    .left-panel,
+    .center-panel,
+    .right-panel {
+        padding: 15px;
+    }
+
+    .wizard-steps {
+        margin-bottom: 20px;
+    }
+
+    .step-indicator {
+        padding: 10px;
+    }
+
+    .wizard-content {
+        padding: 12px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .risk-option {
+        padding: 10px;
+    }
+
+    .risk-option-header {
+        gap: 8px;
+    }
+
+    .risk-icon {
+        font-size: 1.1rem;
+    }
+
+    .risk-name {
+        font-size: 0.9rem;
+    }
+
+    .risk-desc {
+        font-size: 0.8rem;
+        margin-left: 30px;
+    }
+
+    .adjuster-item {
+        margin-bottom: 15px;
+    }
+
+    .mode-btn {
+        padding: 8px;
+        font-size: 0.85rem;
+    }
+
+    .btn-wizard {
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .preview-card {
+        padding: 15px;
+    }
+
+    .preview-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .metric-card {
+        padding: 12px;
+    }
+
+    .metric-label {
+        font-size: 0.8rem;
+    }
+
+    .metric-value {
+        font-size: 1.3rem;
+    }
+
+    .chart-container {
+        height: 220px;
+    }
+
+    .order-summary {
+        padding: 15px;
+    }
+
+    .summary-row {
+        padding: 10px 0;
+    }
+
+    .summary-label,
+    .summary-value {
+        font-size: 0.85rem;
+    }
+
+    .summary-row.total .summary-value {
+        font-size: 1.1rem;
+    }
+
+    .allocation-group-header {
+        padding: 8px;
+    }
+
+    .allocation-group-title {
+        font-size: 0.8rem;
+        gap: 6px;
+    }
+
+    .allocation-group-amount {
+        font-size: 0.85rem;
+    }
+
+    .fund-order-item {
+        padding: 8px;
+        margin-left: 5px;
+    }
+
+    .fund-code {
+        font-size: 0.85rem;
+    }
+
+    .fund-amount {
+        font-size: 0.95rem;
+    }
+
+    .fund-name {
+        font-size: 0.75rem;
+    }
+
+    .fund-stats {
+        gap: 8px;
+        font-size: 0.7rem;
+    }
+}
+
+/* ==================== ANIMATIONS ==================== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.wizard-content {
+    animation: fadeIn 0.4s ease;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.btn-primary:active,
+.btn-success:active {
+    animation: pulse 0.3s ease;
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.mt-10 {
+    margin-top: 10px;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.p-10 {
+    padding: 10px;
+}
+
+.p-20 {
+    padding: 20px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.visible {
+    display: block !important;
+}

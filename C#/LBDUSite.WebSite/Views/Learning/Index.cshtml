@@ -1,0 +1,1130 @@
+﻿@inject LBDUSite.Services.ILocalizationService Localization
+@model LBDUSite.ViewModels.LearningCenterViewModel
+@{
+    ViewBag.Title = "ศูนย์การเรียนรู้";
+    var currentLang = Localization.GetCurrentLanguage();
+}
+
+<!-- Hero Section -->
+<section class="learning-hero-new">
+    <div class="learning-hero-container">
+        <div class="learning-hero-content">
+            <div class="learning-badge-new">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Learning Center</span>
+            </div>
+            <h1 class="learning-hero-title-new">
+                ศูนย์การเรียนรู้<br>
+                <span class="gradient-text-new">กองทุนรวม</span>
+            </h1>
+            <p class="learning-hero-subtitle-new">
+                เครื่องมือ คู่มือ และความรู้ที่จำเป็นสำหรับการลงทุนกองทุนรวม<br>
+                ตั้งแต่เริ่มต้นจนถึงขั้นสูง
+            </p>
+
+            <!-- Search Box -->
+            <div class="learning-search-new">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="ค้นหาเครื่องมือหรือบทความ..." id="learningSearchInput">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Tools -->
+<section class="featured-tools-section-new">
+    <div class="section-container">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">
+                    <i class="fas fa-star"></i>
+                    เครื่องมือแนะนำ
+                </h2>
+                <p class="section-subtitle">เครื่องมือยอดนิยมที่ช่วยให้การลงทุนของคุณง่ายขึ้น</p>
+            </div>
+        </div>
+
+        <div class="featured-tools-grid-new">
+            @foreach (var tool in Model.Tools.Where(t => t.IsFeatured))
+            {
+                <a href="@tool.Url" class="featured-tool-card-new">
+                    <div class="tool-image-container">
+                        @if (!string.IsNullOrEmpty(tool.ImageUrl))
+                        {
+                            <img src="@tool.ImageUrl" alt="@tool.Title" class="tool-image">
+                        }
+                        else
+                        {
+                            <div class="tool-image-placeholder" style="background: @tool.Color">
+                                <i class="fas @tool.IconClass"></i>
+                            </div>
+                        }
+                        <div class="tool-overlay"></div>
+                        <div class="tool-icon-badge" style="background: @tool.Color">
+                            <i class="fas @tool.IconClass"></i>
+                        </div>
+                    </div>
+                    <div class="featured-tool-body">
+                        <h3>@tool.Title</h3>
+                        <p>@tool.Description</p>
+                        <div class="tool-meta-new">
+                            <span class="tool-duration-new">
+                                <i class="far fa-clock"></i>
+                                @tool.Duration
+                            </span>
+                            <span class="tool-difficulty-new difficulty-@tool.Difficulty.ToLower()">
+                                <i class="fas fa-signal"></i>
+                                @tool.Difficulty
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- All Tools by Category -->
+<section class="tools-by-category-section-new">
+    <div class="section-container">
+
+        <!-- 1. ความรู้พื้นฐาน -->
+        @if (Model.Tools.Any(t => t.Category == "Education"))
+        {
+            <div class="tool-category-block-new">
+                <div class="category-block-header-new">
+                    <div class="category-icon-new" style="background: #14b8a6">
+                        <i class="fas fa-book-reader"></i>
+                    </div>
+                    <div>
+                        <h3 class="category-block-title-new">ความรู้พื้นฐาน</h3>
+                        <p class="category-block-desc-new">เรียนรู้หลักการและขั้นตอนการลงทุนกองทุนรวม</p>
+                    </div>
+                </div>
+                <div class="education-grid">
+                    @foreach (var tool in Model.Tools.Where(t => t.Category == "Education"))
+                    {
+                        <a href="@tool.Url" class="education-card">
+                            <div class="education-card-icon" style="background: @tool.Color">
+                                <i class="fas @tool.IconClass"></i>
+                            </div>
+                            <div class="education-card-body">
+                                <h4>@tool.Title</h4>
+                                <p>@tool.Description</p>
+                                <div class="education-meta">
+                                    <span><i class="far fa-clock"></i> @tool.Duration</span>
+                                    <span class="difficulty-@tool.Difficulty.ToLower()">@tool.Difficulty</span>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- 2. เครื่องมือและเครื่องคำนวณ -->
+        <div class="tool-category-block-new">
+            <div class="category-block-header-new">
+                <div class="category-icon-new" style="background: linear-gradient(135deg, #8b5cf6 0%, #f59e0b 100%)">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div>
+                    <h3 class="category-block-title-new">เครื่องมือและเครื่องคำนวณ</h3>
+                    <p class="category-block-desc-new">เครื่องมือวิเคราะห์ คำนวณ และวางแผนการลงทุน</p>
+                </div>
+            </div>
+            <div class="tools-grid-compact">
+                @foreach (var tool in Model.Tools.Where(t => t.Category == "Tools"))
+                {
+                    <a href="@tool.Url" class="tool-card-compact">
+                        <div class="tool-card-compact-icon" style="background: @tool.Color">
+                            <i class="fas @tool.IconClass"></i>
+                        </div>
+                        <div class="tool-card-compact-body">
+                            <h4>@tool.Title</h4>
+                            <p>@tool.Description</p>
+                            <div class="tool-compact-meta">
+                                <span><i class="far fa-clock"></i> @tool.Duration</span>
+                                <span class="difficulty-@tool.Difficulty.ToLower()">@tool.Difficulty</span>
+                            </div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+
+        <!-- 3. วิดีโอสอน -->
+        <div class="tool-category-block-new">
+            <div class="category-block-header-new">
+                <div class="category-icon-new" style="background: #3b82f6">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+                <div>
+                    <h3 class="category-block-title-new">วิดีโอสอน</h3>
+                    <p class="category-block-desc-new">เรียนรู้ผ่านวิดีโอสั้นๆ เข้าใจง่าย</p>
+                </div>
+            </div>
+            <div class="video-grid-compact">
+                @foreach (var video in Model.Videos)
+                {
+                    <div class="video-card-compact">
+                        <div class="video-thumbnail-compact">
+                            @if (!string.IsNullOrEmpty(video.ThumbnailUrl))
+                            {
+                                <img src="@video.ThumbnailUrl" alt="@video.Title">
+                            }
+                            else
+                            {
+                                <div class="video-placeholder-compact">
+                                    <i class="fas fa-play-circle"></i>
+                                </div>
+                            }
+                            <div class="video-play-overlay-compact">
+                                <i class="fas fa-play-circle"></i>
+                            </div>
+                            <div class="video-duration-compact">@video.Duration</div>
+                        </div>
+                        <div class="video-info-compact">
+                            <h4>@video.Title</h4>
+                            <div class="video-meta-compact">
+                                <span><i class="fas fa-eye"></i> @video.Views.ToString("N0") ครั้ง</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="faq-section-new">
+    <div class="section-container">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">
+                    <i class="fas fa-question-circle"></i>
+                    คำถามที่พบบ่อย
+                </h2>
+                <p class="section-subtitle">คำตอบสำหรับคำถามยอดนิยม</p>
+            </div>
+        </div>
+
+        <div class="faq-container-new">
+            @foreach (var faq in Model.FAQ)
+            {
+                <div class="faq-item-new">
+                    <div class="faq-question-new">
+                        <h4>@faq.Question</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer-new">
+                        <p>@faq.Answer</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="faq-cta-new">
+            <p>ไม่พบคำตอบที่ต้องการ?</p>
+            <a href="@Url.Action("Index", "Contact")" class="btn btn-primary">
+                <i class="fas fa-phone"></i>
+                ติดต่อเรา
+            </a>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // FAQ Toggle
+        document.querySelectorAll('.faq-item-new').forEach(item => {
+            item.querySelector('.faq-question-new').addEventListener('click', () => {
+                // Close other FAQs
+                document.querySelectorAll('.faq-item-new').forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+                // Toggle current FAQ
+                item.classList.toggle('active');
+            });
+        });
+
+        // Search
+        document.getElementById('learningSearchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+
+            // Search in all cards
+            document.querySelectorAll('.featured-tool-card-new, .education-card, .tool-card-compact, .video-card-compact').forEach(card => {
+                const title = card.querySelector('h3, h4').textContent.toLowerCase();
+                const desc = card.querySelector('p')?.textContent.toLowerCase() || '';
+
+                if (title.includes(searchTerm) || desc.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show/hide category blocks if all items are hidden
+            document.querySelectorAll('.tool-category-block-new').forEach(block => {
+                const visibleCards = block.querySelectorAll('.education-card:not([style*="display: none"]), .tool-card-compact:not([style*="display: none"]), .video-card-compact:not([style*="display: none"])');
+                if (visibleCards.length === 0) {
+                    block.style.display = 'none';
+                } else {
+                    block.style.display = '';
+                }
+            });
+        });
+
+        // Image lazy loading error handling
+        document.querySelectorAll('.tool-image, .video-thumbnail-compact img').forEach(img => {
+            img.addEventListener('error', function() {
+                const container = this.closest('.tool-image-container, .video-thumbnail-compact');
+                if (container) {
+                    this.style.display = 'none';
+                    const placeholder = container.querySelector('.tool-image-placeholder, .video-placeholder-compact');
+                    if (placeholder) {
+                        placeholder.style.display = 'flex';
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+<style>
+    /* ==================== LEARNING CENTER - NEW DESIGN ==================== */
+
+    /* Learning Hero */
+    .learning-hero-new {
+       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        padding: 100px 20px 80px;
+        margin-top: var(--header-height);
+        position: relative;
+        overflow: hidden;
+    }
+   .learning-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50%;
+        height: 100%;
+        background: url(data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><circle cx="700" cy="300" r="250" fill="rgba(255,255,255,0.05)"/><circle cx="900" cy="700" r="350" fill="rgba(255,255,255,0.03)"/></svg>);
+        background-size: cover;
+    }
+    .learning-hero-new::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 60%;
+        height: 100%;
+        background: radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+    }
+
+    .learning-hero-container {
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .learning-hero-content {
+        text-align: center;
+        color: white;
+    }
+
+    .learning-badge-new {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 24px;
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 700;
+        margin-bottom: 24px;
+        backdrop-filter: blur(10px);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .learning-hero-title-new {
+        font-size: 3.5rem;
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 24px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .gradient-text-new {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .learning-hero-subtitle-new {
+        font-size: 1.25rem;
+        opacity: 0.95;
+        line-height: 1.8;
+        margin-bottom: 48px;
+        font-weight: 400;
+    }
+
+    /* Learning Search */
+    .learning-search-new {
+        position: relative;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .learning-search-new i {
+        position: absolute;
+        left: 28px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray-400);
+        font-size: 1.25rem;
+    }
+
+    .learning-search-new input {
+        width: 100%;
+        padding: 20px 28px 20px 65px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1.0625rem;
+        font-family: 'Noto Sans Thai', sans-serif;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+        transition: all 0.3s ease;
+    }
+
+    .learning-search-new input:focus {
+        outline: none;
+        box-shadow: 0 15px 60px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+
+    /* ==================== FEATURED TOOLS SECTION ==================== */
+
+    .featured-tools-section-new {
+        padding: 80px 0;
+        background: var(--gray-50);
+    }
+
+    .featured-tools-grid-new {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+        margin-top: 40px;
+    }
+
+    .featured-tool-card-new {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .featured-tool-card-new:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    .tool-image-container {
+        position: relative;
+        width: 100%;
+        height: 180px;
+        overflow: hidden;
+    }
+
+    .tool-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .featured-tool-card-new:hover .tool-image {
+        transform: scale(1.08);
+    }
+
+    .tool-image-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3.5rem;
+        color: white;
+    }
+
+    .tool-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.4) 100%);
+        opacity: 0.6;
+        transition: opacity 0.3s ease;
+    }
+
+    .featured-tool-card-new:hover .tool-overlay {
+        opacity: 0.8;
+    }
+
+    .tool-icon-badge {
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        z-index: 2;
+        transition: all 0.3s ease;
+    }
+
+    .featured-tool-card-new:hover .tool-icon-badge {
+        transform: scale(1.08) rotate(3deg);
+    }
+
+    .featured-tool-body {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .featured-tool-body h3 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 10px;
+        line-height: 1.3;
+    }
+
+    .featured-tool-body p {
+        font-size: 0.875rem;
+        color: var(--gray-600);
+        line-height: 1.6;
+        margin-bottom: 16px;
+        flex: 1;
+    }
+
+    .tool-meta-new {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .tool-duration-new {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.8125rem;
+        color: var(--gray-500);
+        font-weight: 500;
+    }
+
+    .tool-difficulty-new {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 10px;
+        border-radius: 16px;
+        font-size: 0.6875rem;
+        font-weight: 700;
+    }
+
+    .difficulty-ง่าย {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .difficulty-ปานกลาง {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .difficulty-ยาก {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    /* ==================== TOOLS BY CATEGORY SECTION ==================== */
+
+    .tools-by-category-section-new {
+        padding: 80px 0;
+        background: white;
+    }
+
+    .tool-category-block-new {
+        margin-bottom: 70px;
+    }
+
+    .tool-category-block-new:last-child {
+        margin-bottom: 0;
+    }
+
+    .category-block-header-new {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 35px;
+        padding-bottom: 24px;
+        border-bottom: 3px solid var(--gray-200);
+    }
+
+    .category-icon-new {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        color: white;
+        flex-shrink: 0;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .category-block-title-new {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--gray-900);
+        margin-bottom: 6px;
+    }
+
+    .category-block-desc-new {
+        font-size: 1rem;
+        color: var(--gray-600);
+    }
+
+    /* ==================== EDUCATION GRID - LIST STYLE ==================== */
+
+    .education-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+        gap: 20px;
+    }
+
+    .education-card {
+        background: white;
+        border: 2px solid var(--gray-200);
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .education-card:hover {
+        border-color: var(--primary);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .education-card-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        color: white;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .education-card:hover .education-card-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .education-card-body {
+        flex: 1;
+    }
+
+    .education-card-body h4 {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 6px;
+    }
+
+    .education-card-body p {
+        font-size: 0.875rem;
+        color: var(--gray-600);
+        line-height: 1.5;
+        margin-bottom: 10px;
+    }
+
+    .education-meta {
+        display: flex;
+        gap: 12px;
+        font-size: 0.75rem;
+    }
+
+    .education-meta span:first-child {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--gray-500);
+    }
+
+    /* ==================== TOOLS GRID COMPACT - 4 COLUMNS ==================== */
+
+    .tools-grid-compact {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+
+    .tool-card-compact {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .tool-card-compact:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .tool-card-compact-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .tool-card-compact:hover .tool-card-compact-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .tool-card-compact-body h4 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 8px;
+    }
+
+    .tool-card-compact-body p {
+        font-size: 0.8125rem;
+        color: var(--gray-600);
+        line-height: 1.5;
+        margin-bottom: 12px;
+    }
+
+    .tool-compact-meta {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+        font-size: 0.75rem;
+    }
+
+    .tool-compact-meta span:first-child {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--gray-500);
+    }
+
+    /* ==================== VIDEO GRID COMPACT - 4 COLUMNS ==================== */
+
+    .video-grid-compact {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+
+    .video-card-compact {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .video-card-compact:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    .video-thumbnail-compact {
+        position: relative;
+        width: 100%;
+        height: 140px;
+        overflow: hidden;
+        background: var(--gray-200);
+    }
+
+    .video-thumbnail-compact img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .video-card-compact:hover .video-thumbnail-compact img {
+        transform: scale(1.08);
+    }
+
+    .video-placeholder-compact {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        color: white;
+        font-size: 2.5rem;
+    }
+
+    .video-play-overlay-compact {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: white;
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+    .video-card-compact:hover .video-play-overlay-compact {
+        opacity: 1;
+    }
+
+    .video-duration-compact {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        background: rgba(0, 0, 0, 0.85);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        z-index: 2;
+    }
+
+    .video-info-compact {
+        padding: 15px;
+    }
+
+    .video-info-compact h4 {
+        font-size: 0.9375rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 8px;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .video-meta-compact {
+        font-size: 0.75rem;
+        color: var(--gray-500);
+    }
+
+    .video-meta-compact span {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    /* ==================== FAQ SECTION ==================== */
+
+    .faq-section-new {
+        padding: 80px 0;
+        background: var(--gray-50);
+    }
+
+    .faq-container-new {
+        max-width: 900px;
+        margin: 40px auto 50px;
+    }
+
+    .faq-item-new {
+        background: white;
+        border: 2px solid var(--gray-200);
+        border-radius: 16px;
+        margin-bottom: 16px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .faq-item-new:hover {
+        border-color: var(--primary);
+        box-shadow: 0 4px 15px rgba(28, 165, 155, 0.08);
+    }
+
+    .faq-item-new.active {
+        border-color: var(--primary);
+        box-shadow: 0 8px 25px rgba(28, 165, 155, 0.12);
+    }
+
+    .faq-question-new {
+        padding: 24px 28px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+        transition: all 0.3s ease;
+    }
+
+    .faq-question-new:hover {
+        background: var(--gray-50);
+    }
+
+    .faq-question-new h4 {
+        font-size: 1.1875rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    .faq-question-new i {
+        color: var(--primary);
+        font-size: 1.25rem;
+        transition: transform 0.3s ease;
+        flex-shrink: 0;
+    }
+
+    .faq-item-new.active .faq-question-new i {
+        transform: rotate(180deg);
+    }
+
+    .faq-answer-new {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s ease;
+    }
+
+    .faq-item-new.active .faq-answer-new {
+        max-height: 600px;
+    }
+
+    .faq-answer-new p {
+        padding: 0 28px 24px;
+        color: var(--gray-700);
+        line-height: 1.8;
+        font-size: 1rem;
+    }
+
+    .faq-cta-new {
+        text-align: center;
+        padding: 50px 28px;
+        background: white;
+        border-radius: 16px;
+        margin-top: 50px;
+    }
+
+    .faq-cta-new p {
+        font-size: 1.25rem;
+        color: var(--gray-700);
+        font-weight: 600;
+        margin-bottom: 24px;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+
+    @@media (max-width: 1400px) {
+        .tools-grid-compact,
+        .video-grid-compact {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    @@media (max-width: 1200px) {
+        .featured-tools-grid-new {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .education-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .featured-tools-grid-new,
+        .tools-grid-compact,
+        .video-grid-compact {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .learning-hero-new {
+            padding: 70px 20px 60px;
+        }
+
+        .learning-hero-title-new {
+            font-size: 2.75rem;
+        }
+
+        .learning-hero-subtitle-new {
+            font-size: 1.0625rem;
+        }
+
+        .category-block-header-new {
+            flex-direction: column;
+            align-items: start;
+            gap: 16px;
+        }
+
+        .category-block-title-new {
+            font-size: 1.5rem;
+        }
+
+        .education-card {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .featured-tools-grid-new,
+        .tools-grid-compact,
+        .video-grid-compact {
+            grid-template-columns: 1fr;
+        }
+
+        .faq-question-new h4 {
+            font-size: 1.0625rem;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .learning-hero-title-new {
+            font-size: 2.25rem;
+        }
+
+        .learning-badge-new {
+            font-size: 0.75rem;
+            padding: 8px 18px;
+        }
+
+        .learning-hero-subtitle-new {
+            font-size: 1rem;
+        }
+
+        .featured-tool-body {
+            padding: 18px;
+        }
+
+        .featured-tool-body h3 {
+            font-size: 1.125rem;
+        }
+
+        .category-block-title-new {
+            font-size: 1.375rem;
+        }
+
+        .category-icon-new {
+            width: 52px;
+            height: 52px;
+            font-size: 1.5rem;
+        }
+
+        .faq-question-new,
+        .faq-answer-new p {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .faq-question-new h4 {
+            font-size: 1rem;
+        }
+
+        .tool-image-container {
+            height: 160px;
+        }
+    }
+
+    /* ==================== ANIMATIONS ==================== */
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .featured-tool-card-new,
+    .education-card,
+    .tool-card-compact,
+    .video-card-compact {
+        animation: fadeInUp 0.6s ease;
+    }
+
+    @@keyframes shimmer {
+        0% {
+            background-position: -1000px 0;
+        }
+        100% {
+            background-position: 1000px 0;
+        }
+    }
+
+    .tool-image-placeholder,
+    .video-placeholder-compact {
+        background: linear-gradient(90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0) 100%);
+        background-size: 1000px 100%;
+        animation: shimmer 2s infinite;
+    }
+</style>

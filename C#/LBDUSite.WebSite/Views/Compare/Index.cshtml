@@ -1,0 +1,2015 @@
+﻿@inject LBDUSite.Services.ILocalizationService Localization
+@model LBDUSite.ViewModels.FundCompareViewModel
+@{
+    ViewBag.Title = "เปรียบเทียบกองทุน";
+    var currentLang = Localization.GetCurrentLanguage();
+}
+
+<!-- Compare Hero -->
+<section class="compare-hero">
+    <div class="compare-hero-container">
+        <h1 class="compare-hero-title">
+            <i class="fas fa-balance-scale"></i>
+            @(currentLang == "th" ? "เปรียบเทียบกองทุน" : "Compare Funds")
+        </h1>
+        <p class="compare-hero-subtitle">
+            @(currentLang == "th" ? "เปรียบเทียบกองทุนได้สูงสุด 4 กองทุน เพื่อหากองทุนที่เหมาะกับคุณ" : "Compare up to 4 funds to find the best one for you")
+        </p>
+    </div>
+</section>
+
+<!-- Compare Content -->
+<section class="compare-content">
+    <div class="compare-container">
+
+        <!-- Fund Selection Area -->
+        <div class="compare-selection-area" id="selectionArea">
+            <div class="selection-header">
+                <h2>
+                    <i class="fas fa-search"></i>
+                    @(currentLang == "th" ? "เลือกกองทุนเพื่อเปรียบเทียบ" : "Select Funds to Compare")
+                </h2>
+            </div>
+
+            <!-- Search Box -->
+            <div class="compare-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text"
+                       id="fundSearchInput"
+                       placeholder="@(currentLang == "th" ? "ค้นหาชื่อกองทุน หรือ รหัสกองทุน..." : "Search fund name or code...")"
+                       autocomplete="off">
+                <div class="search-results" id="searchResults"></div>
+            </div>
+
+            <!-- Selected Funds Slots -->
+            <div class="compare-slots">
+                <div class="compare-slot empty" id="slot-0" data-slot="0">
+                    <div class="slot-placeholder">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>@(currentLang == "th" ? "เลือกกองทุนที่ 1" : "Select Fund 1")</span>
+                    </div>
+                </div>
+                <div class="compare-slot empty" id="slot-1" data-slot="1">
+                    <div class="slot-placeholder">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>@(currentLang == "th" ? "เลือกกองทุนที่ 2" : "Select Fund 2")</span>
+                    </div>
+                </div>
+                <div class="compare-slot empty" id="slot-2" data-slot="2">
+                    <div class="slot-placeholder">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>@(currentLang == "th" ? "เลือกกองทุนที่ 3" : "Select Fund 3")</span>
+                    </div>
+                </div>
+                <div class="compare-slot empty" id="slot-3" data-slot="3">
+                    <div class="slot-placeholder">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>@(currentLang == "th" ? "เลือกกองทุนที่ 4" : "Select Fund 4")</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compare Button -->
+            <div class="compare-actions">
+                <button class="btn btn-primary btn-large" id="compareBtn" disabled onclick="showComparison()">
+                    <i class="fas fa-balance-scale"></i>
+                    @(currentLang == "th" ? "เปรียบเทียบกองทุน" : "Compare Funds")
+                </button>
+                <button class="btn btn-outline" onclick="clearAll()">
+                    <i class="fas fa-times"></i>
+                    @(currentLang == "th" ? "ล้างทั้งหมด" : "Clear All")
+                </button>
+            </div>
+        </div>
+
+        <!-- Comparison Table (Initially Hidden) -->
+        <div class="compare-table-wrapper" id="compareTableWrapper" style="display: none;">
+            <div class="table-header">
+                <h2>
+                    <i class="fas fa-chart-bar"></i>
+                    @(currentLang == "th" ? "ผลการเปรียบเทียบ" : "Comparison Results")
+                </h2>
+                <button class="btn btn-outline btn-sm" onclick="hideComparison()">
+                    <i class="fas fa-arrow-left"></i>
+                    @(currentLang == "th" ? "เลือกกองทุนใหม่" : "Select New Funds")
+                </button>
+            </div>
+
+            <div class="compare-table-scroll">
+                <table class="compare-table" id="compareTable">
+                    <thead>
+                        <tr>
+                            <th class="sticky-col">@(currentLang == "th" ? "รายการ" : "Category")</th>
+                            <th class="fund-col" id="fundCol-0"></th>
+                            <th class="fund-col" id="fundCol-1"></th>
+                            <th class="fund-col" id="fundCol-2"></th>
+                            <th class="fund-col" id="fundCol-3"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Basic Info -->
+                        <tr class="section-header">
+                            <td colspan="5">
+                                <i class="fas fa-info-circle"></i>
+                                @(currentLang == "th" ? "ข้อมูลพื้นฐาน" : "Basic Information")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col label-col">@(currentLang == "th" ? "ชื่อกองทุน" : "Fund Name")</td>
+                            <td class="data-col" id="fundName-0"></td>
+                            <td class="data-col" id="fundName-1"></td>
+                            <td class="data-col" id="fundName-2"></td>
+                            <td class="data-col" id="fundName-3"></td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col label-col">@(currentLang == "th" ? "บริษัทจัดการ" : "AMC")</td>
+                            <td class="data-col" id="fundAMC-0"></td>
+                            <td class="data-col" id="fundAMC-1"></td>
+                            <td class="data-col" id="fundAMC-2"></td>
+                            <td class="data-col" id="fundAMC-3"></td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col label-col">@(currentLang == "th" ? "ประเภทกองทุน" : "Fund Type")</td>
+                            <td class="data-col" id="fundType-0"></td>
+                            <td class="data-col" id="fundType-1"></td>
+                            <td class="data-col" id="fundType-2"></td>
+                            <td class="data-col" id="fundType-3"></td>
+                        </tr>
+
+                        <!-- NAV -->
+                        <tr class="section-header">
+                            <td colspan="5">
+                                <i class="fas fa-coins"></i>
+                                @(currentLang == "th" ? "มูลค่าหน่วยลงทุน" : "Net Asset Value")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col label-col">NAV @(currentLang == "th" ? "ล่าสุด" : "Latest")</td>
+                            <td class="data-col" id="fundNAV-0"></td>
+                            <td class="data-col" id="fundNAV-1"></td>
+                            <td class="data-col" id="fundNAV-2"></td>
+                            <td class="data-col" id="fundNAV-3"></td>
+                        </tr>
+
+                        <!-- Performance -->
+                        <tr class="section-header">
+                            <td colspan="5">
+                                <i class="fas fa-chart-line"></i>
+                                @(currentLang == "th" ? "ผลการดำเนินงาน" : "Performance")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col label-col">@(currentLang == "th" ? "ผลตอบแทน YTD" : "YTD Return")</td>
+                            <td class="data-col" id="fundYTD-0"></td>
+                            <td class="data-col" id="fundYTD-1"></td>
+                            <td class="data-col" id="fundYTD-2"></td>
+                            <td class="data-col" id="fundYTD-3"></td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col label-col">@(currentLang == "th" ? "ผลตอบแทน 1 ปี" : "1 Year Return")</td>
+                            <td class="data-col" id="fund1Y-0"></td>
+                            <td class="data-col" id="fund1Y-1"></td>
+                            <td class="data-col" id="fund1Y-2"></td>
+                            <td class="data-col" id="fund1Y-3"></td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col label-col">@(currentLang == "th" ? "ผลตอบแทน 3 ปี" : "3 Year Return")</td>
+                            <td class="data-col" id="fund3Y-0"></td>
+                            <td class="data-col" id="fund3Y-1"></td>
+                            <td class="data-col" id="fund3Y-2"></td>
+                            <td class="data-col" id="fund3Y-3"></td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col label-col">@(currentLang == "th" ? "ผลตอบแทน 5 ปี" : "5 Year Return")</td>
+                            <td class="data-col" id="fund5Y-0"></td>
+                            <td class="data-col" id="fund5Y-1"></td>
+                            <td class="data-col" id="fund5Y-2"></td>
+                            <td class="data-col" id="fund5Y-3"></td>
+                        </tr>
+
+                        <!-- Risk -->
+                        <tr class="section-header">
+                            <td colspan="5">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                @(currentLang == "th" ? "ความเสี่ยง" : "Risk")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col label-col">@(currentLang == "th" ? "ระดับความเสี่ยง" : "Risk Level")</td>
+                            <td class="data-col" id="fundRisk-0"></td>
+                            <td class="data-col" id="fundRisk-1"></td>
+                            <td class="data-col" id="fundRisk-2"></td>
+                            <td class="data-col" id="fundRisk-3"></td>
+                        </tr>
+
+                        <!-- Fees -->
+                        <tr class="section-header">
+                            <td colspan="5">
+                                <i class="fas fa-dollar-sign"></i>
+                                @(currentLang == "th" ? "ค่าธรรมเนียม" : "Fees")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col label-col">@(currentLang == "th" ? "ค่าธรรมเนียมการจัดการ" : "Management Fee")</td>
+                            <td class="data-col" id="fundMgmtFee-0"></td>
+                            <td class="data-col" id="fundMgmtFee-1"></td>
+                            <td class="data-col" id="fundMgmtFee-2"></td>
+                            <td class="data-col" id="fundMgmtFee-3"></td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col label-col">@(currentLang == "th" ? "ค่าธรรมเนียมการขาย" : "Front-end Fee")</td>
+                            <td class="data-col" id="fundFrontFee-0"></td>
+                            <td class="data-col" id="fundFrontFee-1"></td>
+                            <td class="data-col" id="fundFrontFee-2"></td>
+                            <td class="data-col" id="fundFrontFee-3"></td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col label-col">@(currentLang == "th" ? "ค่าธรรมเนียมการรับซื้อคืน" : "Back-end Fee")</td>
+                            <td class="data-col" id="fundBackFee-0"></td>
+                            <td class="data-col" id="fundBackFee-1"></td>
+                            <td class="data-col" id="fundBackFee-2"></td>
+                            <td class="data-col" id="fundBackFee-3"></td>
+                        </tr>
+
+                        <!-- Investment -->
+                        <tr class="section-header">
+                            <td colspan="5">
+                                <i class="fas fa-hand-holding-usd"></i>
+                                @(currentLang == "th" ? "การลงทุน" : "Investment")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col label-col">@(currentLang == "th" ? "เงินลงทุนขั้นต่ำ" : "Minimum Investment")</td>
+                            <td class="data-col" id="fundMinInvest-0"></td>
+                            <td class="data-col" id="fundMinInvest-1"></td>
+                            <td class="data-col" id="fundMinInvest-2"></td>
+                            <td class="data-col" id="fundMinInvest-3"></td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col label-col">@(currentLang == "th" ? "นโยบายเงินปันผล" : "Dividend Policy")</td>
+                            <td class="data-col" id="fundDividend-0"></td>
+                            <td class="data-col" id="fundDividend-1"></td>
+                            <td class="data-col" id="fundDividend-2"></td>
+                            <td class="data-col" id="fundDividend-3"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- NAV Comparison Chart -->
+        <div class="compare-chart-section" id="compareChartSection" style="display: none;">
+            <div class="chart-section-header">
+                <h2>
+                    <i class="fas fa-chart-line"></i>
+                    @(currentLang == "th" ? "เปรียบเทียบกราฟ NAV" : "NAV Comparison Chart")
+                </h2>
+            </div>
+
+            <div class="chart-card">
+                <!-- Period Selector -->
+                <div class="chart-controls-bar">
+                    <div class="chart-controls">
+                        <button class="chart-period-btn" data-period="1M" onclick="changeChartPeriod('1M')">1M</button>
+                        <button class="chart-period-btn" data-period="3M" onclick="changeChartPeriod('3M')">3M</button>
+                        <button class="chart-period-btn" data-period="6M" onclick="changeChartPeriod('6M')">6M</button>
+                        <button class="chart-period-btn active" data-period="1Y" onclick="changeChartPeriod('1Y')">1Y</button>
+                        <button class="chart-period-btn" data-period="3Y" onclick="changeChartPeriod('3Y')">3Y</button>
+                        <button class="chart-period-btn" data-period="5Y" onclick="changeChartPeriod('5Y')">5Y</button>
+                        <button class="chart-period-btn" data-period="MAX" onclick="changeChartPeriod('MAX')">MAX</button>
+                    </div>
+
+                    <div class="chart-type-controls">
+                        <button class="chart-type-btn active" data-type="line" onclick="changeChartType('line')">
+                            <i class="fas fa-chart-line"></i>
+                            @(currentLang == "th" ? "เส้น" : "Line")
+                        </button>
+                        <button class="chart-type-btn" data-type="normalized" onclick="changeChartType('normalized')">
+                            <i class="fas fa-percentage"></i>
+                            @(currentLang == "th" ? "เทียบ %" : "Normalized")
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Legend with Toggle -->
+                <div class="chart-legend" id="chartLegend">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+
+                <!-- Chart Canvas -->
+                <div class="chart-container">
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+
+                <!-- Chart Info -->
+                <div class="chart-info">
+                    <div class="chart-info-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>@(currentLang == "th" ? "คลิกที่ชื่อกองทุนในตำนาน เพื่อซ่อน/แสดงกราฟ" : "Click fund name in legend to show/hide chart")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <script>
+
+        const currentLang = '@currentLang';
+        let selectedFunds = [];
+        let searchTimeout = null;
+
+        // Initialize with existing funds from query string
+        @if (Model.ComparedFunds != null && Model.ComparedFunds.Any())
+        {
+                <text>
+                selectedFunds = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.ComparedFunds));
+                document.addEventListener('DOMContentLoaded', function() {
+                    selectedFunds.forEach((fund, index) => {
+                        addFundToSlot(fund, index);
+                    });
+                    if (selectedFunds.length >= 2) {
+                        showComparison();
+                    }
+                });
+                </text>
+        }
+
+        // Search Funds
+        document.getElementById('fundSearchInput').addEventListener('input', function() {
+            const query = this.value.trim();
+
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
+
+            if (query.length < 2) {
+                document.getElementById('searchResults').style.display = 'none';
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                searchFunds(query);
+            }, 300);
+        });
+
+        function searchFunds(query) {
+            fetch(`/Compare/Search?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success && result.data.length > 0) {
+                        displaySearchResults(result.data);
+                    } else {
+                        displayNoResults();
+                    }
+                })
+                .catch(error => {
+                    console.error('Search error:', error);
+                });
+        }
+
+        function displaySearchResults(funds) {
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.innerHTML = '';
+
+            funds.forEach(fund => {
+                const isSelected = selectedFunds.some(f => f.FundId === fund.id);
+                const resultItem = document.createElement('div');
+                resultItem.className = 'search-result-item' + (isSelected ? ' disabled' : '');
+                resultItem.innerHTML = `
+                    <div class="result-info">
+                        <div class="result-code">${fund.code}</div>
+                        <div class="result-name">${fund.name}</div>
+                        <div class="result-amc">${fund.amc}</div>
+                    </div>
+                    ${isSelected ? '<span class="result-selected">เลือกแล้ว</span>' : ''}
+                `;
+
+                if (!isSelected) {
+                    resultItem.onclick = () => selectFund(fund.id);
+                }
+
+                resultsDiv.appendChild(resultItem);
+            });
+
+            resultsDiv.style.display = 'block';
+        }
+
+        function displayNoResults() {
+            const resultsDiv = document.getElementById('searchResults');
+            resultsDiv.innerHTML = '<div class="no-results-message">ไม่พบกองทุนที่ค้นหา</div>';
+            resultsDiv.style.display = 'block';
+        }
+
+        // Select Fund
+        function selectFund(fundId) {
+            if (selectedFunds.length >= 4) {
+                alert(currentLang === 'th' ? 'เลือกได้สูงสุด 4 กองทุน' : 'Maximum 4 funds');
+                return;
+            }
+
+            fetch('/Compare/Add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ fundId: fundId })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    const slotIndex = selectedFunds.length;
+                    selectedFunds.push(result.data);
+                    addFundToSlot(result.data, slotIndex);
+                    document.getElementById('fundSearchInput').value = '';
+                    document.getElementById('searchResults').style.display = 'none';
+                    updateCompareButton();
+                } else {
+                    alert(result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Add fund error:', error);
+                alert(currentLang === 'th' ? 'เกิดข้อผิดพลาด' : 'An error occurred');
+            });
+        }
+
+        function addFundToSlot(fund, slotIndex) {
+            const slot = document.getElementById(`slot-${slotIndex}`);
+            slot.classList.remove('empty');
+            slot.innerHTML = `
+                <div class="slot-fund">
+                    <button class="slot-remove" onclick="removeFund(${slotIndex})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <div class="slot-fund-logo">${fund.AMCLogo}</div>
+                    <div class="slot-fund-info">
+                        <div class="slot-fund-code">${fund.FundCode}</div>
+                        <div class="slot-fund-name">${fund.FundName}</div>
+                        <div class="slot-fund-type ${fund.FundType}">${fund.FundTypeDisplay}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function removeFund(slotIndex) {
+            selectedFunds.splice(slotIndex, 1);
+
+            // Reset all slots
+            for (let i = 0; i < 4; i++) {
+                const slot = document.getElementById(`slot-${i}`);
+                slot.classList.add('empty');
+                slot.innerHTML = `
+                    <div class="slot-placeholder">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>${currentLang === 'th' ? 'เลือกกองทุนที่' : 'Select Fund'} ${i + 1}</span>
+                    </div>
+                `;
+            }
+
+            // Re-add remaining funds
+            selectedFunds.forEach((fund, index) => {
+                addFundToSlot(fund, index);
+            });
+
+            updateCompareButton();
+            hideComparison();
+        }
+
+        function clearAll() {
+            selectedFunds = [];
+            for (let i = 0; i < 4; i++) {
+                const slot = document.getElementById(`slot-${i}`);
+                slot.classList.add('empty');
+                slot.innerHTML = `
+                    <div class="slot-placeholder">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>${currentLang === 'th' ? 'เลือกกองทุนที่' : 'Select Fund'} ${i + 1}</span>
+                    </div>
+                `;
+            }
+            updateCompareButton();
+            hideComparison();
+        }
+
+        function updateCompareButton() {
+            const btn = document.getElementById('compareBtn');
+            if (selectedFunds.length >= 2) {
+                btn.disabled = false;
+            } else {
+                btn.disabled = true;
+            }
+        }
+
+        // Show Comparison
+        function showComparison() {
+            if (selectedFunds.length < 2) {
+                alert(currentLang === 'th' ? 'กรุณาเลือกอย่างน้อย 2 กองทุน' : 'Please select at least 2 funds');
+                return;
+            }
+
+            // Populate comparison table
+            selectedFunds.forEach((fund, index) => {
+                populateColumn(fund, index);
+            });
+
+            // Hide empty columns
+            for (let i = selectedFunds.length; i < 4; i++) {
+                document.getElementById(`fundCol-${i}`).style.display = 'none';
+                document.querySelectorAll(`[id$="-${i}"]`).forEach(el => {
+                    if (el.tagName === 'TD') el.style.display = 'none';
+                });
+            }
+
+            document.getElementById('selectionArea').style.display = 'none';
+            document.getElementById('compareTableWrapper').style.display = 'block';
+        }
+
+        function hideComparison() {
+            document.getElementById('selectionArea').style.display = 'block';
+            document.getElementById('compareTableWrapper').style.display = 'none';
+        }
+
+        function populateColumn(fund, index) {
+            // Header
+            document.getElementById(`fundCol-${index}`).innerHTML = `
+                <div class="fund-col-header">
+                    <div class="fund-col-logo">${fund.AMCLogo}</div>
+                    <div class="fund-col-code">${fund.FundCode}</div>
+                    <a href="/Fund/Detail/${fund.FundId}" class="fund-col-link" target="_blank">
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </div>
+            `;
+
+            // Data
+            document.getElementById(`fundName-${index}`).textContent = fund.FundName;
+            document.getElementById(`fundAMC-${index}`).textContent = fund.AMCName;
+            document.getElementById(`fundType-${index}`).innerHTML = `<span class="type-badge ${fund.FundType}">${fund.FundTypeDisplay}</span>`;
+
+            document.getElementById(`fundNAV-${index}`).textContent = fund.CurrentNAV.toFixed(4);
+
+            document.getElementById(`fundYTD-${index}`).innerHTML = formatReturn(fund.ReturnYTD);
+            document.getElementById(`fund1Y-${index}`).innerHTML = formatReturn(fund.Return1Y);
+            document.getElementById(`fund3Y-${index}`).innerHTML = formatReturn(fund.Return3Y);
+            document.getElementById(`fund5Y-${index}`).innerHTML = formatReturn(fund.Return5Y);
+
+            document.getElementById(`fundRisk-${index}`).innerHTML = `
+                <div class="risk-display">
+                    <span class="risk-number">${fund.RiskLevel}/8</span>
+                    <span class="risk-label">${fund.RiskLevelDesc}</span>
+                </div>
+            `;
+
+            document.getElementById(`fundMgmtFee-${index}`).textContent = fund.ManagementFee;
+            document.getElementById(`fundFrontFee-${index}`).textContent = fund.FrontEndFee;
+            document.getElementById(`fundBackFee-${index}`).textContent = fund.BackEndFee;
+
+            document.getElementById(`fundMinInvest-${index}`).textContent = fund.MinimumInvestment ?
+                fund.MinimumInvestment.toLocaleString() + ' ' + (currentLang === 'th' ? 'บาท' : 'Baht') :
+                (currentLang === 'th' ? 'ไม่ระบุ' : 'N/A');
+
+            document.getElementById(`fundDividend-${index}`).textContent = fund.DividendPolicy;
+        }
+
+        function formatReturn(value) {
+            if (value === null || value === undefined) {
+                return '<span class="na-value">N/A</span>';
+            }
+            const className = value >= 0 ? 'positive-value' : 'negative-value';
+            const sign = value >= 0 ? '+' : '';
+            return `<span class="${className}">${sign}${value.toFixed(2)}%</span>`;
+        }
+
+        // Close search results when clicking outside
+        document.addEventListener('click', function(event) {
+            const searchBox = document.querySelector('.compare-search-box');
+            const searchResults = document.getElementById('searchResults');
+
+            if (!searchBox.contains(event.target)) {
+                searchResults.style.display = 'none';
+            }
+        });
+
+                // Chart variables
+        let comparisonChart = null;
+        let currentPeriod = '1Y';
+        let currentChartType = 'line';
+        let chartColors = ['#1CA59B', '#FF6B6B', '#FFA726', '#29B6F6', '#9C27B0'];
+        let hiddenDatasets = new Set();
+
+        // แก้ไข showComparison() ให้เรียก Chart
+        function showComparison() {
+            if (selectedFunds.length < 2) {
+                alert(currentLang === 'th' ? 'กรุณาเลือกอย่างน้อย 2 กองทุน' : 'Please select at least 2 funds');
+                return;
+            }
+
+            // Populate comparison table
+            selectedFunds.forEach((fund, index) => {
+                populateColumn(fund, index);
+            });
+
+            // Hide empty columns
+            for (let i = selectedFunds.length; i < 4; i++) {
+                document.getElementById(`fundCol-${i}`).style.display = 'none';
+                document.querySelectorAll(`[id$="-${i}"]`).forEach(el => {
+                    if (el.tagName === 'TD') el.style.display = 'none';
+                });
+            }
+
+            document.getElementById('selectionArea').style.display = 'none';
+            document.getElementById('compareTableWrapper').style.display = 'block';
+            document.getElementById('compareChartSection').style.display = 'block'; // ✅ แสดง Chart Section
+
+            // ✅ โหลดข้อมูล Chart
+            loadChartData();
+        }
+
+        function hideComparison() {
+            document.getElementById('selectionArea').style.display = 'block';
+            document.getElementById('compareTableWrapper').style.display = 'none';
+            document.getElementById('compareChartSection').style.display = 'none'; // ✅ ซ่อน Chart Section
+
+            // ✅ ทำลาย Chart
+            if (comparisonChart) {
+                comparisonChart.destroy();
+                comparisonChart = null;
+            }
+        }
+
+        // ✅ Load Chart Data
+        function loadChartData() {
+            const fundIds = selectedFunds.map(f => f.FundId).join(',');
+
+            showChartLoading();
+
+            fetch(`/Compare/ChartData?fundIds=${fundIds}&period=${currentPeriod}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        renderChart(result.data);
+                    } else {
+                        console.error('Error loading chart data:', result.message);
+                        showChartError();
+                    }
+                })
+                .catch(error => {
+                    console.error('Chart data error:', error);
+                    showChartError();
+                });
+        }
+
+        // ✅ Render Chart
+        function renderChart(chartData) {
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+
+            // Destroy existing chart
+            if (comparisonChart) {
+                comparisonChart.destroy();
+            }
+
+            // Prepare datasets
+            const datasets = chartData.map((fund, index) => {
+                const color = chartColors[index % chartColors.length];
+                const data = currentChartType === 'normalized'
+                    ? normalizeData(fund.data)
+                    : fund.data.map(d => ({ x: d.date, y: d.value }));
+
+                return {
+                    label: fund.fundCode,
+                    data: data,
+                    borderColor: color,
+                    backgroundColor: color + '20',
+                    borderWidth: 3,
+                    pointRadius: 0,
+                    pointHoverRadius: 6,
+                    tension: 0.4,
+                    hidden: hiddenDatasets.has(index)
+                };
+            });
+
+            // Create chart
+            comparisonChart = new Chart(ctx, {
+                type: 'line',
+                data: { datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            padding: 12,
+                            titleFont: { size: 14, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            callbacks: {
+                                title: function(context) {
+                                    const date = new Date(context[0].parsed.x);
+                                    return date.toLocaleDateString('th-TH', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric'
+                                    });
+                                },
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (currentChartType === 'normalized') {
+                                        label += context.parsed.y.toFixed(2) + '%';
+                                    } else {
+                                        label += context.parsed.y.toFixed(4);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: getPeriodUnit(currentPeriod),
+                                displayFormats: {
+                                    day: 'MMM d',
+                                    week: 'MMM d',
+                                    month: 'MMM yyyy',
+                                    year: 'yyyy'
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: currentChartType === 'normalized',
+                            ticks: {
+                                callback: function(value) {
+                                    if (currentChartType === 'normalized') {
+                                        return value.toFixed(1) + '%';
+                                    }
+                                    return value.toFixed(2);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Update legend
+            updateChartLegend(chartData);
+            hideChartLoading();
+        }
+
+        // ✅ Normalize data to percentage change
+        function normalizeData(data) {
+            if (!data || data.length === 0) return [];
+
+            const baseValue = data[0].value;
+            return data.map(d => ({
+                x: d.date,
+                y: ((d.value - baseValue) / baseValue) * 100
+            }));
+        }
+
+        // ✅ Update Chart Legend
+        function updateChartLegend(chartData) {
+            const legend = document.getElementById('chartLegend');
+            legend.innerHTML = '';
+
+            chartData.forEach((fund, index) => {
+                const color = chartColors[index % chartColors.length];
+                const isHidden = hiddenDatasets.has(index);
+
+                const legendItem = document.createElement('div');
+                legendItem.className = 'legend-item' + (isHidden ? ' legend-hidden' : '');
+                legendItem.innerHTML = `
+                    <span class="legend-color" style="background: ${color}"></span>
+                    <span class="legend-label">${fund.fundCode}</span>
+                    <span class="legend-name">${fund.fundName}</span>
+                `;
+
+                legendItem.onclick = () => toggleDataset(index);
+                legend.appendChild(legendItem);
+            });
+        }
+
+        // ✅ Toggle Dataset Visibility
+        function toggleDataset(index) {
+            if (hiddenDatasets.has(index)) {
+                hiddenDatasets.delete(index);
+            } else {
+                hiddenDatasets.add(index);
+            }
+
+            if (comparisonChart) {
+                comparisonChart.data.datasets[index].hidden = hiddenDatasets.has(index);
+                comparisonChart.update();
+            }
+
+            // Update legend visual
+            const legendItems = document.querySelectorAll('.legend-item');
+            if (legendItems[index]) {
+                if (hiddenDatasets.has(index)) {
+                    legendItems[index].classList.add('legend-hidden');
+                } else {
+                    legendItems[index].classList.remove('legend-hidden');
+                }
+            }
+        }
+
+        // ✅ Change Chart Period
+        function changeChartPeriod(period) {
+            currentPeriod = period;
+
+            // Update button states
+            document.querySelectorAll('.chart-period-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.chart-period-btn[data-period="${period}"]`).classList.add('active');
+
+            // Reload chart
+            loadChartData();
+        }
+
+        // ✅ Change Chart Type
+        function changeChartType(type) {
+            currentChartType = type;
+
+            // Update button states
+            document.querySelectorAll('.chart-type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.chart-type-btn[data-type="${type}"]`).classList.add('active');
+
+            // Re-render chart with existing data
+            if (comparisonChart && comparisonChart.data.datasets.length > 0) {
+                const fundIds = selectedFunds.map(f => f.FundId).join(',');
+                fetch(`/Compare/ChartData?fundIds=${fundIds}&period=${currentPeriod}`)
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            renderChart(result.data);
+                        }
+                    });
+            }
+        }
+
+        // ✅ Get Period Unit for Chart
+        function getPeriodUnit(period) {
+            switch(period) {
+                case '1M': return 'day';
+                case '3M': return 'week';
+                case '6M': return 'week';
+                case '1Y': return 'month';
+                case '3Y': return 'month';
+                case '5Y': return 'month';
+                case 'MAX': return 'year';
+                default: return 'month';
+            }
+        }
+
+        // ✅ Chart Loading State
+        function showChartLoading() {
+            const container = document.querySelector('.chart-container');
+            container.style.position = 'relative';
+
+            // Check if loading already exists
+            if (!document.querySelector('.chart-loading')) {
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'chart-loading';
+                loadingDiv.innerHTML = `
+                    <div class="loading-spinner"></div>
+                    <p>${currentLang === 'th' ? 'กำลังโหลดข้อมูล...' : 'Loading data...'}</p>
+                `;
+                container.insertBefore(loadingDiv, container.firstChild);
+            }
+        }
+
+        function hideChartLoading() {
+            const loading = document.querySelector('.chart-loading');
+            if (loading) {
+                loading.remove();
+            }
+        }
+
+        function showChartError() {
+            const container = document.querySelector('.chart-container');
+
+            // Remove loading if exists
+            hideChartLoading();
+
+            // Check if error already exists
+            if (!document.querySelector('.chart-error')) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'chart-error';
+                errorDiv.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i>
+                    <p>${currentLang === 'th' ? 'ไม่สามารถโหลดข้อมูลกราฟได้' : 'Cannot load chart data'}</p>
+                    <button class="btn btn-outline btn-sm" onclick="loadChartData()">
+                        <i class="fas fa-redo"></i>
+                        ${currentLang === 'th' ? 'ลองอีกครั้ง' : 'Retry'}
+                    </button>
+                `;
+                container.insertBefore(errorDiv, container.firstChild);
+            }
+        }
+    </script>
+}
+<style>
+
+        /* ==================== COMPARE PAGE STYLES ==================== */
+
+    /* Compare Hero */
+    .compare-hero {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        padding: 60px 20px 40px;
+        color: white;
+        text-align: center;
+        margin-top: var(--header-height);
+    }
+
+    .compare-hero-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .compare-hero-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .compare-hero-subtitle {
+        font-size: 1.125rem;
+        opacity: 0.95;
+    }
+
+    /* Compare Content */
+    .compare-content {
+        padding: 60px 0 100px;
+        background: var(--gray-50);
+        min-height: calc(100vh - var(--header-height) - 200px);
+    }
+
+    .compare-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Selection Area */
+    .compare-selection-area {
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .selection-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .selection-header h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    /* Search Box */
+    .compare-search-box {
+        position: relative;
+        max-width: 700px;
+        margin: 0 auto 40px;
+    }
+
+    .compare-search-box i {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray-400);
+        font-size: 1.25rem;
+    }
+
+    .compare-search-box input {
+        width: 100%;
+        padding: 16px 20px 16px 55px;
+        border: 2px solid var(--gray-300);
+        border-radius: 50px;
+        font-size: 1rem;
+        font-family: 'Noto Sans Thai', sans-serif;
+        transition: all 0.3s ease;
+    }
+
+    .compare-search-box input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(28, 165, 155, 0.1);
+    }
+
+    /* Search Results Dropdown */
+    .search-results {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 2px solid var(--gray-200);
+        border-radius: 12px;
+        margin-top: 8px;
+        max-height: 400px;
+        overflow-y: auto;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        z-index: 10;
+        display: none;
+    }
+
+    .search-result-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--gray-200);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .search-result-item:last-child {
+        border-bottom: none;
+    }
+
+    .search-result-item:hover {
+        background: var(--gray-50);
+    }
+
+    .search-result-item.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: var(--gray-100);
+    }
+
+    .result-info {
+        flex: 1;
+    }
+
+    .result-code {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 4px;
+    }
+
+    .result-name {
+        font-size: 0.875rem;
+        color: var(--gray-700);
+        margin-bottom: 4px;
+    }
+
+    .result-amc {
+        font-size: 0.75rem;
+        color: var(--gray-500);
+    }
+
+    .result-selected {
+        color: var(--success);
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+
+    .no-results-message {
+        padding: 30px;
+        text-align: center;
+        color: var(--gray-500);
+    }
+
+    /* Compare Slots */
+    .compare-slots {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .compare-slot {
+        background: var(--gray-50);
+        border: 3px dashed var(--gray-300);
+        border-radius: 12px;
+        padding: 30px 20px;
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .compare-slot.empty:hover {
+        border-color: var(--primary);
+        background: rgba(28, 165, 155, 0.05);
+    }
+
+    .compare-slot:not(.empty) {
+        border-style: solid;
+        border-color: var(--primary);
+        background: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .slot-placeholder {
+        text-align: center;
+        color: var(--gray-400);
+    }
+
+    .slot-placeholder i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        display: block;
+    }
+
+    .slot-placeholder span {
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    /* Slot Fund Content */
+    .slot-fund {
+        width: 100%;
+        text-align: center;
+        position: relative;
+    }
+
+    .slot-remove {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 32px;
+        height: 32px;
+        background: var(--danger);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    }
+
+    .slot-remove:hover {
+        background: #dc2626;
+        transform: scale(1.1);
+    }
+
+    .slot-fund-logo {
+        width: 60px;
+        height: 60px;
+        background: var(--primary);
+        color: white;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0 auto 15px;
+    }
+
+    .slot-fund-info {
+        padding: 0 10px;
+    }
+
+    .slot-fund-code {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 8px;
+    }
+
+    .slot-fund-name {
+        font-size: 0.875rem;
+        color: var(--gray-600);
+        line-height: 1.4;
+        margin-bottom: 10px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .slot-fund-type {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .slot-fund-type.equity {
+        background: rgba(239, 68, 68, 0.1);
+        color: #dc2626;
+    }
+
+    .slot-fund-type.fixed {
+        background: rgba(59, 130, 246, 0.1);
+        color: #2563eb;
+    }
+
+    .slot-fund-type.mixed {
+        background: rgba(168, 85, 247, 0.1);
+        color: #7c3aed;
+    }
+
+    /* Compare Actions */
+    .compare-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-large {
+        padding: 16px 40px;
+        font-size: 1.125rem;
+    }
+
+    .btn-primary:disabled {
+        background: var(--gray-400);
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .btn-primary:disabled:hover {
+        background: var(--gray-400);
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* ==================== COMPARISON TABLE ==================== */
+
+    .compare-table-wrapper {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .table-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid var(--gray-200);
+    }
+
+    .table-header h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 0;
+    }
+
+    .btn-sm {
+        padding: 10px 20px;
+        font-size: 0.875rem;
+    }
+
+    /* Table Scroll */
+    .compare-table-scroll {
+        overflow-x: auto;
+        border-radius: 12px;
+        border: 1px solid var(--gray-200);
+    }
+
+    /* Compare Table */
+    .compare-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px;
+    }
+
+    .compare-table thead {
+        background: var(--gray-50);
+    }
+
+    .compare-table th,
+    .compare-table td {
+        padding: 16px;
+        text-align: left;
+        border-bottom: 1px solid var(--gray-200);
+    }
+
+    .compare-table thead th {
+        font-weight: 700;
+        color: var(--gray-900);
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid var(--gray-300);
+    }
+
+    /* Sticky First Column */
+    .sticky-col {
+        position: sticky;
+        left: 0;
+        background: white;
+        z-index: 2;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+        font-weight: 600;
+        min-width: 200px;
+    }
+
+    .compare-table thead .sticky-col {
+        background: var(--gray-50);
+        z-index: 3;
+    }
+
+    /* Fund Column Header */
+    .fund-col {
+        min-width: 220px;
+        vertical-align: top;
+    }
+
+    .fund-col-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .fund-col-logo {
+        width: 50px;
+        height: 50px;
+        background: var(--primary);
+        color: white;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        font-weight: 700;
+    }
+
+    .fund-col-code {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--gray-900);
+    }
+
+    .fund-col-link {
+        color: var(--primary);
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+    }
+
+    .fund-col-link:hover {
+        color: var(--primary-dark);
+    }
+
+    /* Section Headers in Table */
+    .section-header td {
+        background: var(--gray-100);
+        font-weight: 700;
+        color: var(--gray-900);
+        font-size: 0.9375rem;
+        padding: 12px 16px;
+        border-bottom: 2px solid var(--gray-300);
+    }
+
+    .section-header i {
+        color: var(--primary);
+        margin-right: 8px;
+    }
+
+    /* Label Column */
+    .label-col {
+        color: var(--gray-700);
+        font-size: 0.9375rem;
+        background: var(--gray-50);
+    }
+
+    /* Data Column */
+    .data-col {
+        color: var(--gray-900);
+        font-size: 0.9375rem;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    /* Type Badge in Table */
+    .type-badge {
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+    }
+
+    .type-badge.equity {
+        background: rgba(239, 68, 68, 0.1);
+        color: #dc2626;
+    }
+
+    .type-badge.fixed {
+        background: rgba(59, 130, 246, 0.1);
+        color: #2563eb;
+    }
+
+    .type-badge.mixed {
+        background: rgba(168, 85, 247, 0.1);
+        color: #7c3aed;
+    }
+
+    /* Value Formatting */
+    .positive-value {
+        color: var(--success);
+        font-weight: 600;
+    }
+
+    .negative-value {
+        color: var(--danger);
+        font-weight: 600;
+    }
+
+    .na-value {
+        color: var(--gray-400);
+        font-style: italic;
+    }
+
+    /* Risk Display */
+    .risk-display {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .risk-number {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--warning);
+    }
+
+    .risk-label {
+        font-size: 0.75rem;
+        color: var(--gray-600);
+    }
+
+    /* Highlight Best/Worst Values */
+    .compare-table tbody tr:hover {
+        background: rgba(28, 165, 155, 0.03);
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+
+    @@media (max-width: 1200px) {
+        .compare-slots {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .compare-hero-title {
+            font-size: 1.75rem;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .compare-hero-subtitle {
+            font-size: 1rem;
+        }
+
+        .compare-selection-area {
+            padding: 25px 20px;
+        }
+
+        .selection-header h2 {
+            font-size: 1.25rem;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .compare-slots {
+            grid-template-columns: 1fr;
+        }
+
+        .compare-slot {
+            min-height: 180px;
+        }
+
+        .compare-actions {
+            flex-direction: column;
+        }
+
+        .compare-actions .btn {
+            width: 100%;
+        }
+
+        .compare-table-wrapper {
+            padding: 20px 15px;
+        }
+
+        .table-header {
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .table-header h2 {
+            font-size: 1.25rem;
+        }
+
+        .compare-table th,
+        .compare-table td {
+            padding: 12px 10px;
+        }
+
+        .sticky-col {
+            min-width: 150px;
+            font-size: 0.8125rem;
+        }
+
+        .fund-col {
+            min-width: 180px;
+        }
+
+        .data-col {
+            font-size: 0.8125rem;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .compare-hero {
+            padding: 40px 15px 30px;
+        }
+
+        .compare-hero-title {
+            font-size: 1.5rem;
+        }
+
+        .compare-search-box input {
+            padding: 14px 16px 14px 50px;
+            font-size: 0.9375rem;
+        }
+
+        .slot-fund-logo {
+            width: 50px;
+            height: 50px;
+            font-size: 1.25rem;
+        }
+
+        .slot-fund-code {
+            font-size: 1rem;
+        }
+
+        .slot-fund-name {
+            font-size: 0.8125rem;
+        }
+    }
+
+    /* ==================== PRINT STYLES ==================== */
+
+    @@media print {
+        .compare-hero,
+        .compare-selection-area,
+        .table-header .btn,
+        .slot-remove {
+            display: none;
+        }
+
+        .compare-table-wrapper {
+            box-shadow: none;
+            border: 1px solid var(--gray-300);
+        }
+
+        .compare-table {
+            font-size: 0.875rem;
+        }
+
+        .compare-table th,
+        .compare-table td {
+            padding: 8px;
+        }
+
+        .sticky-col {
+            position: static;
+            box-shadow: none;
+        }
+    }
+
+    /* ==================== ANIMATIONS ==================== */
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .compare-slot:not(.empty) {
+        animation: slideIn 0.3s ease;
+    }
+
+    .search-results {
+        animation: slideIn 0.2s ease;
+    }
+
+    /* ==================== UTILITIES ==================== */
+
+    .text-center {
+        text-align: center;
+    }
+
+    .font-bold {
+        font-weight: 700;
+    }
+
+    .text-success {
+        color: var(--success);
+    }
+
+    .text-danger {
+        color: var(--danger);
+    }
+
+    .text-muted {
+        color: var(--gray-500);
+    }
+
+    /* Best Value Highlight (Optional Enhancement) */
+    .best-value {
+        background: rgba(16, 185, 129, 0.1);
+        border-left: 3px solid var(--success);
+    }
+
+    .worst-value {
+        background: rgba(239, 68, 68, 0.05);
+    }
+
+    /* Loading State */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 4px solid var(--gray-200);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+        /* ==================== CHART COMPARISON SECTION ==================== */
+
+    .compare-chart-section {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        margin-top: 30px;
+    }
+
+    .chart-section-header {
+        margin-bottom: 25px;
+    }
+
+    .chart-section-header h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 0;
+    }
+
+    /* Chart Card */
+    .chart-card {
+        background: var(--gray-50);
+        border-radius: 12px;
+        padding: 20px;
+    }
+
+    /* Chart Controls Bar */
+    .chart-controls-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid var(--gray-200);
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    /* Period Buttons */
+    .chart-controls {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .chart-period-btn {
+        padding: 8px 16px;
+        border: 2px solid var(--gray-300);
+        background: white;
+        color: var(--gray-700);
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: 'Noto Sans Thai', sans-serif;
+    }
+
+    .chart-period-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .chart-period-btn.active {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    /* Chart Type Controls */
+    .chart-type-controls {
+        display: flex;
+        gap: 8px;
+    }
+
+    .chart-type-btn {
+        padding: 8px 16px;
+        border: 2px solid var(--gray-300);
+        background: white;
+        color: var(--gray-700);
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: 'Noto Sans Thai', sans-serif;
+    }
+
+    .chart-type-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .chart-type-btn.active {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+    }
+
+    /* Chart Legend */
+    .chart-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: white;
+        border-radius: 8px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: var(--gray-50);
+    }
+
+    .legend-item:hover {
+        background: var(--gray-100);
+    }
+
+    .legend-item.legend-hidden {
+        opacity: 0.4;
+    }
+
+    .legend-item.legend-hidden .legend-color {
+        background: var(--gray-400) !important;
+    }
+
+    .legend-color {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .legend-label {
+        font-weight: 700;
+        color: var(--gray-900);
+        font-size: 0.875rem;
+    }
+
+    .legend-name {
+        font-size: 0.8125rem;
+        color: var(--gray-600);
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Chart Container */
+    .chart-container {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        height: 450px;
+        position: relative;
+        margin-bottom: 15px;
+    }
+
+    .chart-container canvas {
+        max-height: 100%;
+    }
+
+    /* Chart Info */
+    .chart-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px;
+        background: rgba(28, 165, 155, 0.05);
+        border-left: 3px solid var(--primary);
+        border-radius: 6px;
+        font-size: 0.875rem;
+        color: var(--gray-700);
+    }
+
+    .chart-info-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .chart-info i {
+        color: var(--primary);
+    }
+
+    /* Chart Loading */
+    .chart-loading {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.95);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        border-radius: 8px;
+    }
+
+    .chart-loading .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid var(--gray-200);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 15px;
+    }
+
+    .chart-loading p {
+        color: var(--gray-600);
+        font-weight: 600;
+    }
+
+    /* Chart Error */
+    .chart-error {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.98);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        z-index: 10;
+        border-radius: 8px;
+    }
+
+    .chart-error i {
+        font-size: 3rem;
+        color: var(--danger);
+    }
+
+    .chart-error p {
+        color: var(--gray-700);
+        font-weight: 600;
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+
+    @@media (max-width: 992px) {
+        .chart-controls-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .chart-controls,
+        .chart-type-controls {
+            justify-content: center;
+        }
+
+        .chart-container {
+            height: 350px;
+        }
+    }
+
+    @@media (max-width: 480px) {
+        .chart-controls {
+            width: 100%;
+        }
+
+        .chart-period-btn {
+            flex: 1;
+            min-width: 0;
+            padding: 6px 8px;
+            font-size: 0.75rem;
+        }
+
+        .chart-type-controls {
+            width: 100%;
+        }
+
+        .chart-type-btn {
+            flex: 1;
+        }
+
+        .legend-item {
+            width: 100%;
+        }
+
+        .legend-name {
+            max-width: none;
+        }
+    }
+</style>
