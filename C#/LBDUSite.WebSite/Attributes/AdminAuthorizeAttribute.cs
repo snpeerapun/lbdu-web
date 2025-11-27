@@ -1,38 +1,77 @@
-﻿using LBDUSite.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Http;
 
-namespace LBDUSite.Attributes
+namespace LBDUAdmin.Filters
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class AdminAuthorizeAttribute : Attribute, IAuthorizationFilter
+    /// <summary>
+    /// Custom Authorization Attribute สำหรับตรวจสอบ Admin Session
+    /// ใช้งาน: [AdminAuthorize]
+    /// </summary>
+    public class AdminAuthorizeAttribute : ActionFilterAttribute
     {
-        public string Module { get; set; }
-        public string Action { get; set; }
-
-        public void OnAuthorization(AuthorizationFilterContext context)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
-            // Check if user is authenticated
-            var username = context.HttpContext.Session.GetString("AdminUsername");
+            var session = context.HttpContext.Session;
+            var adminId = session.GetString("AdminId");
 
-            if (string.IsNullOrEmpty(username))
+            // ตรวจสอบว่ามี session หรือไม่
+            if (string.IsNullOrEmpty(adminId))
             {
-                context.Result = new RedirectToActionResult("Login", "Admin", new { returnUrl = context.HttpContext.Request.Path });
+                // ถ้าไม่มี session ให้ redirect ไปหน้า login
+                context.Result = new RedirectToActionResult("Login", "Auth", null);
                 return;
             }
 
-            // Check permissions if Module and Action are specified
-            if (!string.IsNullOrEmpty(Module) && !string.IsNullOrEmpty(Action))
-            {
-                var authService = context.HttpContext.RequestServices.GetService<IAdminAuthService>();
-                var hasPermission = authService.HasPermissionAsync(username, Module, Action).Result;
+            base.OnActionExecuting(context);
+        }
+    }
 
-                if (!hasPermission)
+    /// <summary>
+    /// Authorization Attribute พร้อมกับตรวจสอบ Role
+    /// ใช้งาน: [AdminAuthorize(Roles = "Super Administrator,Administrator")]
+    /// </summary>
+    public class AdminAuthorizeWithRoleAttribute : ActionFilterAttribute
+    {
+        public string Roles { get; set; }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            var session = context.HttpContext.Session;
+            var adminId = session.GetString("AdminId");
+            var adminRole = session.GetString("AdminRole");
+
+            // ตรวจสอบว่ามี session หรือไม่
+            if (string.IsNullOrEmpty(adminId))
+            {
+                context.Result = new RedirectToActionResult("Login", "Auth", null);
+                return;
+            }
+
+            // ตรวจสอบ Role (ถ้ามีการระบุ)
+            if (!string.IsNullOrEmpty(Roles))
+            {
+                var allowedRoles = Roles.Split(',');
+                var hasRole = false;
+
+                foreach (var role in allowedRoles)
                 {
-                    context.Result = new RedirectToActionResult("AccessDenied", "Admin", null);
+                    if (adminRole == role.Trim())
+                    {
+                        hasRole = true;
+                        break;
+                    }
+                }
+
+                if (!hasRole)
+                {
+                    // ถ้าไม่มีสิทธิ์ ให้ redirect ไป Access Denied
+                    context.Result = new RedirectToActionResult("AccessDenied", "Error", null);
                     return;
                 }
             }
+
+            base.OnActionExecuting(context);
         }
     }
 }

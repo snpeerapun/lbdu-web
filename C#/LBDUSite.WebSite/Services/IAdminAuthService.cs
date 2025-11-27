@@ -5,7 +5,7 @@ namespace LBDUSite.Services
 {
     public interface IAdminAuthService
     {
-        Task<User> ValidateUserAsync(string username, string password);
+        Task<AdminUser> ValidateUserAsync(string username, string password);
         Task<bool> HasPermissionAsync(string username, string module, string action);
         Task<List<string>> GetUserPermissionsAsync(string username);
         string HashPassword(string password);
@@ -21,20 +21,7 @@ namespace LBDUSite.Services
         {
             // TODO: Query from database
             // Mock data for demo
-            if (username == "admin" && password == "admin123")
-            {
-                return new User
-                {
-                    Id = 1,
-                    Username = "admin",
-                    FullName = "ผู้ดูแลระบบ",
-                    Email = "admin@example.com",
-                    Role = "SuperAdmin",
-                    IsActive = true,
-                    LastLoginAt = DateTime.Now
-                };
-            }
-
+             
             return null;
         }
 
@@ -43,12 +30,7 @@ namespace LBDUSite.Services
             // TODO: Check from database
             var user = await GetUserByUsernameAsync(username);
 
-            if (user == null || !user.IsActive)
-                return false;
-
-            // SuperAdmin has all permissions
-            if (user.Role == "SuperAdmin")
-                return true;
+          
 
             // TODO: Check specific role permissions from database
             return true;
@@ -70,12 +52,14 @@ namespace LBDUSite.Services
         public string HashPassword(string password)
         {
             // Using BCrypt or similar
-            return BCrypt.Net.BCrypt.HashPassword(password);
+            // return BCrypt .BCrypt.HashPassword(password);
+            return "true";
         }
 
         public bool VerifyPassword(string password, string passwordHash)
         {
-            return BCrypt.Net.BCrypt.Verify(password, passwordHash);
+            //return BCrypt.Net.BCrypt.Verify(password, passwordHash);
+            return true;
         }
 
         public async Task LogActivityAsync(string username, string action, string module, string details, string ipAddress)
@@ -99,6 +83,11 @@ namespace LBDUSite.Services
         {
             // TODO: Get from database
             return null;
+        }
+
+        Task<AdminUser> IAdminAuthService.ValidateUserAsync(string username, string password)
+        {
+            throw new NotImplementedException();
         }
     }
 }

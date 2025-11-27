@@ -49,6 +49,14 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     };
 });
 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(60); // Session timeout 60 นาที
+    options.Cookie.HttpOnly = true; // เพื่อความปลอดภัย
+    options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+});
+
 // 3. Register Localization Service
 builder.Services.AddScoped<ILocalizationService, LocalizationService>();
 
@@ -168,11 +176,15 @@ app.UseAuthorization();
 app.UseResponseCaching();
 
 // ==================== ROUTING ====================
-
+app.MapControllerRoute(
+    name: "admin",
+    pattern: "Admin/{controller=Dashboard}/{action=Index}/{id?}",
+    defaults: new { area = "Admin" }
+);
 // Default route - flexible for all controllers
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
+ 
 // ==================== RUN ====================
 app.Run();

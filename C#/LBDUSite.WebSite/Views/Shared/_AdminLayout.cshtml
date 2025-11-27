@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - LBDU Admin Panel</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Admin Custom CSS -->
+    <link rel="stylesheet" href="~/css/admin.css" />
+
+    @RenderSection("Styles", required: false)
+</head>
+<body class="admin-body">
+    
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <div class="logo-admin">
+                <div class="logo-icon-admin">LB</div>
+                <div class="logo-text-admin">
+                    <h2>LBDU Admin</h2>
+                    <span>Management System</span>
+                </div>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="user-info">
+                <h4>@(Context.Session.GetString("AdminFullName") ?? "Admin User")</h4>
+                <span class="user-role">@(Context.Session.GetString("AdminRole") ?? "Administrator")</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <!-- Dashboard -->
+                <li class="nav-item">
+                    <a href="@Url.Action("Index", "AdminDashboard")" 
+                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminDashboard" ? "active" : "")">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+
+                <!-- Fund Management -->
+                <li class="nav-item has-submenu">
+                    <a href="#" class="nav-link" onclick="toggleSubmenu(event, this)">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>จัดการกองทุน</span>
+                        <i class="fas fa-chevron-down submenu-arrow"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="@Url.Action("Index", "AdminFund")">รายการกองทุนทั้งหมด</a></li>
+                        <li><a href="@Url.Action("Create", "AdminFund")">เพิ่มกองทุนใหม่</a></li>
+                        <li><a href="@Url.Action("Categories", "AdminFund")">หมวดหมู่กองทุน</a></li>
+                        <li><a href="@Url.Action("Performance", "AdminFund")">ข้อมูลผลตอบแทน</a></li>
+                    </ul>
+                </li>
+
+                <!-- AMC Management -->
+                <li class="nav-item">
+                    <a href="@Url.Action("Index", "AdminAMC")" 
+                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminAMC" ? "active" : "")">
+                        <i class="fas fa-building"></i>
+                        <span>จัดการบริษัทจัดการ</span>
+                    </a>
+                </li>
+
+                <!-- Article Management -->
+                <li class="nav-item has-submenu">
+                    <a href="#" class="nav-link" onclick="toggleSubmenu(event, this)">
+                        <i class="fas fa-newspaper"></i>
+                        <span>จัดการบทความ</span>
+                        <i class="fas fa-chevron-down submenu-arrow"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="@Url.Action("Index", "AdminArticle")">รายการบทความทั้งหมด</a></li>
+                        <li><a href="@Url.Action("Create", "AdminArticle")">สร้างบทความใหม่</a></li>
+                        <li><a href="@Url.Action("Categories", "AdminArticle")">หมวดหมู่บทความ</a></li>
+                    </ul>
+                </li>
+
+                <!-- Learning Center -->
+                <li class="nav-item">
+                    <a href="@Url.Action("Index", "AdminLearning")" 
+                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminLearning" ? "active" : "")">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>ศูนย์การเรียนรู้</span>
+                    </a>
+                </li>
+
+                <!-- User Management -->
+                <li class="nav-item has-submenu">
+                    <a href="#" class="nav-link" onclick="toggleSubmenu(event, this)">
+                        <i class="fas fa-users"></i>
+                        <span>จัดการผู้ใช้</span>
+                        <i class="fas fa-chevron-down submenu-arrow"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="@Url.Action("Index", "AdminUser")">รายการผู้ใช้ทั้งหมด</a></li>
+                        <li><a href="@Url.Action("AdminList", "AdminUser")">ผู้ดูแลระบบ</a></li>
+                        <li><a href="@Url.Action("Roles", "AdminUser")">บทบาทและสิทธิ์</a></li>
+                    </ul>
+                </li>
+
+                <!-- Contact Messages -->
+                <li class="nav-item">
+                    <a href="@Url.Action("Index", "AdminContact")" 
+                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminContact" ? "active" : "")">
+                        <i class="fas fa-envelope"></i>
+                        <span>ข้อความติดต่อ</span>
+                        <span class="badge">5</span>
+                    </a>
+                </li>
+
+                <!-- Settings -->
+                <li class="nav-item has-submenu">
+                    <a href="#" class="nav-link" onclick="toggleSubmenu(event, this)">
+                        <i class="fas fa-cog"></i>
+                        <span>ตั้งค่า</span>
+                        <i class="fas fa-chevron-down submenu-arrow"></i>
+                    </a>
+                    <ul class="submenu">
+                        <li><a href="@Url.Action("General", "AdminSettings")">ตั้งค่าทั่วไป</a></li>
+                        <li><a href="@Url.Action("Email", "AdminSettings")">ตั้งค่าอีเมล</a></li>
+                        <li><a href="@Url.Action("Localization", "AdminSettings")">ภาษา</a></li>
+                        <li><a href="@Url.Action("Backup", "AdminSettings")">สำรองข้อมูล</a></li>
+                    </ul>
+                </li>
+
+                <!-- Reports -->
+                <li class="nav-item">
+                    <a href="@Url.Action("Index", "AdminReports")" 
+                       class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "AdminReports" ? "active" : "")">
+                        <i class="fas fa-file-chart-line"></i>
+                        <span>รายงาน</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="@Url.Action("Index", "Home")" class="btn-back-to-site" target="_blank">
+                <i class="fas fa-external-link-alt"></i>
+                <span>กลับสู่เว็บไซต์</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="admin-main" id="adminMain">
+        
+        <!-- Top Navigation Bar -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="btn-toggle-sidebar" id="btnToggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="breadcrumb">
+                    @RenderSection("Breadcrumb", required: false)
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <!-- Search -->
+                <div class="header-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="ค้นหา...">
+                </div>
+
+                <!-- Notifications -->
+                <div class="header-item notification-dropdown">
+                    <button class="btn-icon" onclick="toggleDropdown('notificationDropdown')">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge-dot"></span>
+                    </button>
+                    <div class="dropdown-menu" id="notificationDropdown">
+                        <div class="dropdown-header">
+                            <h4>การแจ้งเตือน</h4>
+                            <span class="badge">3</span>
+                        </div>
+                        <div class="dropdown-body">
+                            <a href="#" class="notification-item unread">
+                                <div class="notification-icon bg-primary">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <p>มีผู้ใช้ใหม่ลงทะเบียน</p>
+                                    <span class="time">5 นาทีที่แล้ว</span>
+                                </div>
+                            </a>
+                            <a href="#" class="notification-item unread">
+                                <div class="notification-icon bg-success">
+                                    <i class="fas fa-comment"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <p>มีข้อความติดต่อใหม่</p>
+                                    <span class="time">1 ชั่วโมงที่แล้ว</span>
+                                </div>
+                            </a>
+                            <a href="#" class="notification-item">
+                                <div class="notification-icon bg-warning">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <p>NAV กองทุนอัพเดทสำเร็จ</p>
+                                    <span class="time">3 ชั่วโมงที่แล้ว</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="dropdown-footer">
+                            <a href="#">ดูทั้งหมด</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Profile -->
+                <div class="header-item user-dropdown">
+                    <button class="btn-user" onclick="toggleDropdown('userDropdown')">
+                        <div class="user-avatar-small">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <span>@(Context.Session.GetString("AdminFullName") ?? "Admin")</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" id="userDropdown">
+                        <div class="dropdown-header">
+                            <div class="user-avatar-small">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div>
+                                <h4>@(Context.Session.GetString("AdminFullName") ?? "Admin User")</h4>
+                                <p>@(Context.Session.GetString("AdminRole") ?? "Administrator")</p>
+                            </div>
+                        </div>
+                        <div class="dropdown-body">
+                            <a href="@Url.Action("Profile", "AdminUser")">
+                                <i class="fas fa-user"></i> โปรไฟล์
+                            </a>
+                            <a href="@Url.Action("Settings", "AdminUser")">
+                                <i class="fas fa-cog"></i> ตั้งค่า
+                            </a>
+                            <a href="@Url.Action("ActivityLog", "AdminUser")">
+                                <i class="fas fa-history"></i> ประวัติการใช้งาน
+                            </a>
+                        </div>
+                        <div class="dropdown-footer">
+                            <a href="@Url.Action("Logout", "Auth")" class="btn-logout">
+                                <i class="fas fa-sign-out-alt"></i> ออกจากระบบ
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="admin-content">
+            @RenderBody()
+        </main>
+
+        <!-- Footer -->
+        <footer class="admin-footer">
+            <div class="footer-content">
+                <p>&copy; @DateTime.Now.Year LBDU Fund Platform. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#">เกี่ยวกับ</a>
+                    <a href="#">ช่วยเหลือ</a>
+                    <a href="#">ติดต่อ</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/js/admin.js"></script>
+
+    @RenderSection("Scripts", required: false)
+
+    <script>
+        // Toggle Sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('adminSidebar');
+            const main = document.getElementById('adminMain');
+            sidebar.classList.toggle('collapsed');
+            main.classList.toggle('expanded');
+        }
+
+        document.getElementById('btnToggleSidebar')?.addEventListener('click', toggleSidebar);
+        document.getElementById('sidebarToggle')?.addEventListener('click', toggleSidebar);
+
+        // Toggle Submenu
+        function toggleSubmenu(event, element) {
+            event.preventDefault();
+            const parent = element.parentElement;
+            const wasActive = parent.classList.contains('active');
+            
+            // Close all submenus
+            document.querySelectorAll('.nav-item.has-submenu').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Toggle current submenu
+            if (!wasActive) {
+                parent.classList.add('active');
+            }
+        }
+
+        // Toggle Dropdown
+        let currentDropdown = null;
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            
+            // Close other dropdowns
+            if (currentDropdown && currentDropdown !== dropdown) {
+                currentDropdown.classList.remove('show');
+            }
+            
+            dropdown.classList.toggle('show');
+            currentDropdown = dropdown.classList.contains('show') ? dropdown : null;
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.header-item')) {
+                document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+                currentDropdown = null;
+            }
+        });
+    </script>
+</body>
+</html>

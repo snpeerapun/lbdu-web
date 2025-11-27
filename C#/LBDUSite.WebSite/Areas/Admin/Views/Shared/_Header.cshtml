@@ -1,0 +1,133 @@
+﻿<header class="admin-header" id="adminHeader">
+    <div class="header-left">
+        <!-- Sidebar Toggle -->
+        <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Page Title (Optional) -->
+        <h5 style="margin: 0; color: #333; font-weight: 600;">@ViewData["Title"]</h5>
+    </div>
+
+    <div class="header-right">
+        <!-- Notifications (Optional) -->
+        <div class="dropdown">
+            <button class="btn btn-link" type="button" data-bs-toggle="dropdown" style="color: #666; font-size: 20px;">
+                <i class="fas fa-bell"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px;">
+                    3
+                </span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" style="width: 300px;">
+                <li><h6 class="dropdown-header">การแจ้งเตือน</h6></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item" href="#">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-info-circle text-info me-2 mt-1"></i>
+                            <div>
+                                <div class="fw-bold">ระบบอัพเดท NAV</div>
+                                <small class="text-muted">อัพเดทข้อมูล NAV เสร็จสิ้น</small>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="#">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-user-plus text-success me-2 mt-1"></i>
+                            <div>
+                                <div class="fw-bold">ผู้ใช้ใหม่</div>
+                                <small class="text-muted">มีผู้ดูแลระบบใหม่เข้าสู่ระบบ</small>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="#">
+                        <div class="d-flex align-items-start">
+                            <i class="fas fa-exclamation-triangle text-warning me-2 mt-1"></i>
+                            <div>
+                                <div class="fw-bold">คำเตือน</div>
+                                <small class="text-muted">พบข้อมูลผิดพลาด 5 รายการ</small>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-center text-primary" href="#">ดูทั้งหมด</a></li>
+            </ul>
+        </div>
+
+        <!-- User Dropdown -->
+        <div class="dropdown">
+            <button class="btn btn-link d-flex align-items-center gap-2 text-decoration-none"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    style="border: none; background: none;">
+                <div class="admin-user">
+                    <div class="admin-user-avatar">
+                        @if (!string.IsNullOrEmpty(ViewBag.CurrentAdminFullName?.ToString()))
+                        {
+                            @ViewBag.CurrentAdminFullName.ToString().Substring(0, 1).ToUpper()
+                        }
+                        else
+                        {
+                            <i class="fas fa-user"></i>
+                        }
+                    </div>
+                    <div class="admin-user-info">
+                        <div class="admin-user-name">@ViewBag.CurrentAdminFullName</div>
+                        <div class="admin-user-role">@ViewBag.CurrentAdminRole</div>
+                    </div>
+                    <i class="fas fa-chevron-down" style="font-size: 12px; color: #666;"></i>
+                </div>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                    <a class="dropdown-item" href="@Url.Action("Index", "Profile", new { area = "Admin" })">
+                        <i class="fas fa-user-circle me-2"></i> โปรไฟล์
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="@Url.Action("ChangePassword", "Profile", new { area = "Admin" })">
+                        <i class="fas fa-key me-2"></i> เปลี่ยนรหัสผ่าน
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="@Url.Action("Activities", "Profile", new { area = "Admin" })">
+                        <i class="fas fa-history me-2"></i> ประวัติการใช้งาน
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item text-danger" href="@Url.Action("Logout", "Auth", new { area = "Admin" })">
+                        <i class="fas fa-sign-out-alt me-2"></i> ออกจากระบบ
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<style>
+    .dropdown-item {
+        padding: 10px 15px;
+        transition: background 0.2s;
+    }
+
+    .dropdown-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .dropdown-menu {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border-radius: 8px;
+        margin-top: 10px;
+    }
+
+    .dropdown-divider {
+        margin: 8px 0;
+    }
+</style>

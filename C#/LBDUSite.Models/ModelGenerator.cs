@@ -7,6 +7,52 @@ using System.ComponentModel.DataAnnotations.Schema;
  
 namespace LBDUSite.Models
 {
+    [Table("ActivityLogs")]
+    public class ActivityLog
+    {
+        [Key]
+        public virtual long Id { get; set; }
+        public virtual int? UserId { get; set; }
+        public virtual string Username { get; set; }
+        public virtual string Action { get; set; }
+        public virtual string Module { get; set; }
+        public virtual string? Details { get; set; }
+        public virtual string? IpAddress { get; set; }
+        public virtual string? UserAgent { get; set; }
+        public virtual string? RequestUrl { get; set; }
+        public virtual int? StatusCode { get; set; }
+        public virtual DateTime CreatedAt { get; set; }
+
+        // Many-to-One relationship
+        [ForeignKey("UserId")]
+        public virtual AdminUser? User { get; set; }
+
+    }
+
+    [Table("AdminUsers")]
+    public class AdminUser
+    {
+        [Key]
+        public virtual int Id { get; set; }
+        public virtual string Username { get; set; }
+        public virtual string PasswordHash { get; set; }
+        public virtual string FullName { get; set; }
+        public virtual string Email { get; set; }
+        public virtual string Role { get; set; }
+        public virtual bool IsActive { get; set; }
+        public virtual string? ProfileImage { get; set; }
+        public virtual DateTime CreatedAt { get; set; }
+        public virtual DateTime? UpdatedAt { get; set; }
+        public virtual DateTime? LastLoginAt { get; set; }
+        public virtual string? CreatedBy { get; set; }
+        public virtual string? UpdatedBy { get; set; }
+
+
+        // One-to-Many relationship
+        [InverseProperty("User")]
+        public virtual ICollection<ActivityLog>? ActivityLogs { get; set; }
+    }
+
     [Table("AMC")]
     public class AMC
     {
@@ -562,6 +608,19 @@ namespace LBDUSite.Models
 
     }
 
+    [Table("LoginAttempts")]
+    public class LoginAttempt
+    {
+        [Key]
+        public virtual int Id { get; set; }
+        public virtual string Username { get; set; }
+        public virtual string IpAddress { get; set; }
+        public virtual bool IsSuccessful { get; set; }
+        public virtual DateTime AttemptedAt { get; set; }
+
+
+    }
+
     [Table("MediaLibrary")]
     public class MediaLibrary
     {
@@ -643,12 +702,10 @@ namespace LBDUSite.Models
     {
         [Key]
         public virtual int Id { get; set; }
-        public virtual string PermissionKey { get; set; }
-        public virtual string DisplayName { get; set; }
+        public virtual string Module { get; set; }
+        public virtual string Action { get; set; }
         public virtual string? Description { get; set; }
-        public virtual string? Category { get; set; }
-        public virtual bool? IsActive { get; set; }
-        public virtual DateTime? CreatedDate { get; set; }
+        public virtual DateTime CreatedAt { get; set; }
 
 
         // One-to-Many relationship
@@ -661,17 +718,13 @@ namespace LBDUSite.Models
     {
         [Key]
         public virtual int Id { get; set; }
-        public virtual int RoleId { get; set; }
+        public virtual string Role { get; set; }
         public virtual int PermissionId { get; set; }
-        public virtual DateTime? AssignedDate { get; set; }
-        public virtual int? AssignedBy { get; set; }
+        public virtual DateTime CreatedAt { get; set; }
 
         // Many-to-One relationship
         [ForeignKey("PermissionId")]
         public virtual Permission? Permission { get; set; }
-        // Many-to-One relationship
-        [ForeignKey("RoleId")]
-        public virtual Role? Role { get; set; }
 
     }
 
@@ -693,9 +746,6 @@ namespace LBDUSite.Models
 
         // One-to-Many relationship
         [InverseProperty("Role")]
-        public virtual ICollection<RolePermission>? RolePermissions { get; set; }
-        // One-to-Many relationship
-        [InverseProperty("Role")]
         public virtual ICollection<UserRole>? UserRoles { get; set; }
     }
 
@@ -712,6 +762,24 @@ namespace LBDUSite.Models
         public virtual bool? IsPublic { get; set; }
         public virtual DateTime? UpdatedDate { get; set; }
         public virtual int? UpdatedBy { get; set; }
+
+
+    }
+
+    [Table("SystemSettings")]
+    public class SystemSetting
+    {
+        [Key]
+        public virtual int Id { get; set; }
+        public virtual string Key { get; set; }
+        public virtual string? Value { get; set; }
+        public virtual string? Description { get; set; }
+        public virtual string Category { get; set; }
+        public virtual string DataType { get; set; }
+        public virtual bool IsEncrypted { get; set; }
+        public virtual DateTime CreatedAt { get; set; }
+        public virtual DateTime? UpdatedAt { get; set; }
+        public virtual string? UpdatedBy { get; set; }
 
 
     }

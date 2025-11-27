@@ -1,0 +1,392 @@
+﻿@model LBDUSite.Areas.Admin.Models.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_AdminLayout";
+}
+
+<div class="page-header">
+    <h1 class="page-title"><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+    </nav>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <!-- Total Funds -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small mb-1">กองทุนทั้งหมด</div>
+                        <div class="h2 mb-0 font-weight-bold">@Model.TotalFunds</div>
+                        <div class="small text-success mt-1">
+                            <i class="fas fa-check-circle"></i> ใช้งาน @Model.TotalActiveFunds
+                        </div>
+                    </div>
+                    <div class="stat-icon bg-primary">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total AMCs -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small mb-1">บริษัทจัดการ</div>
+                        <div class="h2 mb-0 font-weight-bold">@Model.TotalAMCs</div>
+                        <div class="small text-success mt-1">
+                            <i class="fas fa-check-circle"></i> ใช้งาน @Model.TotalActiveAMCs
+                        </div>
+                    </div>
+                    <div class="stat-icon bg-success">
+                        <i class="fas fa-building"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Admin Users -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small mb-1">ผู้ดูแลระบบ</div>
+                        <div class="h2 mb-0 font-weight-bold">@Model.TotalAdminUsers</div>
+                        <div class="small text-success mt-1">
+                            <i class="fas fa-check-circle"></i> ใช้งาน @Model.TotalActiveAdminUsers
+                        </div>
+                    </div>
+                    <div class="stat-icon bg-info">
+                        <i class="fas fa-users-cog"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Activities -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning h-100">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <div class="text-muted small mb-1">กิจกรรมวันนี้</div>
+                        <div class="h2 mb-0 font-weight-bold">@Model.RecentActivities.Count(a => a.CreatedAt.Date == DateTime.Today)</div>
+                        <div class="small text-muted mt-1">
+                            <i class="fas fa-clock"></i> อัพเดทล่าสุด @DateTime.Now.ToString("HH:mm")
+                        </div>
+                    </div>
+                    <div class="stat-icon bg-warning">
+                        <i class="fas fa-history"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <!-- Fund Status Chart -->
+    <div class="col-xl-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-chart-pie me-2"></i> สถานะกองทุน
+            </div>
+            <div class="card-body">
+                <canvas id="fundStatusChart" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Risk Level Chart -->
+    <div class="col-xl-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-chart-bar me-2"></i> ระดับความเสี่ยง
+            </div>
+            <div class="card-body">
+                <canvas id="riskLevelChart" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Recent Data Row -->
+<div class="row">
+    <!-- Recent Funds -->
+    <div class="col-xl-7 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-plus-circle me-2"></i> กองทุนที่เพิ่มล่าสุด</span>
+                <a href="@Url.Action("Index", "Fund")" class="btn btn-sm btn-outline-primary">
+                    ดูทั้งหมด <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                @if (Model.RecentFunds.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>รหัสโครงการ</th>
+                                    <th>ชื่อกองทุน</th>
+                                    <th>บริษัทจัดการ</th>
+                                    <th>สถานะ</th>
+                                    <th>วันที่สร้าง</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var fund in Model.RecentFunds)
+                                {
+                                    <tr>
+                                        <td><strong>@fund.ProjId</strong></td>
+                                        <td>
+                                            <a href="@Url.Action("Details", "Fund", new { id = fund.Id })">
+                                                @fund.ProjAbbrName
+                                            </a>
+                                        </td>
+                                        <td>@fund.AMCName</td>
+                                        <td>
+                                            @if (fund.IsActive)
+                                            {
+                                                <span class="badge bg-success">ใช้งาน</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">ไม่ใช้งาน</span>
+                                            }
+                                        </td>
+                                        <td>@fund.CreatedDate?.ToString("dd/MM/yyyy")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted text-center py-4">
+                        <i class="fas fa-inbox fa-3x mb-3 d-block"></i>
+                        ยังไม่มีข้อมูลกองทุน
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="col-xl-5 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-history me-2"></i> กิจกรรมล่าสุด</span>
+                <a href="@Url.Action("Index", "ActivityLog")" class="btn btn-sm btn-outline-primary">
+                    ดูทั้งหมด <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                @if (Model.RecentActivities.Any())
+                {
+                    <div class="activity-timeline">
+                        @foreach (var activity in Model.RecentActivities)
+                        {
+                            <div class="activity-item">
+                                <div class="activity-badge badge-@activity.ActionBadgeClass">
+                                    <i class="fas @GetActionIcon(activity.Action)"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-header">
+                                        <strong>@activity.ActionDisplayText</strong>
+                                        <span class="badge @activity.ActionBadgeClass">@activity.Module</span>
+                                    </div>
+                                    <div class="activity-details">@activity.Details</div>
+                                    <div class="activity-meta">
+                                        <small class="text-muted">
+                                            <i class="fas fa-clock"></i> @activity.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                                            @if (!string.IsNullOrEmpty(activity.IpAddress))
+                                            {
+                                                <span class="ms-2">
+                                                    <i class="fas fa-map-marker-alt"></i> @activity.IpAddress
+                                                </span>
+                                            }
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted text-center py-4">
+                        <i class="fas fa-inbox fa-2x mb-3 d-block"></i>
+                        ยังไม่มีกิจกรรม
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetActionIcon(string action)
+    {
+        return action?.ToLower() switch
+        {
+            "create" => "fa-plus-circle",
+            "update" => "fa-edit",
+            "delete" => "fa-trash-alt",
+            "login" => "fa-sign-in-alt",
+            "logout" => "fa-sign-out-alt",
+            _ => "fa-circle"
+        };
+    }
+}
+
+<style>
+    .border-left-primary { border-left: 4px solid #667eea; }
+    .border-left-success { border-left: 4px solid #28a745; }
+    .border-left-info { border-left: 4px solid #17a2b8; }
+    .border-left-warning { border-left: 4px solid #ffc107; }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+    }
+
+    .bg-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .bg-success { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); }
+    .bg-info { background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); }
+    .bg-warning { background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%); }
+
+    .activity-timeline {
+        position: relative;
+    }
+
+    .activity-item {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+        margin-bottom: 0;
+    }
+
+    .activity-badge {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .badge-success { background-color: #28a745; }
+    .badge-warning { background-color: #ffc107; }
+    .badge-danger { background-color: #dc3545; }
+    .badge-info { background-color: #17a2b8; }
+    .badge-secondary { background-color: #6c757d; }
+    .badge-primary { background-color: #667eea; }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 5px;
+    }
+
+    .activity-details {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    .activity-meta {
+        font-size: 12px;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Fund Status Chart
+        const fundStatusCtx = document.getElementById('fundStatusChart').getContext('2d');
+        new Chart(fundStatusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.FundsByStatus.Labels)),
+                datasets: [{
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.FundsByStatus.Values)),
+                    backgroundColor: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.FundsByStatus.Colors))
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Risk Level Chart
+        const riskLevelCtx = document.getElementById('riskLevelChart').getContext('2d');
+        new Chart(riskLevelCtx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.FundsByRiskLevel.Labels)),
+                datasets: [{
+                    label: 'จำนวนกองทุน',
+                    data: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.FundsByRiskLevel.Values)),
+                    backgroundColor: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.FundsByRiskLevel.Colors))
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}
